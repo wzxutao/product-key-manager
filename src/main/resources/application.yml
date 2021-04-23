@@ -11,13 +11,13 @@ spring:
 ---
 spring:
   profiles: prod
-  # H2 database
-  datasource:
-    # TODO NEXT LINE WILL CAUSE EXCEPTION, fix it
-    url: jdbc:h2:file:./data/record;DB_CLOSE_DELAY=-1
-    username: sa
-    password:
-
+  jpa:
+    properties:
+      hibernate:
+        dialect: cn.rypacker.productkeymanager.databasehelpers.sqlite.SQLiteDialect
+        hbm2ddl:
+          auto: update
+        show_sql: false
 
 
 # development
@@ -25,10 +25,11 @@ spring:
 spring:
   profiles: dev
   jpa:
-    hibernate:
-      dll-auto:update
-  datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/testDb
-    username: admin
-    password: admin
+    properties:
+      hibernate:
+        dialect: cn.rypacker.productkeymanager.databasehelpers.sqlite.SQLiteDialect
+        hbm2ddl:
+          auto: create-drop
+        show_sql: true
+
 

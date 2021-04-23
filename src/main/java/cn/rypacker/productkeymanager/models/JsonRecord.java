@@ -7,11 +7,20 @@ import javax.persistence.Id;
 
 @Entity
 public class JsonRecord {
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String jsonString;
+
+
+    public JsonRecord(String jsonString) {
+        this.jsonString = jsonString;
+    }
+
+    public JsonRecord() {
+    }
 
     public Long getId() {
         return id;
