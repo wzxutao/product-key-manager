@@ -31,5 +31,7 @@ spring:
         hbm2ddl:
           auto: create-drop
         show_sql: true
+  templates:
+    cache: false
 
 
