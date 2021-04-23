@@ -43,6 +43,11 @@
         padding-left: 5px;
     }
 
+    #key-display {
+        border-style: solid;
+        word-wrap: break-word;
+    }
+
 
 </style>
 
@@ -66,10 +71,10 @@
         <div id="form-template-row" class="form-item form-row-optional d-none">
             <div class="form-content">
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-3 form-item-label">
                         <input type="text" class="form-control" placeholder="此条目名称">
                     </div>
-                    <div class="col-9">
+                    <div class="col-9 form-item-content">
                         <input type="text" class="form-control" placeholder="此条目内容">
                     </div>
                 </div>
@@ -92,6 +97,22 @@
             </a>
         </div>
     </form>
+
+    <hr/>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary mb-2" onclick="generateKey()">生成</button>
+            </div>
+            <span id="key-display"
+                    class="input col-8"
+                    role="textbox"
+            >
+                序列号
+            </span>
+        </div>
+    </div>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
