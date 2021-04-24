@@ -3,6 +3,7 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.models.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.JSONUtil;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
-import java.util.Objects;
 
 @RequestMapping("/new-key")
 @Controller
@@ -27,6 +27,8 @@ public class NewKeyController {
     JokeCipher jokeCipher;
     @Autowired
     JsonRecordRepository jsonRecordRepository;
+    @Autowired
+    KeyGenerator keyGenerator;
 
     @GetMapping("")
     public String get(){
@@ -38,20 +40,16 @@ public class NewKeyController {
         if(reqBody == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         var contents = JSONUtil.toStringFrom(reqBody);
-        var record = new JsonRecord(contents);
-        jsonRecordRepository.save(record);
+        var date = reqBody.get("日期");
+        if(date == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         String key;
-        try{
-            key = jokeCipher.insecureEncrypt(
-                    Objects.requireNonNull(record.getId()).toString());
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // avoid duplication
+        do{
+            key = keyGenerator.generateKey(date);
+        }while (jsonRecordRepository.findByProductKey(key).size() > 0);
 
-        record.setKeyType(JsonRecord.ProductKeyContentType.ID);
-        record.setProductKey(key);
+        var record = new JsonRecord(contents, key);
         jsonRecordRepository.save(record);
         logger.info("new record saved: " + record.toString());
         return new ResponseEntity<>(key, HttpStatus.CREATED);

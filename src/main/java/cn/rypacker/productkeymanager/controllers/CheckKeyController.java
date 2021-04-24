@@ -30,19 +30,13 @@ public class CheckKeyController {
     public ResponseEntity<?> retrieveInfo(@RequestBody RequestBodies.Key key){
         if(key == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        System.out.println(key.key);
-        long id;
-        try{
-            var idStr = jokeCipher.insecureDecrypt(key.key);
-            id = Long.parseLong(idStr);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        var record = jsonRecordRepository.findById(id);
+        var record = jsonRecordRepository.findByProductKey(key.key);
         if(record.isEmpty()){
             return new ResponseEntity<>("无效序列号", HttpStatus.NOT_FOUND);
+        }else if(record.size() != 1){
+            throw new RuntimeException("key duplication");
         }
-        return new ResponseEntity<>(record.get().getJsonString(), HttpStatus.OK);
+
+        return new ResponseEntity<>(record.get(0).getJsonString(), HttpStatus.OK);
     }
 }

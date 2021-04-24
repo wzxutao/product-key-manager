@@ -2,6 +2,7 @@ package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.models.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,8 @@ public class DummyDataInitializer implements CommandLineRunner {
     JsonRecordRepository jsonRecordRepository;
     @Autowired
     JokeCipher jokeCipher;
-
+    @Autowired
+    KeyGenerator keyGenerator;
 
     @Override
     public void run(String... args) throws Exception {
@@ -25,14 +27,14 @@ public class DummyDataInitializer implements CommandLineRunner {
         json.append("operator", "boris johnson");
 //        System.out.println(json1.toString());
         var contents = json.toString();
-        jsonRecordRepository.save(new JsonRecord(contents, jokeCipher.insecureEncrypt(contents), JsonRecord.ProductKeyContentType.ALL));
+        jsonRecordRepository.save(new JsonRecord(contents, keyGenerator.generateKey()));
 
         json.clear();
         json.append("id", 2);
         json.append("operator", "thereasa may");
 //        System.out.println(json1.toString());
         contents = json.toString();
-        jsonRecordRepository.save(new JsonRecord(contents, jokeCipher.insecureEncrypt(contents), JsonRecord.ProductKeyContentType.ALL));
+        jsonRecordRepository.save(new JsonRecord(contents, keyGenerator.generateKey()));
 
         System.out.println(jsonRecordRepository.findAll());
     }

@@ -23,6 +23,9 @@ function generateKey(){
         json[label] = content;
     })
 
+    var date = $("#form-date").val()
+    json["日期"]=date;
+
     $.ajax({
         type: "POST",
         url: "/new-key/submit",
@@ -43,3 +46,33 @@ $(function(){
         removeFormRow(e.currentTarget);
     });
 });
+
+Date.prototype.yymmdd = function() {
+  var mm = this.getMonth() + 1; // getMonth() is zero-based
+  var dd = this.getDate();
+
+  return [this.getFullYear() % 100,
+          (mm>9 ? '' : '0') + mm,
+          (dd>9 ? '' : '0') + dd
+         ].join('');
+};
+
+function showTodayIfChecked(){
+    if($("#isDateNow").is(":checked")){
+        var now = new Date().yymmdd()
+        document.querySelector("#form-date").readOnly = true
+        $("#form-date").val(now)
+    }else{
+        document.querySelector("#form-date").readOnly = false
+        $("#form-date").val("YYMMDD")
+    }
+}
+
+(()=>{
+    showTodayIfChecked()
+})()
+
+$("#isDateNow").click(function() {
+    showTodayIfChecked()
+})
+

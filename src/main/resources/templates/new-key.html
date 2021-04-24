@@ -68,6 +68,27 @@
 
 <main>
     <form id="contents-form">
+        <div id="form-datetime-row" class="form-item form-row-mandatory">
+            <div >
+                <div class="row">
+                    <div class="col-3">
+                        <input type="text" class="form-control" placeholder="日期" readonly>
+                    </div>
+                    <div class="col-1" style="margin: auto;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="isDateNow" checked>
+                            <label class="form-check-label" for="isDateNow">
+                                今天
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <input id="form-date" type="text" class="form-control" placeholder="YYMMDD">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="form-template-row" class="form-item form-row-optional d-none">
             <div class="form-content">
                 <div class="row">

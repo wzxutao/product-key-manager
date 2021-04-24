@@ -1,6 +1,9 @@
 package cn.rypacker.productkeymanager.models;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -16,22 +19,15 @@ public class JsonRecord {
 
     private final long CREATED_MILLI = System.currentTimeMillis();
 
-    public enum ProductKeyContentType {
-        ALL, ID
-    }
-
-    @Enumerated(EnumType.STRING)
-    private ProductKeyContentType keyType;
 
 
     public JsonRecord(String jsonString) {
         this.jsonString = jsonString;
     }
 
-    public JsonRecord(String jsonString, String productKey, ProductKeyContentType keyType) {
+    public JsonRecord(String jsonString, String productKey) {
         this.jsonString = Objects.requireNonNull(jsonString);
         this.productKey = Objects.requireNonNull(productKey);
-        this.keyType = Objects.requireNonNull(keyType);
     }
 
     public JsonRecord() {
@@ -65,13 +61,7 @@ public class JsonRecord {
         return CREATED_MILLI;
     }
 
-    public ProductKeyContentType getKeyType() {
-        return keyType;
-    }
 
-    public void setKeyType(ProductKeyContentType keyType) {
-        this.keyType = keyType;
-    }
 
     @Override
     public String toString() {
@@ -80,7 +70,6 @@ public class JsonRecord {
                 ", jsonString='" + jsonString + '\'' +
                 ", productKey='" + productKey + '\'' +
                 ", CREATED_MILLI=" + CREATED_MILLI +
-                ", keyType=" + keyType +
                 '}';
     }
 }
