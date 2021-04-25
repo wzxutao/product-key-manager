@@ -1,6 +1,9 @@
 function requestLogin(){
     var account = $("#inputAccount").val()
     var password = $("#inputPassword").val()
+//    $("#inputPassword").addClass("d-none")
+//    $("#inputAccount").addClass("d-none")
+    $("#requestedNotification").removeClass("d-none")
 
     $.ajax({
         type: "POST",
@@ -17,13 +20,16 @@ function requestLogin(){
         },
         error: (xhr, status, err) => {
             deleteAllCookies()
+//            $("#inputPassword").removeClass("d-none")
+//            $("#inputAccount").removeClass("d-none")
+            $("#requestedNotification").addClass("d-none")
             if(xhr.status === 401){
                 alert("用户名或密码不正确")
             }else{
                 alert(xhr.status)
             }
         },
-        timeout: 30000
+        timeout: 120000
     })
 
 }
