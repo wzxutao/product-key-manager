@@ -44,6 +44,7 @@ public class ManagerController {
     @GetMapping(path = "")
     public String get(Model model, @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
+//        System.out.println("auth: " + isAuthorized(authToken) + ", token: " + authToken);
         return returnTemplateIfAuthSucceed("admin", authToken);
     }
 

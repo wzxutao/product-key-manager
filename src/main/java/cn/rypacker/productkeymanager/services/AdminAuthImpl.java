@@ -13,12 +13,9 @@ public class AdminAuthImpl implements AdminAuth {
     private static final String KEY_EXPIRATION = "expiration";
 
 
-    //todo
     @Override
     public boolean isAdmin(String account, String password) {
-//        System.out.println("a: " + account + ", p: " + password);
-        if(account == null || password == null) return false;
-        return account.equals("admin") && password.equals("admin");
+        return AdminAccountManager.isAdminAccount(account, password);
     }
 
     @Override

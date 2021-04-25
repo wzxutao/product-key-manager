@@ -1,22 +1,35 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
+import cn.rypacker.productkeymanager.desktopui.AdminAccountCreationFrame;
+import cn.rypacker.productkeymanager.services.AdminAccountManager;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-public class FirstTimeInitialization {
+@Component
+public class FirstTimeInitializer implements InitializingBean {
 
-    private static Logger logger = LoggerFactory.getLogger(FirstTimeInitialization.class);
+    private static final Logger logger = LoggerFactory.getLogger(FirstTimeInitializer.class);
 
-    public static void initIfNecessary() throws IOException {
+    public static void initIfNecessary() throws IOException, InterruptedException {
         initDb();
+        initAdminAccount();
     }
+
+    private static void initAdminAccount() {
+        if(AdminAccountManager.adminAccountExists()) return;
+        var frame = new AdminAccountCreationFrame();
+        while(frame.isRunning()){};
+    }
+
 
     private static void initDb() throws IOException {
         var db = new File(StaticInformation.USER_DB_PATH);
@@ -30,5 +43,10 @@ public class FirstTimeInitialization {
             logger.info("db found");
         }
 
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        initIfNecessary();
     }
 }
