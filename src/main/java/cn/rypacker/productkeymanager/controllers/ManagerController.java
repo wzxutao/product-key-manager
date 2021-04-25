@@ -1,17 +1,16 @@
 package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
+import cn.rypacker.productkeymanager.services.AdminAuth;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +24,35 @@ public class ManagerController {
 
     private static Logger logger = LoggerFactory.getLogger(ManagerController.class);
 
-    @GetMapping(path = "")
-    public String get(Model model){
+    @Autowired
+    AdminAuth adminAuth;
 
+    /**
+     * returns the original template name otherwise auth page
+     * @param original template name
+     * @param authToken
+     * @return
+     */
+    private String returnTemplateIfAuthSucceed(String original, String authToken){
+        return isAuthorized(authToken) ? original : "adminAuth";
+    }
+
+    private boolean isAuthorized(String authToken){
+        return authToken != null && adminAuth.isValidToken(authToken);
+    }
+
+    @GetMapping(path = "")
+    public String get(Model model, @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
-        return "admin";
+        return returnTemplateIfAuthSucceed("admin", authToken);
     }
 
     @PostMapping(path = "/backup")
-    public ResponseEntity<?> requestBackup(@RequestParam(value = "fileName") String fileName) throws IOException {
+    public ResponseEntity<?> requestBackup(@RequestParam(value = "fileName") String fileName,
+                                           @CookieValue(value = "auth", required = false) String authToken)
+            throws IOException {
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         var basePath = StaticInformation.USER_DB_BACKUP_DIR + File.separator;
         if(!FileSystemUtil.isValidFilePath(basePath + fileName)){
             // 422
@@ -49,14 +68,17 @@ public class ManagerController {
     }
 
     @GetMapping(path = "/restore")
-    public String getRestorePage(Model model){
+    public String getRestorePage(Model model, @CookieValue(value = "auth", required = false) String authToken){
         var backUpFileName = FileSystemUtil.getBackupFileNames();
         model.addAttribute("backupFiles", backUpFileName);
-        return "restoreDb";
+        return returnTemplateIfAuthSucceed("restoreDb", authToken);
     }
 
     @PostMapping(path = "/restore")
-    public ResponseEntity<?> requestRestore(@RequestParam(value = "fileName") String fileName){
+    public ResponseEntity<?> requestRestore(@RequestParam(value = "fileName") String fileName,
+                                            @CookieValue(value = "auth", required = false) String authToken){
+
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         var restoreSrc = Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName);
         if(!restoreSrc.toFile().exists()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
