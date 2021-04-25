@@ -18,7 +18,11 @@ function requestBackup(){
         error: (xhr, status, err) => {
             if(xhr.status === 422){
                 alert("备份文件名不合法")
-            }else{
+            }
+            else if(xhr.status === 401){
+                location.href = "/auth"
+            }
+            else{
                 alert(xhr.status)
             }
         }
