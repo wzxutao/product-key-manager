@@ -84,8 +84,8 @@ public class QrCodePanel extends JPanel {
             // fillRect() fills the specified rectangle. The left and right edges of the rectangle are at x and x + width - 1.
             crunchifyGraphics.fillRect(0, 0, CrunchifyWidth, CrunchifyWidth);
 
-            // TODO: Please change this color as per your need
-            crunchifyGraphics.setColor(Color.BLUE);
+            // COLOR
+            crunchifyGraphics.setColor(Color.BLACK);
 
             for (int i = 0; i < CrunchifyWidth; i++) {
                 for (int j = 0; j < CrunchifyWidth; j++) {
