@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.desktopui;
 
+import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.services.AdminAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class AdminConfirm {
     public String getTokenIfApproved(String clientIp){
         var userOption = JOptionPane.showConfirmDialog(null,
                 String.format("%s 请求进入序列号管理系统管理界面，批准？", clientIp),
-                "帝国皇家包装机序列号管理系统",
+                StaticInformation.APPLICATION_TITLE,
                 JOptionPane.YES_NO_OPTION);
         if(userOption != JOptionPane.YES_OPTION) return null;
 

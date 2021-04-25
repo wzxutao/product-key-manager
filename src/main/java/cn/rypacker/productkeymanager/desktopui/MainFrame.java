@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.desktopui;
 
+import cn.rypacker.productkeymanager.config.StaticInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class MainFrame extends JFrame {
     private QrCodePanel qrCodePanel;
 
     public MainFrame() throws HeadlessException {
-        this.setTitle("帝国皇家机械设备有限公司序列号管理系统");
+        this.setTitle(StaticInformation.APPLICATION_TITLE);
         this.setBounds(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         systemTrayInit();

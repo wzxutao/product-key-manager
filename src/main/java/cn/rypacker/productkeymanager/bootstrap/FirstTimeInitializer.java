@@ -6,16 +6,13 @@ import cn.rypacker.productkeymanager.services.AdminAccountManager;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-@Component
-public class FirstTimeInitializer implements InitializingBean {
+public class FirstTimeInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(FirstTimeInitializer.class);
 
@@ -26,7 +23,7 @@ public class FirstTimeInitializer implements InitializingBean {
     }
 
     private static void createDataDir(){
-        FileSystemUtil.mkdirIfNotExists("data");
+        FileSystemUtil.mkdirIfNotExists(StaticInformation.USER_DB_DIR);
     }
 
     private static void initAdminAccount() {
@@ -50,8 +47,4 @@ public class FirstTimeInitializer implements InitializingBean {
 
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        initIfNecessary();
-    }
 }

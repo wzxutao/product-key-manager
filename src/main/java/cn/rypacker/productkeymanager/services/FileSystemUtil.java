@@ -12,6 +12,7 @@ public class FileSystemUtil {
 
     public static void mkdirIfNotExists(String path){
         var dir = new File(path);
+//        System.out.println(path + " exists: " + dir.exists());
         if(!dir.exists()){
             dir.mkdirs();
         }
