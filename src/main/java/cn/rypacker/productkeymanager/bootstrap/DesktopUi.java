@@ -17,9 +17,15 @@ public class DesktopUi implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         EventQueue.invokeLater(()->{
-            var frame = new MainFrame();
-            frame.init(env.getProperty("server.port"));
-            frame.setVisible(true);
+            try{
+                var frame = new MainFrame();
+                frame.init(env.getProperty("server.port"));
+                frame.setVisible(true);
+            }catch (HeadlessException e){
+                System.out.println("HEADLESS!!!!!!!!!!!!!!!!!!!!!!!!!");
+//                e.printStackTrace();
+            }
+
         });
     }
 }
