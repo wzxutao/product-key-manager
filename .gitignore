@@ -34,3 +34,5 @@ build/
 
 ## user data
 /data/
+/memory
+/release.properties
