@@ -1,11 +1,9 @@
 package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -16,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringBootTest
+//@SpringBootTest
 class NewKeyControllerTest {
     private static final Logger log = LoggerFactory.getLogger(NewKeyControllerTest.class);
 
@@ -25,7 +23,7 @@ class NewKeyControllerTest {
     @Autowired
     NewKeyController newKeyController;
 
-    @Test
+//    @Test
     public void insert10ThousandRecordsWithoutDuplication(){
         Map<String, String> dummyReqbody = new HashMap<>();
         var random = new Random();
