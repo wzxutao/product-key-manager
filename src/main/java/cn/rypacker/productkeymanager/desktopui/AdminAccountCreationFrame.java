@@ -53,7 +53,7 @@ public class AdminAccountCreationFrame extends JFrame{
                     return;
                 }
 
-                AdminAccountManager.createAdminAccount(username, password);
+                AdminAccountManager.createAdminAccount(username, password, false);
                 AdminAccountCreationFrame.this.setVisible(false);
                 running = false;
             }
