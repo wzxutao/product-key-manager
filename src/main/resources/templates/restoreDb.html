@@ -32,9 +32,9 @@
     <div class="navbar navbar-dark bg-dark shadow-sm">
         <div id="navbar-container" class="container">
             <strong id="page-title" class="navbar-brand"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                管理</font></font></strong>
-            <a id="home-icon" href="/" class="">
-                <object data="/static/svg/home_icon.svg" type="image/svg+xml"></object>
+                还原数据库</font></font></strong>
+            <a id="home-icon" href="/admin" class="">
+                <object data="/static/svg/left-arrow.svg" type="image/svg+xml"></object>
             </a>
         </div>
     </div>
@@ -43,20 +43,13 @@
 
 <main>
     <div class="list-group">
-<!--        <a href="#" class="list-group-item list-group-item-action active">-->
-<!--            Cras justo odio-->
-<!--        </a>-->
-        <div class="input-group">
-            <a href="javascript:requestBackup()" class="list-group-item form-control">备份</a>
-            <input id="backup-name" type="text" class="form-control" placeholder="备份文件名">
-
-        </div>
-
-        <a href="/admin/restore" class="list-group-item list-group-item-action">还原</a>
+        <span style="color: #ff5301;"> 还原前请做好备份，否则当前资料将丢失！ </span> <br>
+        <span>点击文件名进行还原</span>
         <br>
-        <a href="#" class="list-group-item list-group-item-action">检查更新</a>
-        <a href="#" class="list-group-item list-group-item-action disabled">当前版本号:
-            <span th:text="${versionNumber}"></span></a>
+        <div th:each="backupFile : ${backupFiles}">
+            <a href="#" class="backup-file list-group-item list-group-item-action"
+            th:text="${backupFile}">backup file name</a>
+        </div>
     </div>
 
 </main>
@@ -66,6 +59,6 @@
         src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
-<script src="/static/js/admin.js"></script>
+<script src="/static/js/restoreDb.js"></script>
 </body>
 </html>
