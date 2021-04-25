@@ -12,8 +12,8 @@ public class MainFrame extends JFrame {
 
     private static final Logger logger = LoggerFactory.getLogger(MainFrame.class);
 
-    private static final int DEFAULT_WIDTH = 580;
-    private static final int DEFAULT_HEIGHT = 600;
+    private static final int DEFAULT_WIDTH = 530;
+    private static final int DEFAULT_HEIGHT = 590;
 
     private static final String LOGO_ICON_PATH = "resources/icon/logo.jpg";
     TrayIcon trayIcon;
