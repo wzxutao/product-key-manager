@@ -20,8 +20,13 @@ public class FirstTimeInitializer implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(FirstTimeInitializer.class);
 
     public static void initIfNecessary() throws IOException, InterruptedException {
+        createDataDir();
         initDb();
         initAdminAccount();
+    }
+
+    private static void createDataDir(){
+        FileSystemUtil.mkdirIfNotExists("data");
     }
 
     private static void initAdminAccount() {
