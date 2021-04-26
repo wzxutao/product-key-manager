@@ -1,5 +1,7 @@
 package cn.rypacker.productkeymanager.models;
 
+import cn.rypacker.productkeymanager.services.DatetimeUtil;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,6 +61,10 @@ public class JsonRecord {
 
     public long getCREATED_MILLI() {
         return CREATED_MILLI;
+    }
+
+    public String getCreatedFinalDate(){
+        return DatetimeUtil.epochSecondsToFinalDate(CREATED_MILLI / 1000L);
     }
 
 

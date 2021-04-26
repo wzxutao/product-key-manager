@@ -84,7 +84,7 @@
         <button class="btn btn-outline-secondary" type="button"
                 onclick="setToday(document.querySelector('#to-time'), false)">今天24点</button>
         <button class="btn btn-outline-secondary" type="button"
-                onclick="filter()">过滤</button>
+                onclick="filter()">应用时间段</button>
         <button class="btn btn-outline-secondary" type="button"
                 onclick="location.reload()">显示全部</button>
 
@@ -103,7 +103,7 @@
         <tbody>
         <tr th:each="record : ${records}">
             <th scope="row" th:text="${record.productKey}">key</th>
-            <td th:text="${record.CREATED_MILLI}">created time</td>
+            <td th:text="${record.getCreatedFinalDate()}">created time</td>
             <td th:text="${record.jsonString}">json</td>
         </tr>
         </tbody>
