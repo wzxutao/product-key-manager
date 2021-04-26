@@ -15,4 +15,9 @@ public class RequestBodies {
     public static class MandatoryFieldNames {
         public List<String> mandatoryFieldNames;
     }
+
+    public static class RecordsQuery {
+        public String fromTime;
+        public String toTime;
+    }
 }

@@ -27,6 +27,6 @@ public class DatetimeUtil {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         var ldt = LocalDateTime.parse(finalDate, formatter);
         var zdt = ldt.atZone(ZoneId.systemDefault());
-        return (int) zdt.toInstant().toEpochMilli() / 1000;
+        return zdt.toInstant().toEpochMilli() / 1000L;
     }
 }

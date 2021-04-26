@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>帝国皇家包装机序列号管理系统</title>
@@ -76,15 +76,17 @@
         <span style="margin: auto;">从</span>
         <button class="btn btn-outline-secondary" type="button"
                 onclick="setToday(document.querySelector('#from-time'), true)">今天0点</button>
-        <input id="from-time" type="text" class="form-control" placeholder="YYYY/MM/DD hh:mm:ss">
+        <input id="from-time" type="text" class="form-control" placeholder="YYYY/MM/DD hh:mm:ss"
+               th:value="${fromTime}">
         <span style="margin: auto;">到</span>
-        <input id="to-time" type="text" class="form-control" placeholder="YYYY/MM/DD hh:mm:ss">
+        <input id="to-time" type="text" class="form-control" placeholder="YYYY/MM/DD hh:mm:ss",
+               th:value="${toTime}">
         <button class="btn btn-outline-secondary" type="button"
                 onclick="setToday(document.querySelector('#to-time'), false)">今天24点</button>
-        <input class="form-check-input" type="checkbox" value="" id="isDateNow">
-        <label class="form-check-label" for="isDateNow">
-            过滤
-        </label>
+        <button class="btn btn-outline-secondary" type="button"
+                onclick="filter()">过滤</button>
+        <button class="btn btn-outline-secondary" type="button"
+                onclick="location.reload()">显示全部</button>
 
     </div>
 
@@ -93,29 +95,16 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Key</th>
+            <th scope="col">生成时间</th>
+            <th scope="col">信息</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
+        <tr th:each="record : ${records}">
+            <th scope="row" th:text="${record.productKey}">key</th>
+            <td th:text="${record.CREATED_MILLI}">created time</td>
+            <td th:text="${record.jsonString}">json</td>
         </tr>
         </tbody>
     </table>
