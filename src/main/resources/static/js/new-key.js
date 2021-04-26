@@ -17,11 +17,25 @@ function removeFormRow(el){
 
 function generateKey(){
     var json = {}
+
+    isInvalid = false;
+
     $(".form-content:not('#form-template-row .form-content')").each((i, v)=>{
         var label = v.querySelector(".form-item-label input").value
         var content = v.querySelector(".form-item-content input").value
+        if(content === ""){
+            v.querySelector(".form-item-content input").classList.add("invalid-field")
+            alert("内容不能为空")
+            isInvalid = true;
+            return false;
+        }else{
+            v.querySelector(".form-item-content input").classList.remove("invalid-field")
+        }
+
         json[label] = content;
     })
+
+    if(isInvalid) return;
 
     var date = $("#form-date").val()
     json["日期"]=date;

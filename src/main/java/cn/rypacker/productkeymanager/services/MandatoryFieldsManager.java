@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.services;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface MandatoryFieldsManager {
@@ -9,6 +10,7 @@ public interface MandatoryFieldsManager {
     void removeField(String fieldName);
 
     void addField(String fieldName);
+    void replaceWith(Collection<String> collection);
 
     void clear();
 

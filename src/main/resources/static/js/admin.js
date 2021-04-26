@@ -20,8 +20,8 @@ function requestBackup(){
                 alert("备份文件名不合法")
             }
             else if(xhr.status === 401){
-                location.href = "/auth"
-            }
+                alert("登陆已过期")
+                location.href = "/admin"
             else{
                 alert(xhr.status)
             }

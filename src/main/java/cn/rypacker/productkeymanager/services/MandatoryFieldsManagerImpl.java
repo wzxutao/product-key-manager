@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -15,7 +16,8 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
 
     private final Logger logger = LoggerFactory.getLogger(MandatoryFieldsManagerImpl.class);
 
-    private final Set<String> fieldNamesCache = new HashSet<>();
+    // retain insertion order
+    private final Set<String> fieldNamesCache = new LinkedHashSet<>();
 
 
     // read from file into cache
@@ -76,6 +78,19 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
     public void addField(String fieldName) {
         if(fieldName == null || fieldName.isBlank()) return;
         fieldNamesCache.add(fieldName);
+        writeToFile();
+    }
+
+    @Override
+    public void replaceWith(Collection<String> collection) {
+        fieldNamesCache.clear();
+        if(collection == null) return;
+
+        collection.forEach(e -> {
+            if(e != null && !e.isBlank()){
+                fieldNamesCache.add(e);
+            }
+        });
         writeToFile();
     }
 

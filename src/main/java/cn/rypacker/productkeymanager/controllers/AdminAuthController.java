@@ -39,7 +39,7 @@ public class AdminAuthController {
 
         // todo change to client ip
         var token = adminConfirm.getTokenIfApproved("某人");
-        System.out.println(token);
+//        System.out.println(token);
         if(token == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         return new ResponseEntity<>(token, HttpStatus.OK);

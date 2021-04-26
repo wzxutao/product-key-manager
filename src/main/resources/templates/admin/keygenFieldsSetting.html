@@ -48,9 +48,7 @@
         word-wrap: break-word;
     }
 
-    .invalid-field {
-        background: #d97065;
-    }
+
 
 </style>
 
@@ -59,7 +57,7 @@
     <div class="navbar navbar-dark bg-dark shadow-sm">
         <div id="navbar-container" class="container">
             <strong id="page-title" class="navbar-brand"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                生成序列号</font></font></strong>
+                设置必填项</font></font></strong>
             <a id="home-icon" href="/" class="">
                 <object data="/static/svg/home_icon.svg"
                         type="image/svg+xml"></object>
@@ -80,7 +78,7 @@
                     <div class="col-1" style="margin: auto;">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="isDateNow" checked>
-                            <label class="form-check-label" for="isDateNow">
+                            <label class="form-check-label" for="isDateNow" >
                                 今天
                             </label>
                         </div>
@@ -92,16 +90,24 @@
             </div>
         </div>
 
-        <div class="form-item form-row-mandatory" th:each="requiredFieldName : ${requiredFields}">
+        <div class="form-item form-row-optional" th:each="requiredFieldName : ${requiredFields}">
             <div class="form-content">
                 <div class="row">
                     <div class="col-3 form-item-label">
-                        <input type="text" class="form-control" th:value="${requiredFieldName}" readonly>
+                        <input type="text" class="form-control required-field-name"
+                               th:value="${requiredFieldName}" placeholder="必填项名称">
                     </div>
                     <div class="col-9 form-item-content">
-                        <input type="text" class="form-control" placeholder="此条目内容">
+                        <input type="text" class="form-control" placeholder="必填项内容" readonly>
                     </div>
                 </div>
+            </div>
+            <div class="form-sidebar">
+                <a class="form-remove-row-button" href="#">
+                    <object data="/static/svg/minus.svg" type="image/svg+xml"
+                            style="pointer-events:none;"
+                    ></object>
+                </a>
             </div>
         </div>
 
@@ -109,17 +115,17 @@
             <div class="form-content">
                 <div class="row">
                     <div class="col-3 form-item-label">
-                        <input type="text" class="form-control" placeholder="此条目名称">
+                        <input type="text" class="form-control required-field-name" placeholder="必填项名称">
                     </div>
                     <div class="col-9 form-item-content">
-                        <input type="text" class="form-control" placeholder="此条目内容">
+                        <input type="text" class="form-control" placeholder="必填项内容" readonly>
                     </div>
                 </div>
             </div>
             <div class="form-sidebar">
                 <a class="form-remove-row-button" href="#">
                     <object data="/static/svg/minus.svg" type="image/svg+xml"
-                        style="pointer-events:none;"
+                            style="pointer-events:none;"
                     ></object>
                 </a>
             </div>
@@ -139,14 +145,12 @@
     <div class="container">
         <div class="row">
             <div class="col-3">
-                <button type="submit" class="btn btn-primary mb-2" onclick="generateKey()">生成</button>
+                <button type="submit" class="btn btn-primary mb-2" onclick="requestModify()">确定</button>
+                <button class="btn btn-primary mb-2" onclick="location.reload()">重置</button>
+
+                <a id="keygen-new-tab" href="/new-key" target="_blank"
+                   class="btn btn-primary mb-2 d-none">打开生成序列号界面（新标签）</a>
             </div>
-            <span id="key-display"
-                    class="input col-8"
-                    role="textbox"
-            >
-                序列号
-            </span>
         </div>
     </div>
 
@@ -158,6 +162,7 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
 <script src="/static/js/new-key.js"></script>
+<script src="/static/js/keygenFieldsSetting.js"></script>
 
 
 </body>

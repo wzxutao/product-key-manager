@@ -7,7 +7,12 @@ function requestRestore(fileName){
             location.href = "/admin"
         },
         error: (xhr, status, err) => {
-            alert(xhr.status)
+            if(xhr.status === 401){
+                alert("登陆已过期")
+                location.href = "/admin"
+            }else{
+                alert(xhr.status)
+            }
         }
     })
 }

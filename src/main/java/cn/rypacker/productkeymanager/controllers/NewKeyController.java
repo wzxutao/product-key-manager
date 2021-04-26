@@ -4,6 +4,7 @@ import cn.rypacker.productkeymanager.models.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
+import cn.rypacker.productkeymanager.services.MandatoryFieldsManager;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +31,12 @@ public class NewKeyController {
     JsonRecordRepository jsonRecordRepository;
     @Autowired
     KeyGenerator keyGenerator;
+    @Autowired
+    MandatoryFieldsManager mandatoryFieldsManager;
 
     @GetMapping("")
-    public String get(){
+    public String get(Model model){
+        model.addAttribute("requiredFields", mandatoryFieldsManager.getFieldNames());
         return "new-key";
     }
 

@@ -51,11 +51,14 @@
             <input id="backup-name" type="text" class="form-control" placeholder="备份文件名">
 
         </div>
-
         <a href="/admin/restore" class="list-group-item list-group-item-action">还原</a>
         <br>
+
+        <a href="/admin/keygenFields" class="list-group-item list-group-item-action">设置创建序列号表单必填项</a>
+        <br>
+
         <a href="https://github.com/wzxutao/product-key-manager/releases" target="_blank"
-           class="list-group-item list-group-item-action">检查更新</a>
+           class="list-group-item list-group-item-action">检查更新 (手动)</a>
         <a href="#" class="list-group-item list-group-item-action disabled">当前版本号:
             <span th:text="${versionNumber}"></span></a>
     </div>
