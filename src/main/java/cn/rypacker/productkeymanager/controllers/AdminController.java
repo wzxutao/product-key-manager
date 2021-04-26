@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
 @RequestMapping("/admin")
@@ -112,7 +114,16 @@ public class AdminController {
     public String getRecords(Model model,
                              @RequestBody RequestBodies.RecordsQuery recordsQuery,
                              @CookieValue(value = "auth", required = false) String authToken){
-        System.out.println(recordsQuery.fromTime + ", " + recordsQuery.toTime);
+//        System.out.println(recordsQuery.fromTime + ", " + recordsQuery.toTime);
+
+        if(recordsQuery.fromTime == null || recordsQuery.fromTime.isBlank()){
+            recordsQuery.fromTime = DatetimeUtil.epochSecondsToFinalDate(0);
+        }
+
+        if(recordsQuery.toTime == null || recordsQuery.toTime.isBlank()){
+            recordsQuery.toTime = DatetimeUtil.epochSecondsToFinalDate(Instant.now().plus(
+                    Duration.ofDays(1)).toEpochMilli() / 1000L);
+        }
 
         model.addAttribute("fromTime", recordsQuery.fromTime);
         model.addAttribute("toTime", recordsQuery.toTime);

@@ -29,6 +29,8 @@ function requestModify(){
         error: (xhr, status, err)=>{
             if(xhr.status === 401){
                 alert("登陆已过期")
+                location.href = "/auth"
+                return;
             }
         }
     })

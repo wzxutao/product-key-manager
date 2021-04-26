@@ -21,7 +21,8 @@ function requestBackup(){
             }
             else if(xhr.status === 401){
                 alert("登陆已过期")
-                location.href = "/admin"
+                location.href = "/auth"
+                return;
             else{
                 alert(xhr.status)
             }

@@ -34,8 +34,6 @@ function requestLogin(){
 
 }
 
-352
-
 function deleteAllCookies() {
     var cookies = document.cookie.split(";");
 
