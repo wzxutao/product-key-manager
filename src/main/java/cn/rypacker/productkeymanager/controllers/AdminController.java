@@ -94,5 +94,11 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(path = "/records")
+    public String getRecords(Model model,
+                             @CookieValue(value = "auth", required = false) String authToken){
+
+        return returnTemplateIfAuthSucceed("admin/recordsView", authToken);
+    }
 
 }
