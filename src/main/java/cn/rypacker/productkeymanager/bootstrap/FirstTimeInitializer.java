@@ -23,7 +23,7 @@ public class FirstTimeInitializer {
     }
 
     private static void createDataDir(){
-        FileSystemUtil.mkdirIfNotExists(StaticInformation.USER_DB_DIR);
+        FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_DIR);
     }
 
     private static void initAdminAccount() {
@@ -37,7 +37,7 @@ public class FirstTimeInitializer {
         var db = new File(StaticInformation.USER_DB_PATH);
         if(!db.exists()){
             logger.info("db not found. creating");
-            FileSystemUtil.mkdirIfNotExists(StaticInformation.USER_DB_DIR);
+            FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_DIR);
             var emptyDb = new File(StaticInformation.EMPTY_DB_PATH);
             Files.copy(emptyDb.toPath(), db.toPath(), StandardCopyOption.REPLACE_EXISTING);
             logger.info("empty db created");

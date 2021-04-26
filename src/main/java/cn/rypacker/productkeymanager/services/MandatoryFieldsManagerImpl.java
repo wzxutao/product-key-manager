@@ -32,7 +32,7 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
 
     // write from cache to file
     private void writeToFile(){
-        FileSystemUtil.mkdirIfNotExists(StaticInformation.MANDATORY_FIELDS_FILE_PATH);
+        FileSystemUtil.mkEnclosingDirsIfNotExist(StaticInformation.MANDATORY_FIELDS_FILE_PATH);
 
         try(var pw = new PrintWriter(
                 new BufferedOutputStream(

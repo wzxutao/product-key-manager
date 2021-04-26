@@ -49,7 +49,7 @@ public class AdminAccountManager {
 
     public static void createAdminAccount(String username, String password, boolean hashPassword){
         var accountFile = new File(ACCOUNT_INFO_FILE);
-        FileSystemUtil.mkdirIfNotExists(accountFile.getParentFile().toString());
+        FileSystemUtil.mkdirsIfNotExist(accountFile.getParentFile().toString());
 
         try(var pw = new PrintWriter(new FileOutputStream(ACCOUNT_INFO_FILE))){
             pw.println(username);

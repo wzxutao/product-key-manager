@@ -5,6 +5,7 @@ import cn.rypacker.productkeymanager.config.StaticInformation;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class FileSystemUtil {
@@ -30,11 +31,16 @@ public class FileSystemUtil {
         }
     }
 
-    public static void mkdirIfNotExists(String path){
-        var dir = new File(path);
-        if(!dir.isDirectory()){
-            dir = dir.getParentFile();
-        }
+    public static void mkEnclosingDirsIfNotExist(String filePath){
+        var f = Path.of(filePath).getParent().toFile();
+        mkdirsIfNotExist(f.toString());
+    }
+
+    public static void mkdirsIfNotExist(String dirPath){
+        var dir = new File(dirPath);
+//        if(!dir.isDirectory()){
+//            dir = dir.getParentFile();
+//        }
 //        System.out.println(path + " exists: " + dir.exists());
         if(!dir.exists()){
             dir.mkdirs();

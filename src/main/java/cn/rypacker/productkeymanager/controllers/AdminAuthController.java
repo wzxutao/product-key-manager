@@ -26,7 +26,7 @@ public class AdminAuthController {
     public String getLogInPage(){
 
 //        System.out.println("get admin auth");
-        return "adminAuth";
+        return "admin/adminAuth";
     }
 
     @PostMapping("/login")

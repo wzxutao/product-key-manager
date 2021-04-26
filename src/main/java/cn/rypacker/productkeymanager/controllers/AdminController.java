@@ -20,9 +20,9 @@ import java.nio.file.StandardCopyOption;
 
 @RequestMapping("/admin")
 @Controller
-public class ManagerController {
+public class AdminController {
 
-    private static Logger logger = LoggerFactory.getLogger(ManagerController.class);
+    private static Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
     AdminAuth adminAuth;
@@ -34,7 +34,7 @@ public class ManagerController {
      * @return
      */
     private String returnTemplateIfAuthSucceed(String original, String authToken){
-        return isAuthorized(authToken) ? original : "adminAuth";
+        return isAuthorized(authToken) ? original : "admin/adminAuth";
     }
 
     private boolean isAuthorized(String authToken){
@@ -45,7 +45,7 @@ public class ManagerController {
     public String get(Model model, @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
 //        System.out.println("auth: " + isAuthorized(authToken) + ", token: " + authToken);
-        return returnTemplateIfAuthSucceed("admin", authToken);
+        return returnTemplateIfAuthSucceed("admin/admin", authToken);
     }
 
     @PostMapping(path = "/backup")
@@ -60,7 +60,7 @@ public class ManagerController {
             return new ResponseEntity<>("Invalid filename.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        FileSystemUtil.mkdirIfNotExists(StaticInformation.USER_DB_BACKUP_DIR);
+        FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_BACKUP_DIR);
         Files.copy(Path.of(StaticInformation.USER_DB_PATH),
                 Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName),
                 StandardCopyOption.REPLACE_EXISTING);
@@ -72,7 +72,7 @@ public class ManagerController {
     public String getRestorePage(Model model, @CookieValue(value = "auth", required = false) String authToken){
         var backUpFileName = FileSystemUtil.getBackupFileNames();
         model.addAttribute("backupFiles", backUpFileName);
-        return returnTemplateIfAuthSucceed("restoreDb", authToken);
+        return returnTemplateIfAuthSucceed("admin/restoreDb", authToken);
     }
 
     @PostMapping(path = "/restore")
