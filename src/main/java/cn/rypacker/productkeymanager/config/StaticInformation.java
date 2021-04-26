@@ -12,6 +12,6 @@ public class StaticInformation {
     public static final String USER_DB_BACKUP_DIR = USER_DB_DIR+ "/bak";
     public static final String MANDATORY_FIELDS_FILE_PATH = USER_DB_DIR + "/mandatoryFields";
 
-    public static final String APPLICATION_TITLE = "帝国皇家包装机序列号管理系统";
+    public static final String APPLICATION_TITLE = "序列号管理系统";
 
 }
