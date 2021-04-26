@@ -23,6 +23,7 @@ function requestBackup(){
                 alert("登陆已过期")
                 location.href = "/auth"
                 return;
+            }
             else{
                 alert(xhr.status)
             }
