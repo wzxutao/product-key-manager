@@ -1,5 +1,7 @@
 package cn.rypacker.productkeymanager.services;
 
+import cn.rypacker.productkeymanager.services.datamanagers.MandatoryFieldsManager;
+import cn.rypacker.productkeymanager.services.datamanagers.MandatoryFieldsManagerImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -31,6 +31,14 @@ public class FileSystemUtil {
         }
     }
 
+    public static void ifFileModifiedUnchecked(String filePath, Runnable thenExecute){
+        try{
+            ifFileModified(filePath, thenExecute);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void mkEnclosingDirsIfNotExist(String filePath){
         var f = Path.of(filePath).getParent().toFile();
         mkdirsIfNotExist(f.toString());
@@ -85,4 +93,5 @@ public class FileSystemUtil {
 
         return getFileNamesInDir(backupDir.getPath());
     }
+    
 }

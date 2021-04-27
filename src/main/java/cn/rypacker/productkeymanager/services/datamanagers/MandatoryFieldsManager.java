@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.services;
+package cn.rypacker.productkeymanager.services.datamanagers;
 
 import java.util.Collection;
 import java.util.Set;

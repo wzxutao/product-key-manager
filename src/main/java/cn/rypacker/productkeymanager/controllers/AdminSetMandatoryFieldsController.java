@@ -2,7 +2,7 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.services.AdminAuth;
-import cn.rypacker.productkeymanager.services.MandatoryFieldsManager;
+import cn.rypacker.productkeymanager.services.datamanagers.MandatoryFieldsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
