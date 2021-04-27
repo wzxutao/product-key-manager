@@ -22,7 +22,7 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
 
 
     // read from file into cache
-    private void readFromFile() throws FileNotFoundException {
+    private synchronized void readFromFile() throws FileNotFoundException {
         fieldNamesCache.clear();
         try(var scanner = new Scanner(
                 new BufferedInputStream(
@@ -34,7 +34,7 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
     }
 
     // write from cache to file
-    private void writeToFile(){
+    private synchronized void writeToFile(){
         FileSystemUtil.mkEnclosingDirsIfNotExist(StaticInformation.MANDATORY_FIELDS_FILE_PATH);
 
         try(var pw = new PrintWriter(
@@ -51,7 +51,7 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
     }
 
     @Override
-    public Set<String> getFieldNames() {
+    public synchronized Set<String> getFieldNames() {
         try{
             FileSystemUtil.ifFileModified(StaticInformation.MANDATORY_FIELDS_FILE_PATH,
                     ()->{
@@ -70,20 +70,20 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
     }
 
     @Override
-    public void removeField(String fieldName) {
+    public synchronized void removeField(String fieldName) {
         fieldNamesCache.remove(fieldName);
         writeToFile();
     }
 
     @Override
-    public void addField(String fieldName) {
+    public synchronized void addField(String fieldName) {
         if(fieldName == null || fieldName.isBlank()) return;
         fieldNamesCache.add(fieldName);
         writeToFile();
     }
 
     @Override
-    public void replaceWith(Collection<String> collection) {
+    public synchronized void replaceWith(Collection<String> collection) {
         fieldNamesCache.clear();
         if(collection == null) return;
 
@@ -96,7 +96,7 @@ public class MandatoryFieldsManagerImpl implements MandatoryFieldsManager {
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         fieldNamesCache.clear();
         writeToFile();
 

@@ -4,23 +4,22 @@ import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MetadataManagerImpl implements MetadataManager {
 
-    Map<String, String> metadataCache;
+    Map<String, String> metadataCache = new ConcurrentHashMap<>();
 
     public MetadataManagerImpl() {
         readFromFile();
     }
 
-    private void readFromFile(){
+    private synchronized void readFromFile(){
         var path = StaticInformation.METADATA_FILE_PATH;
         var f = new File(path);
 
         if(!f.exists()){
-            metadataCache = new HashMap<>();
             return;
         }
 
@@ -35,7 +34,7 @@ public class MetadataManagerImpl implements MetadataManager {
 
     }
 
-    private void writeToFile(){
+    private synchronized void writeToFile(){
         var path = StaticInformation.METADATA_FILE_PATH;
         FileSystemUtil.mkEnclosingDirsIfNotExist(path);
 

@@ -79,4 +79,21 @@ class MandatoryFieldsManagerImplTest {
 
     }
 
+    @Test
+    void ordering(){
+        // expect retain insertion order
+        m.clear();
+
+        var fields = new String[]{"1", "3", "2", "0"};
+        for(var field: fields){
+            m.addField(field);
+        }
+
+        var rv = m.getFieldNames();
+        var itr = rv.iterator();
+        for (String field : fields) {
+            assertEquals(itr.next(), field);
+        }
+    }
+
 }
