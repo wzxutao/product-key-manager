@@ -87,6 +87,9 @@
             <th scope="row" th:text="${record.productKey}">key</th>
             <td th:text="${record.getCreatedFinalDate()}">created time</td>
             <td th:text="${record.getBeautifiedContents()}">json</td>
+            <td th:key="${record.productKey}" class="btn btn-warning mb-2"
+                onclick="requestDelete(this.getAttribute('key'))"
+            >删除</td>
         </tr>
         </tbody>
     </table>
@@ -98,7 +101,7 @@
         src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
-<script src="/static/js/recordsView.js"></script>
+<script src="/static/js/today-records-list.js"></script>
 
 
 </body>
