@@ -24,7 +24,6 @@ public class DatabaseUpdater {
     }
 
     public static void updateIfNeeded() {
-        var dbVersion = metadataManager.get(MetadataManager.MetaData.DB_VERSION);
         try{
             updateTo0_0_6();
         }catch (RuntimeException e){
