@@ -79,6 +79,11 @@ public class JsonRecord {
         return DatetimeUtil.epochSecondsToFinalDate(CREATED_MILLI / 1000L);
     }
 
+    public String getBeautifiedContents(){
+        return jsonString
+                .replaceAll("[{}\\]\\[]", "");
+    }
+
 
     @Override
     public boolean equals(Object o) {

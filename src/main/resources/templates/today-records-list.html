@@ -86,7 +86,7 @@
         <tr th:each="record : ${records}">
             <th scope="row" th:text="${record.productKey}">key</th>
             <td th:text="${record.getCreatedFinalDate()}">created time</td>
-            <td th:text="${record.jsonString}">json</td>
+            <td th:text="${record.getBeautifiedContents()}">json</td>
         </tr>
         </tbody>
     </table>
