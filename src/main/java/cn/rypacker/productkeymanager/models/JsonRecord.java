@@ -43,6 +43,10 @@ public class JsonRecord {
         this.status = status;
     }
 
+    public String getStatusString(){
+        return RecordStatus.toString(status);
+    }
+
     public Long getId() {
         return id;
     }
@@ -91,6 +95,7 @@ public class JsonRecord {
         return id != null ? id.hashCode() : 0;
     }
 
+
     @Override
     public String toString() {
         return "JsonRecord{" +
@@ -98,6 +103,7 @@ public class JsonRecord {
                 ", jsonString='" + jsonString + '\'' +
                 ", productKey='" + productKey + '\'' +
                 ", CREATED_MILLI=" + CREATED_MILLI +
+                ", status=" + status +
                 '}';
     }
 }

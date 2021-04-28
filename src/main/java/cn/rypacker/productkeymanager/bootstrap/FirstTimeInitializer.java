@@ -42,7 +42,7 @@ public class FirstTimeInitializer {
             Files.copy(emptyDb.toPath(), db.toPath(), StandardCopyOption.REPLACE_EXISTING);
             logger.info("empty db created");
         }else{
-            logger.info("db found");
+//            logger.info("db found");
         }
 
     }

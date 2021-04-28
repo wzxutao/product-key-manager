@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
+import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
@@ -94,12 +95,16 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            Files.copy(restoreSrc, Path.of(StaticInformation.USER_DB_PATH), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(restoreSrc,
+                    Path.of(StaticInformation.DB_PENDING_RESTORE_PATH),
+                    StandardCopyOption.REPLACE_EXISTING);
+            ProductKeyManagerApplication.close(2000);
         } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        logger.info("db restored: " + fileName);
+        logger.info("restarting the server to restore db: " + fileName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

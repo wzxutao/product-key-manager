@@ -10,6 +10,7 @@ public class StaticInformation {
     public static final String EMPTY_DB_PATH = "resources/db/records_empty.db";
     public static final String USER_DB_DIR = "data";
     public static final String USER_DB_PATH = USER_DB_DIR + "/records.db";
+    public static final String DB_PENDING_RESTORE_PATH = USER_DB_DIR + "/records_restore.db";
     public static final String USER_DB_BACKUP_DIR = USER_DB_DIR+ "/bak";
     public static final String MANDATORY_FIELDS_FILE_PATH = USER_DB_DIR + "/mandatoryFields";
     public static final String METADATA_FILE_PATH = USER_DB_DIR + "/metadata";

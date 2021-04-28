@@ -70,12 +70,12 @@ public class DatabaseUpdater {
      * added a column to JSONRecord: status
      */
     protected static void updateTo0_0_6(){
-        logger.info("updating db to 0.0.6");
         var conn = getDbConnection();
         final var sql = String.format(
                 "ALTER TABLE json_record ADD COLUMN status INTEGER DEFAULT %d", RecordStatus.NORMAL);
         try(var stmt = conn.createStatement()){
             stmt.execute(sql);
+            logger.info("updated db to 0.0.6");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
