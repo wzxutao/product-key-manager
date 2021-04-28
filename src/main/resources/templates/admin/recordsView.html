@@ -98,6 +98,7 @@
             <th scope="col">Key</th>
             <th scope="col">生成时间</th>
             <th scope="col">信息</th>
+            <th scope="col">状态</th>
         </tr>
         </thead>
         <tbody>
@@ -105,6 +106,7 @@
             <th scope="row" th:text="${record.productKey}">key</th>
             <td th:text="${record.getCreatedFinalDate()}">created time</td>
             <td th:text="${record.jsonString}">json</td>
+            <td th:text="${record.getStatusString()}">status</td>
         </tr>
         </tbody>
     </table>
