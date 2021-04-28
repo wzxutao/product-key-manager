@@ -1,9 +1,6 @@
 package cn.rypacker.productkeymanager.services;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class DatetimeUtil {
@@ -30,4 +27,18 @@ public class DatetimeUtil {
         return zdt.toInstant().toEpochMilli() / 1000L;
     }
 
+
+    public static long getTodayEpochSeconds(boolean fromStart){
+        var ldt = LocalDateTime.of(
+                LocalDate.now(),
+                fromStart ? LocalTime.of(0, 0, 0) :
+                        LocalTime.of(23, 59, 59)
+        );
+        var zdt = ldt.atZone(ZoneId.systemDefault());
+        return zdt.toEpochSecond();
+    }
+
+    public static String getTodayDateTime(boolean fromStart){
+        return epochSecondsToFinalDate(getTodayEpochSeconds(fromStart));
+    }
 }

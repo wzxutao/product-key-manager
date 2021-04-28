@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 
 @RequestMapping("/util")
@@ -35,15 +31,7 @@ public class UtilController {
 
     @GetMapping("/datetime-today")
     public ResponseEntity<?> getTodayDatetime(@RequestParam(value = "fromStart") boolean fromStart){
-        var ldt = LocalDateTime.of(
-                LocalDate.now(),
-                fromStart ? LocalTime.of(0, 0, 0) :
-                        LocalTime.of(23, 59, 59)
-        );
-        var zdt = ldt.atZone(ZoneId.systemDefault());
-        var seconds = zdt.toEpochSecond();
-
-        return new ResponseEntity<>(DatetimeUtil.epochSecondsToFinalDate(seconds), HttpStatus.OK);
+        return new ResponseEntity<>(DatetimeUtil.getTodayDateTime(fromStart), HttpStatus.OK);
     }
 
 }
