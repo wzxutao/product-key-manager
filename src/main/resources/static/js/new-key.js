@@ -38,6 +38,10 @@ function generateKey(){
     if(isInvalid) return;
 
     var date = $("#form-date").val()
+    if(date.length !== 6){
+        alert("日期必须是6位数字")
+        return;
+    }
     json["日期"]=date;
 
     $.ajax({
