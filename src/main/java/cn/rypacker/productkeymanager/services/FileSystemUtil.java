@@ -5,7 +5,10 @@ import cn.rypacker.productkeymanager.config.StaticInformation;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class FileSystemUtil {
@@ -35,7 +38,7 @@ public class FileSystemUtil {
         try{
             ifFileModified(filePath, thenExecute);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -92,6 +95,22 @@ public class FileSystemUtil {
         if(!backupDir.exists()) return backups;
 
         return getFileNamesInDir(backupDir.getPath());
+    }
+
+    public static void copyRecursive(File source, File destination) throws IOException {
+        Objects.requireNonNull(source);
+        Objects.requireNonNull(destination);
+
+        if(source.isDirectory()){
+            destination.mkdirs();
+            for(var child: source.list()){
+                copyRecursive(Path.of(source.toString(), child).toFile(),
+                        Path.of(destination.toString(), child).toFile());
+            }
+        }else{
+            Files.copy(source.toPath(), destination.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
     }
     
 }

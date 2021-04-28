@@ -14,6 +14,9 @@ public class StaticInformation {
     public static final String MANDATORY_FIELDS_FILE_PATH = USER_DB_DIR + "/mandatoryFields";
     public static final String METADATA_FILE_PATH = USER_DB_DIR + "/metadata";
 
+    public static final String TEST_TEMP_DIR = "testResources";
+    public static final String OLDER_VERSION_EXAMPLE_DB_DIR = "resources/db/olderVersionExamples";
+
     public static final String APPLICATION_TITLE = "序列号管理系统";
 
 

@@ -2,11 +2,13 @@ package cn.rypacker.productkeymanager.services.datamanagers;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class MetadataManagerImpl implements MetadataManager {
 
     Map<String, String> metadataCache = new ConcurrentHashMap<>();

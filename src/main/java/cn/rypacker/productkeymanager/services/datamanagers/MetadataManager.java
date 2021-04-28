@@ -1,6 +1,9 @@
 package cn.rypacker.productkeymanager.services.datamanagers;
 
 public interface MetadataManager {
+    public static class MetaData{
+        public static final String DB_VERSION = "database.version";
+    }
 
     /**
      * saves a metadata, replace existing

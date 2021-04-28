@@ -21,7 +21,7 @@ public class JsonRecord {
 
     private final long CREATED_MILLI = System.currentTimeMillis();
 
-
+    private int status = RecordStatus.NORMAL;
 
     public JsonRecord(String jsonString) {
         this.jsonString = jsonString;
@@ -33,6 +33,14 @@ public class JsonRecord {
     }
 
     public JsonRecord() {
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public Long getId() {
