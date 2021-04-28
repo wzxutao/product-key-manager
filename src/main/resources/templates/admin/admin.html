@@ -54,6 +54,15 @@
         <a href="/admin/restore" class="list-group-item list-group-item-action">还原</a>
         <br>
 
+        <div class="input-group">
+            <a href="javascript:requestChangeKeyLength()" class="list-group-item form-control">
+                设置序列号长度（不影响已创建的序列号）</a>
+            <input id="key-length" type="text" class="form-control" placeholder="序列号长度"
+                   th:value="${keyLength}">
+
+        </div>
+        <br>
+
         <a href="/admin/records" class="list-group-item list-group-item-action">查看已创建序列号</a>
         <a href="/admin/keygenFields" class="list-group-item list-group-item-action">设置创建序列号必填项</a>
         <br>

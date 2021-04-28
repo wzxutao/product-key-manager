@@ -9,8 +9,9 @@ import java.util.Random;
 
 @Service
 public class KeyGeneratorImpl implements KeyGenerator {
-    private static final int KEY_LENGTH = 15;
-    private static final int ID_MIN_DIGITS = 5;
+    private int keyLength = 15;
+    private static final int KEY_MIN_LENGTH = 8;
+    private static final int DATE_LENGTH = 6;
 
     String generateRandomString(int length){
         char[] array = new char[length]; // length is bounded by 7
@@ -25,8 +26,21 @@ public class KeyGeneratorImpl implements KeyGenerator {
     String generateDatetimeString(long epochMilli){
         ZonedDateTime zdt = ZonedDateTime.ofInstant(
                 Instant.ofEpochMilli(epochMilli), ZoneId.systemDefault());
-        return String.format("%02d/%02d%02d",
-                zdt.getYear(), zdt.getMonth().getValue(), zdt.getDayOfMonth());
+        return String.format("%02d%02d%02d",
+                zdt.getYear() % 100, zdt.getMonth().getValue(), zdt.getDayOfMonth());
+    }
+
+    @Override
+    public int getKeyLength() {
+        return keyLength;
+    }
+
+    @Override
+    public void setKeyLength(int length) {
+        if(length < KEY_MIN_LENGTH){
+            throw new IllegalArgumentException("key length is too short");
+        }
+        this.keyLength = length;
     }
 
     @Override
@@ -37,29 +51,21 @@ public class KeyGeneratorImpl implements KeyGenerator {
     @Override
     public String generateKey(long epochMilli) {
         var dateTimeString = generateDatetimeString(epochMilli);
-        var randStrLen = KEY_LENGTH - dateTimeString.length();
-        if(randStrLen < ID_MIN_DIGITS){
-            throw new RuntimeException(String.format(
-                    "key length %d not enough: " +
-                            "datetime occupied %d leave %d for id which was supposed to be more than %d,",
-                    KEY_LENGTH, dateTimeString.length(), randStrLen, ID_MIN_DIGITS)
-            );
-        }
-        var randomStr = generateRandomString(KEY_LENGTH - dateTimeString.length());
+        var randStrLen = keyLength - dateTimeString.length();
+        assert dateTimeString.length() == DATE_LENGTH : dateTimeString;
+
+        var randomStr = generateRandomString(keyLength - dateTimeString.length());
         return dateTimeString + randomStr;
     }
 
     @Override
     public String generateKey(String dateString) {
-        var randStrLen = KEY_LENGTH - dateString.length();
-        if(randStrLen < ID_MIN_DIGITS){
-            throw new RuntimeException(String.format(
-                    "key length %d not enough: " +
-                            "datetime occupied %d leave %d for id which was supposed to be more than %d,",
-                    KEY_LENGTH, dateString.length(), randStrLen, ID_MIN_DIGITS)
-            );
+        var randomStr = generateRandomString(keyLength - dateString.length());
+        if(dateString.length() != DATE_LENGTH){
+            throw new IllegalArgumentException("data string length: " + dateString.length() +
+                    " expecting: " + DATE_LENGTH);
         }
-        var randomStr = generateRandomString(KEY_LENGTH - dateString.length());
+
         return dateString + randomStr;
     }
 }

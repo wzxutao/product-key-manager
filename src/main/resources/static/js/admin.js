@@ -31,3 +31,19 @@ function requestBackup(){
 
     })
 }
+
+function requestChangeKeyLength(){
+    var length = $("#key-length").val()
+    $.ajax({
+        type: "POST",
+        url: "/admin/key-length" + `?length=${length}`,
+        success: ()=>location.reload(),
+        error: (xhr, status, err) => {
+            if(xhr.status === 400){
+                alert("无效长度")
+            }else{
+                alert(xhr.status)
+            }
+        }
+    })
+}

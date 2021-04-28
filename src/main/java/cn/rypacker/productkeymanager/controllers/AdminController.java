@@ -7,6 +7,7 @@ import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.AdminAuth;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class AdminController {
     AdminAuth adminAuth;
     @Autowired
     JsonRecordRepository jsonRecordRepository;
+    @Autowired
+    KeyGenerator keyGenerator;
+
 
     /**
      * returns the original template name otherwise auth page
@@ -54,7 +58,7 @@ public class AdminController {
     @GetMapping(path = "")
     public String get(Model model, @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
-//        System.out.println("auth: " + isAuthorized(authToken) + ", token: " + authToken);
+        model.addAttribute("keyLength", keyGenerator.getKeyLength());
         return returnTemplateIfAuthSucceed("admin/admin", authToken);
     }
 
@@ -146,6 +150,17 @@ public class AdminController {
 
 
         return returnTemplateIfAuthSucceed("admin/recordsView", authToken);
+    }
+
+    @PostMapping(path = "/key-length")
+    public ResponseEntity<?> changeKeyLength(@RequestParam(value = "length") String length){
+        try{
+            int len = Integer.parseInt(length);
+            keyGenerator.setKeyLength(len);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
