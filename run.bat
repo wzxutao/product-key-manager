@@ -1,1 +1,1 @@
-mvn spring-boot:run
+wscript.exe invis.vbs run_cli.bat %*
