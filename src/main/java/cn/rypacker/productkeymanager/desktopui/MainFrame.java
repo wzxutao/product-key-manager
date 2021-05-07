@@ -70,7 +70,7 @@ public class MainFrame extends JFrame {
             defaultItem=new MenuItem("Exit");
             defaultItem.addActionListener(exitListener);
             popup.add(defaultItem);
-            trayIcon=new TrayIcon(image, "SystemTray Demo", popup);
+            trayIcon=new TrayIcon(image, StaticInformation.APPLICATION_TITLE, popup);
             trayIcon.setImageAutoSize(true);
         }else{
             logger.info("system tray not supported");

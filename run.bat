@@ -1,1 +1,1 @@
-wscript.exe invis.vbs run_cli.bat %*
+wscript.exe invis.vbs a_verbose_boot.bat %*
