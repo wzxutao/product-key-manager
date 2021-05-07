@@ -44,6 +44,8 @@ public class AdminController {
     @Autowired
     Updater updater;
 
+    private volatile boolean checkingUpdate = false;
+
 
     /**
      * returns the original template name otherwise auth page
@@ -170,15 +172,22 @@ public class AdminController {
 
     @PostMapping(path = "/update")
     public ResponseEntity<?> checkUpdate(){
+        if(checkingUpdate) return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+
+        checkingUpdate = true;
         try{
             var hasUpdate = !updater.isLatestVersion();
             if(hasUpdate){
                 updater.update();
+                checkingUpdate = false;
                 return new ResponseEntity<>(HttpStatus.OK);
             }else{
+                checkingUpdate = false;
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }catch (IOException | UpdateFailedException e){
+            checkingUpdate = false;
+            logger.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

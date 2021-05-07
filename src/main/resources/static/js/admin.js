@@ -52,10 +52,12 @@ function checkUpdate(){
     $.ajax({
         type: "POST",
         url: "/admin/update",
-        success: ()=>alert('有更新可用，更新即将开始，服务器将会重启')，
+        success: ()=>alert('有更新可用，更新即将开始，服务器将会重启'),
         error: (xhr, status, err) => {
             if(xhr.status === 404){
                 alert('已是最新版本')
+            }else if(xhr.status === 429){
+                alert("在查了在查了，不过也许您的服务器连不上github")
             }else{
                 alert('更新失败，大概率是网络问题')
             }
