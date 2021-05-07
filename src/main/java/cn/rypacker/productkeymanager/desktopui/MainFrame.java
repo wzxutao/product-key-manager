@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,7 +67,7 @@ public class MainFrame extends JFrame {
                 }
             };
             PopupMenu popup=new PopupMenu();
-            var qrCode=new MenuItem("QR Code");
+            var qrCode=new MenuItem("show");
             qrCode.addActionListener(e -> {
                 setVisible(true);
                 setExtendedState(JFrame.NORMAL);
@@ -95,36 +98,37 @@ public class MainFrame extends JFrame {
         }else{
             logger.info("system tray not supported");
         }
-        addWindowStateListener(new WindowStateListener() {
-            public void windowStateChanged(WindowEvent e) {
-                if(e.getNewState()==ICONIFIED){
-                    try {
-                        tray.add(trayIcon);
-                        setVisible(false);
-                        logger.info("added to SystemTray");
-                    } catch (AWTException ex) {
-                        logger.info("unable to add to tray");
-                    }
+        addWindowStateListener(e -> {
+            if(e.getNewState()==ICONIFIED){
+                try {
+                    tray.add(trayIcon);
+                    setVisible(false);
+                    logger.info("added to SystemTray");
+                    trayIcon.displayMessage(StaticInformation.APPLICATION_TITLE,
+                            "已最小化到系统托盘",
+                            TrayIcon.MessageType.INFO);
+                } catch (AWTException ex) {
+                    logger.info("unable to add to tray");
                 }
-                if(e.getNewState()==7){
-                    try{
-                        tray.add(trayIcon);
-                        setVisible(false);
-                        logger.info("added to SystemTray");
-                    }catch(AWTException ex){
-                        logger.info("unable to add to system tray");
-                    }
+            }
+            if(e.getNewState()==7){
+                try{
+                    tray.add(trayIcon);
+                    setVisible(false);
+                    logger.info("added to SystemTray");
+                }catch(AWTException ex){
+                    logger.info("unable to add to system tray");
                 }
-                if(e.getNewState()==MAXIMIZED_BOTH){
-                    tray.remove(trayIcon);
-                    setVisible(true);
-                    logger.info("Tray icon removed");
-                }
-                if(e.getNewState()==NORMAL){
-                    tray.remove(trayIcon);
-                    setVisible(true);
-                    logger.info("Tray icon removed");
-                }
+            }
+            if(e.getNewState()==MAXIMIZED_BOTH){
+                tray.remove(trayIcon);
+                setVisible(true);
+                logger.info("Tray icon removed");
+            }
+            if(e.getNewState()==NORMAL){
+                tray.remove(trayIcon);
+                setVisible(true);
+                logger.info("Tray icon removed");
             }
         });
         setIconImage(Toolkit.getDefaultToolkit().getImage(LOGO_ICON_PATH));
