@@ -46,7 +46,7 @@ class NewKeyControllerTest {
             count++;
         }
 
-        assertTrue(count > recordCount);
+        assertTrue(count >= recordCount);
     }
 
     @Test
