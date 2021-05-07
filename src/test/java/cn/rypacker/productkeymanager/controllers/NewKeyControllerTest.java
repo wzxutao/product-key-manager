@@ -1,9 +1,12 @@
 package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -14,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-//@SpringBootTest
+@SpringBootTest
 class NewKeyControllerTest {
     private static final Logger log = LoggerFactory.getLogger(NewKeyControllerTest.class);
 
@@ -22,14 +25,14 @@ class NewKeyControllerTest {
     JsonRecordRepository jsonRecordRepository;
     @Autowired
     NewKeyController newKeyController;
+    @Autowired
+    KeyGenerator keyGenerator;
 
-//    @Test
-    public void insert10ThousandRecordsWithoutDuplication(){
+    private void insertRecordsWithoutDuplication(long recordCount){
         Map<String, String> dummyReqbody = new HashMap<>();
         var random = new Random();
-        final long recordCount = 10_000;
         for(long i=0; i<recordCount; i++){
-            dummyReqbody.put("日期", Integer.toString(random.nextInt(900000) + 100000));
+            dummyReqbody.put("日期", "700101");
             var rv = newKeyController.postNewKey(dummyReqbody);
             assertEquals(rv.getStatusCode(), HttpStatus.CREATED);
             log.info("Inserting record " + i);
@@ -44,5 +47,18 @@ class NewKeyControllerTest {
         }
 
         assertTrue(count > recordCount);
+    }
+
+    @Test
+    void expand(){
+        keyGenerator.setKeyLength(8);
+        var combinations = keyGenerator.getCombinationCount();
+
+        // cram it full
+        assertEquals(keyGenerator.getKeyLength(), 8);
+        insertRecordsWithoutDuplication(2 * combinations);
+        assertTrue(keyGenerator.getKeyLength() > 8);
+
+
     }
 }

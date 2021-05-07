@@ -50,9 +50,19 @@ public class NewKeyController {
 
         String key;
         // avoid duplication
-        do{
-            key = keyGenerator.generateKey(date);
-        }while (jsonRecordRepository.findByProductKey(key).size() > 0);
+        var combinations = keyGenerator.getCombinationCount();
+        var count = 0;
+
+        key = keyGenerator.generateKey(date);
+        while (jsonRecordRepository.findByProductKey(key).size() > 0){
+            key = keyGenerator.nextSibling(key);
+            count++;
+            // expand on half full
+            if(count >= combinations / 2){
+                keyGenerator.expand();
+                key = keyGenerator.generateKey(date);
+            }
+        }
 
         var record = new JsonRecord(contents, key);
         jsonRecordRepository.save(record);

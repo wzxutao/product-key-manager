@@ -29,4 +29,24 @@ public interface KeyGenerator {
      * @throws IllegalArgumentException if the dateString has a wrong length
      */
     String generateKey(String dateString);
+
+    /**
+     * get a key whose value is just greater than the key provided
+     * @param prev
+     * @return
+     */
+    String nextSibling(String prev);
+
+    /**
+     * increase the key length by 1
+     */
+    default void expand(){
+        setKeyLength(getKeyLength() + 1);
+    }
+
+    /**
+     * returns the max number of different keys possible provided current key length
+     * @return
+     */
+    long getCombinationCount();
 }

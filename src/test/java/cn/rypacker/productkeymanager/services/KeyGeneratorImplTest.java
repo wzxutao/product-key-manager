@@ -36,4 +36,23 @@ class KeyGeneratorImplTest {
 
     }
 
+    @Test
+    void nextSibling() {
+        keyGenerator.setKeyLength(8);
+        var key = "200101AA";
+        assertEquals(keyGenerator.nextSibling(key), "200101AB");
+
+        key = "200101AZ";
+        assertEquals(keyGenerator.nextSibling(key), "200101BA");
+
+        key = "200101ZZ";
+        assertEquals(keyGenerator.nextSibling(key), "200101AA");
+
+        key = "200101GZZ";
+        assertEquals(keyGenerator.nextSibling(key), "200101HAA");
+
+        key = "200101ZZZ";
+        assertEquals(keyGenerator.nextSibling(key), "200101AAA");
+
+    }
 }

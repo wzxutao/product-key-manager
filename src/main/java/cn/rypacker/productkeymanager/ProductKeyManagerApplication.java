@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.awt.*;
 import java.io.IOException;
 
 @SpringBootApplication
@@ -15,7 +16,9 @@ public class ProductKeyManagerApplication{
 	private static ConfigurableApplicationContext context;
 
 	static {
-		LoadingLogo.show();
+		try{
+			LoadingLogo.show();
+		}catch (HeadlessException ignored){}
 	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {

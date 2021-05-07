@@ -14,7 +14,7 @@ public class KeyGeneratorImpl implements KeyGenerator {
 
     private int keyLength;
     private static final int KEY_MIN_LENGTH = 8;
-    private static final int DATE_LENGTH = 6;
+    public static final int DATE_LENGTH = 6;
 
     public KeyGeneratorImpl(PropertyManager propertyManager) {
         this.propertyManager = propertyManager;
@@ -40,6 +40,29 @@ public class KeyGeneratorImpl implements KeyGenerator {
             array[i] = (char) (r.nextInt('z' - 'a' + 1) + 'A');
         }
         return new String(array);
+    }
+
+    @Override
+    public String nextSibling(String prev) {
+        var date = prev.substring(0, DATE_LENGTH);
+        var suffix = prev.substring(DATE_LENGTH);
+
+        var chars = suffix.toCharArray();
+        for(int i=chars.length-1; i>=0; i--){
+            var prevChar = chars[i];
+            if(prevChar != 'Z'){
+                chars[i] = (char)(((int)prevChar) + 1);
+                break;
+            }else {
+                chars[i] = 'A';
+            }
+        }
+        return date + new String(chars);
+    }
+
+    @Override
+    public long getCombinationCount() {
+        return (long) Math.pow('Z' - 'A' + 1, keyLength - DATE_LENGTH);
     }
 
     String generateDatetimeString(long epochMilli){
@@ -89,4 +112,6 @@ public class KeyGeneratorImpl implements KeyGenerator {
 
         return dateString + randomStr;
     }
+
+
 }
