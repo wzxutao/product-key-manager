@@ -1,12 +1,13 @@
 package cn.rypacker.productkeymanager.services;
 
+import cn.rypacker.productkeymanager.services.datamanagers.PropertyManagerImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class KeyGeneratorImplTest {
 
-    KeyGenerator keyGenerator = new KeyGeneratorImpl();
+    KeyGenerator keyGenerator = new KeyGeneratorImpl(new PropertyManagerImpl());
 
     @Test
     void keyLength(){

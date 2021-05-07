@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.services;
 
+import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -9,9 +10,27 @@ import java.util.Random;
 
 @Service
 public class KeyGeneratorImpl implements KeyGenerator {
-    private int keyLength = 15;
+    PropertyManager propertyManager;
+
+    private int keyLength;
     private static final int KEY_MIN_LENGTH = 8;
     private static final int DATE_LENGTH = 6;
+
+    public KeyGeneratorImpl(PropertyManager propertyManager) {
+        this.propertyManager = propertyManager;
+        retrieveKeyLength();
+    }
+
+    private void retrieveKeyLength(){
+        try{
+            keyLength = Integer.parseInt(
+                    propertyManager.getOrDefault(
+                            PropertyManager.Properties.KEY_LENGTH, "15"));
+
+        }catch (NumberFormatException e){
+            keyLength = 15;
+        }
+    }
 
     String generateRandomString(int length){
         char[] array = new char[length]; // length is bounded by 7
@@ -41,6 +60,8 @@ public class KeyGeneratorImpl implements KeyGenerator {
             throw new IllegalArgumentException("key length is too short");
         }
         this.keyLength = length;
+        propertyManager.put(PropertyManager.Properties.KEY_LENGTH,
+                Integer.toString(length));
     }
 
     @Override

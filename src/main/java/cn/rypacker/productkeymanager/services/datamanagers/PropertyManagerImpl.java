@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class MetadataManagerImpl implements MetadataManager {
+public class PropertyManagerImpl implements PropertyManager {
 
     Map<String, String> metadataCache = new ConcurrentHashMap<>();
 
-    public MetadataManagerImpl() {
+    public PropertyManagerImpl() {
         readFromFile();
     }
 
@@ -59,8 +59,13 @@ public class MetadataManagerImpl implements MetadataManager {
 
     @Override
     public String get(String key) {
-        FileSystemUtil.ifFileModifiedUnchecked(StaticInformation.MANDATORY_FIELDS_FILE_PATH,
-                this::readFromFile);
+        try{
+            FileSystemUtil.ifFileModified(StaticInformation.MANDATORY_FIELDS_FILE_PATH,
+                    this::readFromFile);
+        }catch (FileNotFoundException e){
+            return null;
+        }
+
         return metadataCache.get(key);
 
     }

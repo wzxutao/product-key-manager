@@ -9,9 +9,9 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MetadataManagerImplTest {
+class PropertyManagerImplTest {
 
-    MetadataManager metadataManager = new MetadataManagerImpl();
+    PropertyManager propertyManager = new PropertyManagerImpl();
 
     @Test
     void write_read(){
@@ -26,7 +26,7 @@ class MetadataManagerImplTest {
         randomKeys.add("ある");
         for (var randomKey: randomKeys
         ) {
-            assertDoesNotThrow(()->metadataManager.get(randomKey));
+            assertDoesNotThrow(()-> propertyManager.get(randomKey));
         }
 
         // write then read
@@ -38,20 +38,20 @@ class MetadataManagerImplTest {
         map.put("test_key_5", "test_value_5");
 
         map.forEach((k, v) -> {
-            metadataManager.put(k, v);
+            propertyManager.put(k, v);
         });
 
         map.forEach((k, v) -> {
-            assertEquals(metadataManager.get(k), v);
+            assertEquals(propertyManager.get(k), v);
         });
 
         // update then read
         var key = "test_key_2";
         var val = "test_value_2_updated";
-        var valPrev = metadataManager.get(key);
-        metadataManager.put(key, val);
-        assertEquals(metadataManager.get(key), val);
-        assertNotEquals(metadataManager.get(key), valPrev);
+        var valPrev = propertyManager.get(key);
+        propertyManager.put(key, val);
+        assertEquals(propertyManager.get(key), val);
+        assertNotEquals(propertyManager.get(key), valPrev);
 
 
 
