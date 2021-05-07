@@ -102,7 +102,8 @@ public class AdminController {
             Files.copy(restoreSrc,
                     Path.of(StaticInformation.DB_PENDING_RESTORE_PATH),
                     StandardCopyOption.REPLACE_EXISTING);
-            ProductKeyManagerApplication.close(2000);
+            ProductKeyManagerApplication.restart(2000);
+//            ProductKeyManagerApplication.close(2000);
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

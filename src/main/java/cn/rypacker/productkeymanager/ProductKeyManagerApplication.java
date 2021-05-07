@@ -51,4 +51,16 @@ public class ProductKeyManagerApplication{
 		}).start();
 	}
 
+	public static void restart(int milliDelay){
+		new Thread(()->{
+			try{
+				Thread.sleep(milliDelay);
+				Runtime.getRuntime().exec("cmd /c start \"\" run.bat");
+				System.exit(0);
+			}catch (InterruptedException | IOException e){
+				throw new RuntimeException(e);
+			}
+		}).start();
+	}
+
 }
