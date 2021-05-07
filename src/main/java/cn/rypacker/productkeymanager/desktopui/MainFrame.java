@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 
@@ -135,17 +137,24 @@ public class MainFrame extends JFrame {
                 ipList) {
             combo.addItem(ip);
         }
-        combo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                var ipIndex = combo.getSelectedIndex();
-                qrCodePanel.setCurrentImage(ipIndex);
-                qrCodePanel.repaint();
-            }
+        combo.addActionListener(e -> {
+            var ipIndex = combo.getSelectedIndex();
+            qrCodePanel.setCurrentImage(ipIndex);
+            qrCodePanel.repaint();
         });
 
         var comboPanel = new JPanel();
         comboPanel.add(combo);
+
+        var openBrowserBtn = new JButton("在浏览器中打开");
+        openBrowserBtn.addActionListener(e->{
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try{
+                    Desktop.getDesktop().browse(new URI(combo.getSelectedItem().toString()));
+                }catch (NullPointerException | URISyntaxException | IOException ignored){}
+            }
+        });
+        comboPanel.add(openBrowserBtn);
 
         this.add(comboPanel, BorderLayout.NORTH);
     }
