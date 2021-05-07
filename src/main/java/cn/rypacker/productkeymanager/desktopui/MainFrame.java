@@ -1,12 +1,15 @@
 package cn.rypacker.productkeymanager.desktopui;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
+import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.nio.file.Path;
 
 
 public class MainFrame extends JFrame {
@@ -37,6 +40,7 @@ public class MainFrame extends JFrame {
         addIpListComboBox(ipList);
     }
 
+
     private void systemTrayInit(){
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
@@ -58,18 +62,32 @@ public class MainFrame extends JFrame {
                 }
             };
             PopupMenu popup=new PopupMenu();
-            var defaultItem=new MenuItem("Open");
-            defaultItem.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    setVisible(true);
-                    setExtendedState(JFrame.NORMAL);
+            var qrCode=new MenuItem("QR Code");
+            qrCode.addActionListener(e -> {
+                setVisible(true);
+                setExtendedState(JFrame.NORMAL);
+            });
+            popup.add(qrCode);
+
+            var openBackupFolder = new MenuItem("open backups location");
+            openBackupFolder.addActionListener( e-> {
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_BACKUP_DIR);
+                        Desktop.getDesktop().open(Path.of(
+                                System.getProperty("user.dir"),
+                                StaticInformation.USER_DB_BACKUP_DIR).toFile());
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }
             });
-            popup.add(defaultItem);
+            popup.add(openBackupFolder);
 
-            defaultItem=new MenuItem("Exit");
-            defaultItem.addActionListener(exitListener);
-            popup.add(defaultItem);
+
+            var exitBtn =new MenuItem("Exit");
+            exitBtn.addActionListener(exitListener);
+            popup.add(exitBtn);
             trayIcon=new TrayIcon(image, StaticInformation.APPLICATION_TITLE, popup);
             trayIcon.setImageAutoSize(true);
         }else{
