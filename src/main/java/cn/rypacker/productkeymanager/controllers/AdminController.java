@@ -8,6 +8,8 @@ import cn.rypacker.productkeymanager.services.AdminAuth;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
+import cn.rypacker.productkeymanager.services.update.UpdateFailedException;
+import cn.rypacker.productkeymanager.services.update.Updater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class AdminController {
     JsonRecordRepository jsonRecordRepository;
     @Autowired
     KeyGenerator keyGenerator;
+    @Autowired
+    Updater updater;
 
 
     /**
@@ -161,6 +165,21 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (IllegalArgumentException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(path = "/update")
+    public ResponseEntity<?> checkUpdate(){
+        try{
+            var hasUpdate = !updater.isLatestVersion();
+            if(hasUpdate){
+                updater.update();
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }catch (IOException | UpdateFailedException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

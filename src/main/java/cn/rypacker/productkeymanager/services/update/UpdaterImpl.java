@@ -6,11 +6,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
+@Service
 public class UpdaterImpl implements Updater {
 
     private Document document;

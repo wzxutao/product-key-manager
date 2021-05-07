@@ -47,3 +47,18 @@ function requestChangeKeyLength(){
         }
     })
 }
+
+function checkUpdate(){
+    $.ajax({
+        type: "POST",
+        url: "/admin/update",
+        success: ()=>alert('有更新可用，更新即将开始，服务器将会重启')，
+        error: (xhr, status, err) => {
+            if(xhr.status === 404){
+                alert('已是最新版本')
+            }else{
+                alert('更新失败，大概率是网络问题')
+            }
+        }
+    })
+}

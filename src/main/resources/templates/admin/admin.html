@@ -52,6 +52,7 @@
 
         </div>
         <a href="/admin/restore" class="list-group-item list-group-item-action">还原</a>
+        <a href="javascript:alert('体验版暂不支持此功能！')" class="list-group-item list-group-item-action">还原自动备份</a>
         <br>
 
         <div class="input-group">
@@ -69,6 +70,7 @@
 
         <a href="https://github.com/wzxutao/product-key-manager/releases" target="_blank"
            class="list-group-item list-group-item-action">检查更新 (手动)</a>
+        <a href="javascript:checkUpdate()" class="list-group-item list-group-item-action">检查更新 (自动)</a>
         <a href="#" class="list-group-item list-group-item-action disabled">当前版本号:
             <span th:text="${versionNumber}"></span></a>
     </div>
