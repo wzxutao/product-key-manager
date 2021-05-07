@@ -60,6 +60,8 @@ public class NewKeyController {
             // expand on half full
             if(count >= combinations / 2){
                 keyGenerator.expand();
+                combinations = keyGenerator.getCombinationCount();
+                count = 0;
                 key = keyGenerator.generateKey(date);
             }
         }
