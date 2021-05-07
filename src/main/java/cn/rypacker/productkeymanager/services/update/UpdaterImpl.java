@@ -113,10 +113,15 @@ public class UpdaterImpl implements Updater {
             throw new UpdateFailedException(e);
         }
         var currentDir = System.getProperty("user.dir");
-        FileSystemUtil.copyFolder(contentsDir,
-                Path.of(currentDir));
-
+//        FileSystemUtil.copyFolder(contentsDir,
+//                Path.of(currentDir));
+        Runtime.getRuntime().exec(String.format(
+                "cmd /c start \"\" a_update.bat %s %s", contentsDir, currentDir
+        ));
+        System.exit(0);
     }
+
+
 
     /**
      * should be called after {@link #isLatestVersion()}
@@ -128,7 +133,6 @@ public class UpdaterImpl implements Updater {
             var zipPath = downloadZip(zipHref);
             var unzippedTo = unzip(zipPath);
             replaceExisting(unzippedTo);
-            logger.info("update successful");
         }catch (IOException e){
             throw new UpdateFailedException(e);
         }
