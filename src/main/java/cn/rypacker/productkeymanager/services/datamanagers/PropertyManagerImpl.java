@@ -60,7 +60,7 @@ public class PropertyManagerImpl implements PropertyManager {
     @Override
     public String get(String key) {
         try{
-            FileSystemUtil.ifFileModified(StaticInformation.MANDATORY_FIELDS_FILE_PATH,
+            FileSystemUtil.ifFileModified(StaticInformation.METADATA_FILE_PATH,
                     this::readFromFile);
         }catch (FileNotFoundException e){
             return null;
