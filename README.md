@@ -6,5 +6,3 @@ Their /bin directories should be added to system environment variable "Path"
 
 ## Run:
 Double click run.bat
-
-(will find a better way)
