@@ -10,4 +10,6 @@ rmdir %dst%"/src"
 
 robocopy %src% %dst% /E
 echo Update Successful
+REM pseudo sleep
+ping 127.0.0.1 -n 4 > nul
 run.bat

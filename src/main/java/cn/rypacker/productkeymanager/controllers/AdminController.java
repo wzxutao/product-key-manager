@@ -182,14 +182,25 @@ public class AdminController {
         try{
             var hasUpdate = !updater.isLatestVersion();
             if(hasUpdate){
-                updater.update();
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        updater.update();
+                    } catch (UpdateFailedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
                 checkingUpdate = false;
                 return new ResponseEntity<>(HttpStatus.OK);
             }else{
                 checkingUpdate = false;
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }catch (IOException | UpdateFailedException e){
+        }catch (IOException e){
             checkingUpdate = false;
             logger.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
