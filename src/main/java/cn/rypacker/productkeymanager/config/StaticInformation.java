@@ -5,7 +5,7 @@ public class StaticInformation {
      * version number of this application
      */
     // todo change before release
-    public static final String VERSION_NUMBER = "0.0.11";
+    public static final String VERSION_NUMBER = "0.0.12";
 
     public static final String EMPTY_DB_PATH = "resources/db/records_empty.db";
     public static final String USER_DB_DIR = "data";

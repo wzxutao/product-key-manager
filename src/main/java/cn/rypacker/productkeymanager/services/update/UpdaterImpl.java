@@ -142,7 +142,8 @@ public class UpdaterImpl implements Updater {
 
     public static void main(String[] args) throws IOException, UpdateFailedException {
         var upd = new UpdaterImpl();
-        upd.isLatestVersion();
-        upd.update();
+        System.out.println(upd.isLatestVersion());
+        System.out.println(upd.retrieveLatestZipHref());
+//        upd.update();
     }
 }
