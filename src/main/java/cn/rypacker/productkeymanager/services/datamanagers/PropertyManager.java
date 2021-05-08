@@ -3,6 +3,7 @@ package cn.rypacker.productkeymanager.services.datamanagers;
 public interface PropertyManager {
     class Properties {
         public static final String KEY_LENGTH = "key.length";
+        public static final String NORMAL_AUTH_VALID_DAYS = "auth.normal.validDays";
     }
 
     /**

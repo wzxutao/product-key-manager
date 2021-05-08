@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.services;
+package cn.rypacker.productkeymanager.services.auth;
 
 public interface AdminAuth {
 

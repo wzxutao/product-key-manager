@@ -41,4 +41,16 @@ public class DatetimeUtil {
     public static String getTodayDateTime(boolean fromStart){
         return epochSecondsToFinalDate(getTodayEpochSeconds(fromStart));
     }
+
+    /**
+     * returns epoch milli of 23:59:59.999 at the given day
+     */
+    public static long roundToMidNight(long original){
+        var ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(original),
+                ZoneId.systemDefault());
+        var newLdt = LocalDateTime.of(
+                ldt.getYear(), ldt.getMonth(), ldt.getDayOfMonth(),
+                23, 59, 59);
+        return newLdt.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000 + 999;
+    }
 }

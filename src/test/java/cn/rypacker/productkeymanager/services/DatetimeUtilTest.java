@@ -3,8 +3,11 @@ package cn.rypacker.productkeymanager.services;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Random;
 
+import static cn.rypacker.productkeymanager.services.DatetimeUtil.roundToMidNight;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DatetimeUtilTest {
@@ -26,5 +29,21 @@ class DatetimeUtilTest {
         var cts = System.currentTimeMillis() / 1000L;
         fd = DatetimeUtil.epochSecondsToFinalDate(cts);
         assertEquals(DatetimeUtil.finalDateToEpochSeconds(fd), cts);
+    }
+
+    @Test
+    void test_roundToMidNight() {
+        var now = System.currentTimeMillis();
+        var ldtNow = LocalDateTime.now();
+        var ldtMn = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(roundToMidNight(now)),
+                ZoneId.systemDefault());
+        assertEquals(ldtMn.getYear(), ldtNow.getYear());
+        assertEquals(ldtMn.getMonth(), ldtNow.getMonth());
+        assertEquals(ldtMn.getDayOfMonth(), ldtNow.getDayOfMonth());
+        assertEquals(ldtMn.getHour(), 23);
+        assertEquals(ldtMn.getMinute(), 59);
+        assertEquals(ldtMn.getSecond(), 59);
+
     }
 }

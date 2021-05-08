@@ -3,15 +3,13 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.models.RecordStatus;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
+import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/today-records")
 @Controller
@@ -19,9 +17,20 @@ public class TodayRecordsListController {
 
     @Autowired
     JsonRecordRepository jsonRecordRepository;
+    @Autowired
+    NormalAccountAuth normalAccountAuth;
+
+    private boolean isAuthorized(String authToken){
+        return authToken != null && normalAccountAuth.isTokenValid(authToken);
+    }
+
+    private String returnTemplateIfAuthSucceed(String original, String authToken){
+        return isAuthorized(authToken) ? original : "new-key-auth";
+    }
 
     @GetMapping(path = "")
-    public String get(Model model){
+    public String get(Model model,
+                      @CookieValue(value = "normalAuth", required = false) String authToken){
 
         var fromS = DatetimeUtil.getTodayEpochSeconds(true);
         var toS = DatetimeUtil.getTodayEpochSeconds(false);
@@ -32,7 +41,7 @@ public class TodayRecordsListController {
                         RecordStatus.NORMAL);
         model.addAttribute("records", records);
 
-        return "today-records-list";
+        return returnTemplateIfAuthSucceed("today-records-list", authToken);
     }
 
 
@@ -50,12 +59,18 @@ public class TodayRecordsListController {
     }
 
     @PostMapping(path = "/delete")
-    public ResponseEntity<?> markDelete(@RequestParam(value = "key") String key){
+    public ResponseEntity<?> markDelete(@RequestParam(value = "key") String key,
+                                        @CookieValue(value = "normalAuth", required = false)
+                                                String authToken){
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return changeRecordStatus(key, RecordStatus.MARKED_DELETE);
     }
 
     @PostMapping(path = "/undo-delete")
-    public ResponseEntity<?> undoDelete(@RequestParam(value = "key") String key){
+    public ResponseEntity<?> undoDelete(@RequestParam(value = "key") String key,
+                                        @CookieValue(value = "normalAuth", required = false)
+                                                String authToken){
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return changeRecordStatus(key, RecordStatus.NORMAL);
 
     }

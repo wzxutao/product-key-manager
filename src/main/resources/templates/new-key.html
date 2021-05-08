@@ -65,12 +65,21 @@
                         type="image/svg+xml"></object>
             </a>
 
-            <a type="button" class="btn btn-default"
-               href="/today-records"
-               target="_blank"
-            >
-                <font style="color:white">查看今日已生成的序列号</font>
-            </a>
+            <div class="btn-group">
+                <a type="button" class="btn btn-default"
+                   href="/today-records"
+                   target="_blank"
+                >
+                    <font style="color:white">查看今日已生成的序列号</font>
+                </a>
+
+                <a type="button" class="btn btn-default"
+                   href="javascript:deleteAllCookies();
+                        location.reload();"
+                >
+                    <font style="color:white">注销登录</font>
+                </a>
+            </div>
         </div>
     </div>
 </header>

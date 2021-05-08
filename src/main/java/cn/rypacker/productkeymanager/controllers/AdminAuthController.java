@@ -3,7 +3,7 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.desktopui.AdminConfirm;
 import cn.rypacker.productkeymanager.models.RequestBodies;
-import cn.rypacker.productkeymanager.services.AdminAuth;
+import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
