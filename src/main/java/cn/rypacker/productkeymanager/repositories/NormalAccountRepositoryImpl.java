@@ -4,9 +4,12 @@ import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.services.datamanagers.AbstractSerializedMapRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
+import java.util.Set;
 
+@Repository
 public class NormalAccountRepositoryImpl
         extends AbstractSerializedMapRepository<String, String>
         implements NormalAccountRepository {
@@ -46,6 +49,11 @@ public class NormalAccountRepositoryImpl
         if(hash == null) return false;
 
         return encoder.matches(password, hash);
+    }
+
+    @Override
+    public Set<String> findAllExistingUserNames() {
+        return getKeySet();
     }
 
     @Override

@@ -14,7 +14,7 @@ public class StaticInformation {
     public static final String USER_DB_BACKUP_DIR = USER_DB_DIR+ "/bak";
     public static final String MANDATORY_FIELDS_FILE_PATH = USER_DB_DIR + "/mandatoryFields";
     public static final String METADATA_FILE_PATH = USER_DB_DIR + "/metadata";
-    public static final String ACCOUNTS_FILE_PATH = USER_DB_PATH + "/accounts";
+    public static final String ACCOUNTS_FILE_PATH = USER_DB_DIR + "/accounts";
 
     public static final String USER_DOC_DIR =
             System.getProperty("user.home") != null ?

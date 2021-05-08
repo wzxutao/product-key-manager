@@ -4,6 +4,7 @@ import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
+import cn.rypacker.productkeymanager.repositories.NormalAccountRepository;
 import cn.rypacker.productkeymanager.services.AdminAuth;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
@@ -28,6 +29,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
 
 @RequestMapping("/admin")
 @Controller
@@ -43,6 +45,8 @@ public class AdminController {
     KeyGenerator keyGenerator;
     @Autowired
     Updater updater;
+    @Autowired
+    NormalAccountRepository normalAccountRepository;
 
     private volatile boolean checkingUpdate = false;
 
@@ -190,6 +194,51 @@ public class AdminController {
             logger.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(path = "/accounts")
+    public String getAccountsManagementPage(
+            Model model,
+            @CookieValue(value = "auth", required = false) String authToken){
+
+        model.addAttribute("accounts",
+                normalAccountRepository.findAllExistingUserNames());
+        return returnTemplateIfAuthSucceed("admin/normalAccountsManager", authToken);
+    }
+
+    @PostMapping(path = "/accounts-add")
+    public ResponseEntity<?> addAccounts(
+            @CookieValue(value = "auth", required = false) String authToken,
+            @RequestBody Map<String, String> reqBody
+            ){
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        reqBody.forEach((k,v) -> {
+            normalAccountRepository.add(k, v);
+        });
+        logger.info("accounts created: " + reqBody);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/accounts-remove", consumes = "application/json")
+    public ResponseEntity<?> removeAccounts(
+            @CookieValue(value = "auth", required = false) String authToken,
+            @RequestBody RequestBodies.OneList<String> reqBody){
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        var list = reqBody.list;
+
+        if(list == null){
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+
+        for (var key :
+                list) {
+            normalAccountRepository.remove(key);
+        }
+
+        logger.info("accounts removed: " + list);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

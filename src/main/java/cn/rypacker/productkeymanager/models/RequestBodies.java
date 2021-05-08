@@ -20,4 +20,8 @@ public class RequestBodies {
         public String fromTime;
         public String toTime;
     }
+
+    public static class OneList<T> {
+        public List<T> list;
+    }
 }

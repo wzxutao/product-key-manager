@@ -4,6 +4,7 @@ import cn.rypacker.productkeymanager.services.FileSystemUtil;
 
 import java.io.*;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractSerializedMapRepository<K, V> {
@@ -38,6 +39,10 @@ public abstract class AbstractSerializedMapRepository<K, V> {
     public void remove(K key){
         cache.remove(key);
         writeToFile();
+    }
+
+    protected Set<K> getKeySet(){
+        return cache.keySet();
     }
 
     private synchronized void readFromFile(){
