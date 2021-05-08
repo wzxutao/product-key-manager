@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>cn.rypacker</groupId>
 	<artifactId>product-key-manager</artifactId>
-	<version>0.0.13</version>
+	<version>0.0.14-SNAPSHOT</version>
 	<name>product-key-manager</name>
 	<description>managing your product keys</description>
 	<properties>
@@ -90,7 +90,7 @@
 
 	<scm>
 		<developerConnection>scm:git:https://github.com/wzxutao/product-key-manager.git</developerConnection>
-		<tag>product-key-manager-0.0.13</tag>
+		<tag>product-key-manager-0.0.10</tag>
 	</scm>
 
 	<build>
