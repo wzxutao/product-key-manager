@@ -59,4 +59,20 @@ class AbstractSerializedMapRepositoryTest<K, V>
         assertEquals(t.get(k), v);
     }
 
+    @Test
+    void remove(){
+        var k = "keya";
+        var v = "vala";
+        var k2 = "keyb";
+        var v2 = "valb";
+        t.put(k, v);
+        t.put(k2, v2);
+        assertEquals(t.get(k), v);
+        assertEquals(t.get(k2), v2);
+
+        t.remove(k);
+        assertNull(t.get(k));
+        assertEquals(t.get(k2), v2);
+    }
+
 }

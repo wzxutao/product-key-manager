@@ -35,6 +35,11 @@ public abstract class AbstractSerializedMapRepository<K, V> {
         return cache.get(key);
     }
 
+    public void remove(K key){
+        cache.remove(key);
+        writeToFile();
+    }
+
     private synchronized void readFromFile(){
         var path = getFilePath();
         var f = new File(path);
