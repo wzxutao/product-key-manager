@@ -36,6 +36,13 @@
             <a id="home-icon" href="/" class="">
                 <object data="/static/svg/home_icon.svg" type="image/svg+xml"></object>
             </a>
+
+            <a type="button" class="btn btn-default"
+               href="javascript:deleteAllCookies();
+                        location.reload();"
+            >
+                <font style="color:white">注销登录</font>
+            </a>
         </div>
     </div>
 </header>
@@ -88,5 +95,7 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
 <script src="/static/js/admin.js"></script>
+<script src="/static/js/adminAuth.js"></script>
+
 </body>
 </html>
