@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>序列号管理系统</title>
@@ -12,7 +12,7 @@
 <main class="container text-center">
     <div class="form-signin text center">
         <img class="mb-4" src="/static/img/admin.jpg" alt="" width="72" height="72">
-        <h1 class="h3 mb-3 font-weight-normal">请登录 (有效期30分钟)</h1>
+        <h1 class="h3 mb-3 font-weight-normal" th:text="'请登录 (有效期 ' + ${validMinutes} +' 分钟)'"></h1>
         <label for="inputAccount">账号</label>
         <input id="inputAccount" class="form-control" placeholder="account">
         <label for="inputPassword">密码</label>

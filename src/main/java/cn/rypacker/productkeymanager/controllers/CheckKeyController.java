@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -21,18 +22,21 @@ public class CheckKeyController {
     JokeCipher jokeCipher;
     @Autowired
     JsonRecordRepository jsonRecordRepository;
+    @Autowired
+    AdminAuthController adminAuthController;
 
     private boolean isAuthorized(String authToken){
         return authToken != null && adminAuth.isValidToken(authToken);
     }
 
-    private String returnTemplateIfAuthSucceed(String original, String authToken){
-        return isAuthorized(authToken) ? original : "admin/adminAuth";
+    private String returnTemplateIfAuthSucceed(Model model, String original, String authToken){
+        return isAuthorized(authToken) ? original : adminAuthController.getLogInPage(model);
     }
 
     @GetMapping(path="")
-    public String get(@CookieValue(value = "auth", required = false) String authToken){
-        return returnTemplateIfAuthSucceed("check-key", authToken);
+    public String get(Model model,
+                      @CookieValue(value = "auth", required = false) String authToken){
+        return returnTemplateIfAuthSucceed(model,"check-key", authToken);
     }
 
     @PostMapping(path="/info", consumes = "application/json")

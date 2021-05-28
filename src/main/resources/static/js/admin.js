@@ -48,6 +48,23 @@ function requestChangeKeyLength(){
     })
 }
 
+function setAdminAuthMinutes(){
+    var length = $("#admin-token-minutes").val()
+        $.ajax({
+            type: "POST",
+            url: "/admin/adminAuthMinutes" + `?minutes=${length}`,
+            success: ()=>location.reload(),
+            error: (xhr, status, err) => {
+                if(xhr.status === 400){
+                    alert("无效")
+                }else{
+                    alert(xhr.status)
+                }
+            }
+        })
+
+}
+
 function checkUpdate(){
     $.ajax({
         type: "POST",
@@ -64,3 +81,4 @@ function checkUpdate(){
         }
     })
 }
+

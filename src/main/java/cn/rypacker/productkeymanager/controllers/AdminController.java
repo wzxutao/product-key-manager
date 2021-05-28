@@ -9,6 +9,7 @@ import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
+import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
 import cn.rypacker.productkeymanager.services.update.UpdateFailedException;
 import cn.rypacker.productkeymanager.services.update.Updater;
 import org.slf4j.Logger;
@@ -47,6 +48,10 @@ public class AdminController {
     Updater updater;
     @Autowired
     NormalAccountRepository normalAccountRepository;
+    @Autowired
+    PropertyManager propertyManager;
+    @Autowired
+    AdminAuthController adminAuthController;
 
     private volatile boolean checkingUpdate = false;
 
@@ -57,8 +62,8 @@ public class AdminController {
      * @param authToken
      * @return
      */
-    private String returnTemplateIfAuthSucceed(String original, String authToken){
-        return isAuthorized(authToken) ? original : "admin/adminAuth";
+    private String returnTemplateIfAuthSucceed(Model model, String original, String authToken){
+        return isAuthorized(authToken) ? original : adminAuthController.getLogInPage(model);
     }
 
     private boolean isAuthorized(String authToken){
@@ -69,7 +74,21 @@ public class AdminController {
     public String get(Model model, @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
         model.addAttribute("keyLength", keyGenerator.getKeyLength());
-        return returnTemplateIfAuthSucceed("admin/admin", authToken);
+        model.addAttribute("adminAuthMinutes",
+                propertyManager.getOrDefault(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES, "30"));
+        return returnTemplateIfAuthSucceed(model,"admin/admin", authToken);
+    }
+
+    @PostMapping(path = "/adminAuthMinutes")
+    public ResponseEntity<?> setAdminAuthMinutes(@RequestParam(value = "minutes") String minutes){
+        try{
+            var m = Integer.parseInt(minutes);
+            propertyManager.put(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES,
+                    minutes);
+        }catch (NumberFormatException e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/backup")
@@ -96,7 +115,7 @@ public class AdminController {
     public String getRestorePage(Model model, @CookieValue(value = "auth", required = false) String authToken){
         var backUpFileName = FileSystemUtil.getBackupFileNames();
         model.addAttribute("backupFiles", backUpFileName);
-        return returnTemplateIfAuthSucceed("admin/restoreDb", authToken);
+        return returnTemplateIfAuthSucceed(model,"admin/restoreDb", authToken);
     }
 
     @PostMapping(path = "/restore")
@@ -127,7 +146,7 @@ public class AdminController {
     public String getAllRecords(Model model,
             @CookieValue(value = "auth", required = false) String authToken){
         model.addAttribute("records", jsonRecordRepository.findAll());
-        return returnTemplateIfAuthSucceed("admin/recordsView", authToken);
+        return returnTemplateIfAuthSucceed(model, "admin/recordsView", authToken);
     }
 
     @PostMapping(path = "/records", consumes = "application/json")
@@ -160,7 +179,7 @@ public class AdminController {
         }
 
 
-        return returnTemplateIfAuthSucceed("admin/recordsView", authToken);
+        return returnTemplateIfAuthSucceed(model,"admin/recordsView", authToken);
     }
 
     @PostMapping(path = "/key-length")
@@ -214,7 +233,7 @@ public class AdminController {
 
         model.addAttribute("accounts",
                 normalAccountRepository.findAllExistingUserNames());
-        return returnTemplateIfAuthSucceed("admin/normalAccountsManager", authToken);
+        return returnTemplateIfAuthSucceed(model, "admin/normalAccountsManager", authToken);
     }
 
     @PostMapping(path = "/accounts-add")

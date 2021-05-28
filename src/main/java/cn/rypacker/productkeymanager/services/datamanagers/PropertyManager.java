@@ -4,6 +4,7 @@ public interface PropertyManager {
     class Properties {
         public static final String KEY_LENGTH = "key.length";
         public static final String NORMAL_AUTH_VALID_DAYS = "auth.normal.validDays";
+        public static final String ADMIN_AUTH_VALID_MINUTES = "auth.admin.validMinutes";
     }
 
     /**
