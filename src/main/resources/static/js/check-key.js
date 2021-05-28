@@ -16,6 +16,10 @@ function checkKey(){
             if(xhr.status === 400 || xhr.status === 404){
                 $(".form-content:not('#form-template-row .form-content')").remove()
                 $("#invalid-key-message")[0].classList.remove("d-none")
+            }else if(xhr.status === 403){
+                alert('登录已过期')
+                location.href = "/auth"
+                return;
             }else{
                 alert(xhr.status)
             }

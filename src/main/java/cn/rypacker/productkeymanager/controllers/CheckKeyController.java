@@ -2,33 +2,44 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
+import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/check-key")
 public class CheckKeyController {
 
     @Autowired
+    AdminAuth adminAuth;
+
+    @Autowired
     JokeCipher jokeCipher;
     @Autowired
     JsonRecordRepository jsonRecordRepository;
 
+    private boolean isAuthorized(String authToken){
+        return authToken != null && adminAuth.isValidToken(authToken);
+    }
+
+    private String returnTemplateIfAuthSucceed(String original, String authToken){
+        return isAuthorized(authToken) ? original : "admin/adminAuth";
+    }
+
     @GetMapping(path="")
-    public String get(){
-        return "check-key";
+    public String get(@CookieValue(value = "auth", required = false) String authToken){
+        return returnTemplateIfAuthSucceed("check-key", authToken);
     }
 
     @PostMapping(path="/info", consumes = "application/json")
-    public ResponseEntity<?> retrieveInfo(@RequestBody RequestBodies.Key key){
+    public ResponseEntity<?> retrieveInfo(@RequestBody RequestBodies.Key key,
+                                          @CookieValue(value = "auth", required = false) String authToken){
         if(key == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         var record = jsonRecordRepository.findByProductKey(key.key);
         if(record.isEmpty()){
