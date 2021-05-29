@@ -83,6 +83,7 @@ public class AdminController {
     public ResponseEntity<?> setAdminAuthMinutes(@RequestParam(value = "minutes") String minutes){
         try{
             var m = Integer.parseInt(minutes);
+            if(m <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             propertyManager.put(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES,
                     minutes);
         }catch (NumberFormatException e){
