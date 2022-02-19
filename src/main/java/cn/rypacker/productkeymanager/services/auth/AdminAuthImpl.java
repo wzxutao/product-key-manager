@@ -21,6 +21,12 @@ public class AdminAuthImpl implements AdminAuth {
     }
 
     @Override
+    public boolean isAdmin(String account) {
+        return AdminAccountManager.isAdminAccount(account);
+    }
+
+
+    @Override
     public String signNewToken(int expirationSecondsFromNow) throws Exception {
         var jsonObject = new JSONObject();
         var expirationMilli = System.currentTimeMillis() + expirationSecondsFromNow * 1000L;

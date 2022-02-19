@@ -23,6 +23,18 @@ public class AdminAccountManager {
         return new File(ACCOUNT_INFO_FILE).exists();
     }
 
+    public static boolean isAdminAccount(String username) {
+        try(var scanner = new Scanner(new FileInputStream(ACCOUNT_INFO_FILE))){
+            var userExpected = scanner.nextLine();
+
+            return userExpected.equals(username);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean isAdminAccount(String username, String password){
         try(var scanner = new Scanner(new FileInputStream(ACCOUNT_INFO_FILE))){
             var userExpected = scanner.nextLine();

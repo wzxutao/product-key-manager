@@ -71,7 +71,7 @@ public class NewKeyController {
         }
 
         try {
-            var token = normalAccountAuth.signNewToken();
+            var token = normalAccountAuth.signNewToken(account);
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,9 +81,15 @@ public class NewKeyController {
 
     // deliberately omit auth for user experience
     @PostMapping(path = "/submit", consumes = "application/json")
-    public ResponseEntity<?> postNewKey(@RequestBody Map<String, String> reqBody){
+    public ResponseEntity<?> postNewKey(
+            @RequestBody Map<String, String> reqBody,
+            @CookieValue(value = "normalAuth") String authToken
+            ){
         if(reqBody == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        String username = normalAccountAuth.getUsername(authToken);
+
+        reqBody.put("__username", username);
         var contents = JSONUtil.toStringFrom(reqBody);
         var date = reqBody.get("日期");
         if(date == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

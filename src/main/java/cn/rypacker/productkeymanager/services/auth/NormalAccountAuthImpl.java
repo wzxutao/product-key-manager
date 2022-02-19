@@ -17,12 +17,14 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
     PropertyManager propertyManager;
 
     private static final String KEY_CREATED = "created";
+    private static final String KEY_USERNAME = "username";
 
 
     @Override
-    public String signNewToken() throws Exception {
+    public String signNewToken(String username) throws Exception {
         var jsonObject = new JSONObject();
         jsonObject.put(KEY_CREATED, System.currentTimeMillis());
+        jsonObject.put(KEY_USERNAME, username);
         return jokeCipher.insecureEncrypt(jsonObject.toString());
     }
 
@@ -30,6 +32,7 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
     public boolean isTokenValid(String cipherToken) {
         try{
             var token = jokeCipher.insecureDecrypt(cipherToken);
+            if(JSONUtil.getValue(token, KEY_USERNAME) == null) return false;
             var created = Long.parseLong(JSONUtil.getValue(token, KEY_CREATED));
             var validDaysStr = propertyManager.getOrDefault(
                     PropertyManager.Properties.NORMAL_AUTH_VALID_DAYS,
@@ -48,6 +51,19 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public String getUsername(String cipherToken) {
+        if(cipherToken == null) return null;
+
+        try{
+            var token = jokeCipher.insecureDecrypt(cipherToken);
+            return JSONUtil.getValue(token, KEY_USERNAME);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

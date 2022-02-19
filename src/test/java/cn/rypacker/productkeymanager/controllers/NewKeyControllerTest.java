@@ -2,6 +2,7 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
+import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +28,17 @@ class NewKeyControllerTest {
     @Autowired
     KeyGenerator keyGenerator;
 
-    private void insertRecordsWithoutDuplication(long recordCount){
+    @Autowired
+    NormalAccountAuth normalAccountAuth;
+
+    private void insertRecordsWithoutDuplication(long recordCount) throws Exception {
         Map<String, String> dummyReqbody = new HashMap<>();
         var random = new Random();
+
+        var authToken = normalAccountAuth.signNewToken("__unit_test");
         for(long i=0; i<recordCount; i++){
             dummyReqbody.put("日期", "700101");
-            var rv = newKeyController.postNewKey(dummyReqbody);
+            var rv = newKeyController.postNewKey(dummyReqbody, authToken);
             assertEquals(rv.getStatusCode(), HttpStatus.CREATED);
             log.info("Inserting record " + i);
         }
@@ -49,7 +55,7 @@ class NewKeyControllerTest {
     }
 
     @Test
-    void expand(){
+    void expand() throws Exception {
         keyGenerator.setKeyLength(8);
         var combinations = keyGenerator.getCombinationCount();
 

@@ -15,27 +15,23 @@ import java.io.IOException;
 public class ProductKeyManagerApplication{
 	private static ConfigurableApplicationContext context;
 
-	static {
-		try{
-			LoadingLogo.show();
-		}catch (HeadlessException ignored){}
-	}
+//	static {
+//		try{
+//			LoadingLogo.show();
+//		}catch (HeadlessException ignored){}
+//	}
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		LoadingLogo.addStdoutTextArea();
+//		LoadingLogo.addStdoutTextArea();
 
-		try{
-			FirstTimeInitializer.initIfNecessary();
-			DbRestorer.restoreDbIfRequested();
-			DatabaseUpdater.updateIfNeeded();
-			var app =
-					new SpringApplicationBuilder(ProductKeyManagerApplication.class){
-					}
-							.headless(false);
-			context = app.run(args);
-		}finally {
-			LoadingLogo.hide();
-		}
+		FirstTimeInitializer.initIfNecessary();
+		DbRestorer.restoreDbIfRequested();
+		DatabaseUpdater.updateIfNeeded();
+		var app =
+				new SpringApplicationBuilder(ProductKeyManagerApplication.class){
+				}
+						.headless(false);
+		context = app.run(args);
 
 	}
 

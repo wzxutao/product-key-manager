@@ -33,11 +33,11 @@ public class AdminConfirm {
      * @return an auth token. null if user rejected the request or errors occurred
      */
     public String getTokenIfApproved(String clientIp){
-        var userOption = JOptionPane.showConfirmDialog(null,
-                String.format("%s 请求进入序列号管理系统管理界面，批准？", clientIp),
-                StaticInformation.APPLICATION_TITLE,
-                JOptionPane.YES_NO_OPTION);
-        if(userOption != JOptionPane.YES_OPTION) return null;
+//        var userOption = JOptionPane.showConfirmDialog(null,
+//                String.format("%s 请求进入序列号管理系统管理界面，批准？", clientIp),
+//                StaticInformation.APPLICATION_TITLE,
+//                JOptionPane.YES_NO_OPTION);
+//        if(userOption != JOptionPane.YES_OPTION) return null;
 
         try{
             return adminAuth.signNewToken(getTokenValidMinutes() * 60);
