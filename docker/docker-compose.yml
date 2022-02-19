@@ -1,0 +1,9 @@
+version: "3.0"
+services:
+  productKeyManager:
+    image: wzxutao/pkm:latest
+    container_name: product-key-namager
+    ports:
+    - 8081:8081
+    volumes:
+    - /share/system/xtpro/data:/opt/pkm/data
