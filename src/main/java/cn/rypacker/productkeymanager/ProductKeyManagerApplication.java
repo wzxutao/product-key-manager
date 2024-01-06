@@ -3,6 +3,7 @@ package cn.rypacker.productkeymanager;
 import cn.rypacker.productkeymanager.bootstrap.DatabaseUpdater;
 import cn.rypacker.productkeymanager.bootstrap.DbRestorer;
 import cn.rypacker.productkeymanager.bootstrap.FirstTimeInitializer;
+import cn.rypacker.productkeymanager.bootstrap.MetadataMigrator;
 import cn.rypacker.productkeymanager.desktopui.LoadingLogo;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -15,18 +16,12 @@ import java.io.IOException;
 public class ProductKeyManagerApplication{
 	private static ConfigurableApplicationContext context;
 
-//	static {
-//		try{
-//			LoadingLogo.show();
-//		}catch (HeadlessException ignored){}
-//	}
-
 	public static void main(String[] args) throws IOException, InterruptedException {
-//		LoadingLogo.addStdoutTextArea();
 
 		FirstTimeInitializer.initIfNecessary();
 		DbRestorer.restoreDbIfRequested();
 		DatabaseUpdater.updateIfNeeded();
+		MetadataMigrator.migrateOrInitialize();
 		var app =
 				new SpringApplicationBuilder(ProductKeyManagerApplication.class){
 				}

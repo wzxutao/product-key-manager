@@ -23,11 +23,6 @@ class NormalAccountRepositoryImplTest extends NormalAccountRepositoryImpl{
         }
     }
 
-    @Override
-    protected String getFilePath() {
-        return path;
-    }
-
 
     @BeforeAll
     void beforeAll() {

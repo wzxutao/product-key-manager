@@ -1,12 +1,9 @@
 package cn.rypacker.productkeymanager.desktopui;
 
-import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.swing.*;
 
 @Component
 public class AdminConfirm {
@@ -14,12 +11,11 @@ public class AdminConfirm {
     @Autowired
     AdminAuth adminAuth;
     @Autowired
-    PropertyManager propertyManager;
+    UserConfigStore userConfigStore;
 
     public int getTokenValidMinutes(){
         try{
-            return Integer.parseInt(
-                    propertyManager.getOrDefault(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES, "30"));
+            return userConfigStore.getData().getAuth().getAdmin().getValidMinutes();
         }catch (NumberFormatException e){
             return 30;
         }

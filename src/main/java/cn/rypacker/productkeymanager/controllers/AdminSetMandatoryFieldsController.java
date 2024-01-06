@@ -2,7 +2,7 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
-import cn.rypacker.productkeymanager.services.datamanagers.MandatoryFieldsManager;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,10 @@ public class AdminSetMandatoryFieldsController {
     private static final Logger logger = LoggerFactory.getLogger(AdminSetMandatoryFieldsController.class);
 
     @Autowired
-    MandatoryFieldsManager mandatoryFieldsManager;
+    private AdminAuth adminAuth;
+
     @Autowired
-    AdminAuth adminAuth;
+    private UserConfigStore userConfigStore;
 
     private boolean isAuthorized(String authToken){
         return authToken != null && adminAuth.isValidToken(authToken);
@@ -28,7 +29,7 @@ public class AdminSetMandatoryFieldsController {
 
     @GetMapping(path = "")
     public String get(Model model){
-        model.addAttribute("requiredFields", mandatoryFieldsManager.getFieldNames());
+        model.addAttribute("requiredFields", userConfigStore.getData().getRecord().getMandatoryFields());
         return "admin/keygenFieldsSetting";
     }
 
@@ -39,7 +40,9 @@ public class AdminSetMandatoryFieldsController {
         if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         var listOfNames = reqBody.mandatoryFieldNames;
-        mandatoryFieldsManager.replaceWith(listOfNames);
+        userConfigStore.update(
+                userConfig -> userConfig.getRecord().setMandatoryFields(listOfNames)
+        );
         logger.info("mandatory fields changed");
         return new ResponseEntity<>(HttpStatus.OK);
     }

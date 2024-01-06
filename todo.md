@@ -8,3 +8,10 @@
 
 疑问：
 1.现在的时间不准确，好像需要+8小时才是正常时间？
+
+
+todo:
+    1. change dynamic config data from serialized object to json.
+    2. refactor frontend using react
+    3. backup
+    4. ...

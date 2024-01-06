@@ -1,38 +1,54 @@
 package cn.rypacker.productkeymanager.repositories;
 
-import cn.rypacker.productkeymanager.config.StaticInformation;
-import cn.rypacker.productkeymanager.services.datamanagers.AbstractSerializedMapRepository;
+import cn.rypacker.productkeymanager.services.configstore.UserConfig;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class NormalAccountRepositoryImpl
-        extends AbstractSerializedMapRepository<String, String>
         implements NormalAccountRepository {
 
     private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    @Autowired
+    private UserConfigStore userConfigStore;
+
+
     @Override
     public void add(String username, String password) {
-        Objects.requireNonNull(username);
-        Objects.requireNonNull(password);
-
-        var hash = encoder.encode(password);
-        put(username, hash);
+        update(username, password);
     }
 
     @Override
     public void update(String username, String password) {
-        add(username, password);
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(password);
+
+        var hash = encoder.encode(password);
+        userConfigStore.update(c -> c.setAccounts(
+                Stream.concat(c.getAccounts()
+                                .stream()
+                                .filter(account -> !account.getUsername().equals(username))
+                        , Stream.of(new UserConfig.Account(username, hash))
+                ).collect(Collectors.toList())));
     }
 
     @Override
     public void remove(String username) {
-        super.remove(username);
+        userConfigStore.update(c -> c.setAccounts(
+                c.getAccounts()
+                        .stream()
+                        .filter(account -> !account.getUsername().equals(username))
+                        .collect(Collectors.toList()))
+        );
     }
 
     @Override
@@ -46,18 +62,26 @@ public class NormalAccountRepositoryImpl
         Objects.requireNonNull(password);
 
         var hash = get(username);
-        if(hash == null) return false;
+        if (hash == null) return false;
 
         return encoder.matches(password, hash);
     }
 
-    @Override
-    public Set<String> findAllExistingUserNames() {
-        return getKeySet();
+    private String get(String username) {
+        return userConfigStore.getData().getAccounts()
+                .stream()
+                .filter(account -> account.getUsername().equals(username))
+                .findFirst()
+                .map(UserConfig.Account::getHash)
+                .orElse(null);
     }
 
     @Override
-    protected String getFilePath() {
-        return StaticInformation.ACCOUNTS_FILE_PATH;
+    public Set<String> findAllExistingUserNames() {
+        return userConfigStore.getData().getAccounts()
+                .stream()
+                .map(UserConfig.Account::getUsername)
+                .collect(Collectors.toSet());
     }
+
 }

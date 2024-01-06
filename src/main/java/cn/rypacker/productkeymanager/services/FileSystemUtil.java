@@ -178,5 +178,16 @@ public class FileSystemUtil {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public static void moveFileIfExists(String oldPath, String newPath){
+        var oldFile = new File(oldPath);
+        if(oldFile.exists()){
+            var newFile = new File(newPath);
+            if(newFile.exists()){
+                newFile.delete();
+            }
+            oldFile.renameTo(newFile);
+        }
+    }
     
 }

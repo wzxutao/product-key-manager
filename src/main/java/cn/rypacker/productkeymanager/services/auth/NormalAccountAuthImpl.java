@@ -3,7 +3,7 @@ package cn.rypacker.productkeymanager.services.auth;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
     @Autowired
     JokeCipher jokeCipher;
     @Autowired
-    PropertyManager propertyManager;
+    UserConfigStore userConfigStore;
 
     private static final String KEY_CREATED = "created";
     private static final String KEY_USERNAME = "username";
@@ -34,15 +34,8 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
             var token = jokeCipher.insecureDecrypt(cipherToken);
             if(JSONUtil.getValue(token, KEY_USERNAME) == null) return false;
             var created = Long.parseLong(JSONUtil.getValue(token, KEY_CREATED));
-            var validDaysStr = propertyManager.getOrDefault(
-                    PropertyManager.Properties.NORMAL_AUTH_VALID_DAYS,
-                    "30");
-            int validDays;
-            try{
-                validDays = Integer.parseInt(validDaysStr);
-            }catch (NullPointerException e){
-                validDays = 30;
-            }
+
+            int validDays = userConfigStore.getData().getAuth().getNormal().getValidDays();
 
             var validUntil = DatetimeUtil.roundToMidNight(
                     created + (long) validDays * 24 * 60 * 60 * 1000);

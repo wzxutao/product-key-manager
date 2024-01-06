@@ -2,8 +2,6 @@ package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.models.RecordStatus;
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteException;
@@ -14,7 +12,6 @@ import java.sql.SQLException;
 
 public class DatabaseUpdater {
 
-    private static PropertyManager propertyManager = new PropertyManagerImpl();
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUpdater.class);
 
     protected static String dbUrl;

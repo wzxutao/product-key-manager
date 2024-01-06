@@ -8,9 +8,8 @@ import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
-import cn.rypacker.productkeymanager.services.datamanagers.MandatoryFieldsManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +21,21 @@ import java.util.Map;
 
 @RequestMapping("/new-key")
 @Controller
+@Slf4j
 public class NewKeyController {
 
-    private final Logger logger = LoggerFactory.getLogger(NewKeyController.class);
     @Autowired
-    JokeCipher jokeCipher;
+    private JokeCipher jokeCipher;
     @Autowired
-    JsonRecordRepository jsonRecordRepository;
+    private JsonRecordRepository jsonRecordRepository;
     @Autowired
-    KeyGenerator keyGenerator;
+    private KeyGenerator keyGenerator;
     @Autowired
-    MandatoryFieldsManager mandatoryFieldsManager;
+    private UserConfigStore userConfigStore;
     @Autowired
-    NormalAccountAuth normalAccountAuth;
+    private NormalAccountAuth normalAccountAuth;
     @Autowired
-    NormalAccountRepository normalAccountRepository;
+    private NormalAccountRepository normalAccountRepository;
 
 
     private boolean isAuthorized(String authToken){
@@ -50,7 +49,7 @@ public class NewKeyController {
     @GetMapping("")
     public String get(Model model,
                       @CookieValue(value = "normalAuth", required = false) String authToken){
-        model.addAttribute("requiredFields", mandatoryFieldsManager.getFieldNames());
+        model.addAttribute("requiredFields", userConfigStore.getData().getRecord().getMandatoryFields());
         return returnTemplateIfAuthSucceed("new-key", authToken);
     }
 
@@ -114,7 +113,7 @@ public class NewKeyController {
 
         var record = new JsonRecord(contents, key);
         jsonRecordRepository.save(record);
-        logger.info("new record saved: " + record.toString());
+        log.info("new record saved: " + record.toString());
         return new ResponseEntity<>(key, HttpStatus.CREATED);
     }
 }

@@ -9,7 +9,7 @@ import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManager;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import cn.rypacker.productkeymanager.services.update.UpdateFailedException;
 import cn.rypacker.productkeymanager.services.update.Updater;
 import org.slf4j.Logger;
@@ -39,19 +39,19 @@ public class AdminController {
     private static Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
-    AdminAuth adminAuth;
+    private AdminAuth adminAuth;
     @Autowired
-    JsonRecordRepository jsonRecordRepository;
+    private JsonRecordRepository jsonRecordRepository;
     @Autowired
-    KeyGenerator keyGenerator;
+    private KeyGenerator keyGenerator;
     @Autowired
-    Updater updater;
+    private Updater updater;
     @Autowired
-    NormalAccountRepository normalAccountRepository;
+    private NormalAccountRepository normalAccountRepository;
     @Autowired
-    PropertyManager propertyManager;
+    private UserConfigStore userConfigStore;
     @Autowired
-    AdminAuthController adminAuthController;
+    private AdminAuthController adminAuthController;
 
     private volatile boolean checkingUpdate = false;
 
@@ -75,7 +75,7 @@ public class AdminController {
         model.addAttribute("versionNumber", StaticInformation.VERSION_NUMBER);
         model.addAttribute("keyLength", keyGenerator.getKeyLength());
         model.addAttribute("adminAuthMinutes",
-                propertyManager.getOrDefault(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES, "30"));
+                userConfigStore.getData().getAuth().getAdmin().getValidMinutes());
         return returnTemplateIfAuthSucceed(model,"admin/admin", authToken);
     }
 
@@ -84,8 +84,9 @@ public class AdminController {
         try{
             var m = Integer.parseInt(minutes);
             if(m <= 0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            propertyManager.put(PropertyManager.Properties.ADMIN_AUTH_VALID_MINUTES,
-                    minutes);
+            userConfigStore.update(
+                    c -> c.getAuth().getAdmin().setValidMinutes(m)
+            );
         }catch (NumberFormatException e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.services;
 
-import cn.rypacker.productkeymanager.services.datamanagers.PropertyManagerImpl;
+import cn.rypacker.productkeymanager.services.configstore.legacy.PropertyManagerImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
