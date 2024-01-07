@@ -15,3 +15,6 @@ todo:
     2. refactor frontend using react
     3. backup
     4. ...
+
+backlog:
+store account credentials in db
