@@ -12,9 +12,7 @@ const Root = () => {
         <ThemeProvider theme={defaultTheme}>
             <CssBaseline />
                 <TheAppBar />
-            <Container disableGutters fixed component="main" >
                 <Outlet />
-            </Container>
         </ThemeProvider>
     )
 }

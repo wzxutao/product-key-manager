@@ -7,7 +7,9 @@ function HomePage() {
     <div className="App"
       style={{
         backgroundImage: `url(${bg})`,
-        height: '100vh'
+        height: '100vh',
+        width: '100vw',
+        position: 'fixed'
       }}
     >
 
