@@ -8,12 +8,26 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import ManagementPage from './routes/management/ManagementPage';
+import Root from './routes/root/Root';
+import RootErrorPage from './routes/root/RootErrorPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
-  },
+    element: <Root />,
+    errorElement: <RootErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "/management",
+        element: <ManagementPage />,
+      },
+    ]
+  }
 ]);
 
 const root = ReactDOM.createRoot(
