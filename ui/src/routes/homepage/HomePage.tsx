@@ -4,7 +4,7 @@ import bg from '../../assets/hpbackground.jpg';
 
 function HomePage() {
   return (
-    <div className="App"
+    <main className="App"
       style={{
         backgroundImage: `url(${bg})`,
         height: '100vh',
@@ -13,7 +13,7 @@ function HomePage() {
       }}
     >
 
-    </div>
+    </main>
   );
 }
 
