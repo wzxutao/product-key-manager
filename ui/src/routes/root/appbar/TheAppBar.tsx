@@ -11,21 +11,45 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import { useUsername } from '../../../common/hooks';
+import { useIsAdmin, useUsername } from '../../../common/hooks';
 import { deepPurple, grey } from '@mui/material/colors';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useCookies } from 'react-cookie';
 import { COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME } from '../../../common/constants';
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const pages = ['生成序列号', '补录', '查询', '管理'];
+interface PageAndURL {
+  page: string;
+  url: string;
+  adminOnly?: boolean;
+}
+
+const pages: PageAndURL[] = [
+  { page: '生成序列号', url: '/' },
+  { page: '补录', url: '/', },
+  { page: '查询', url: '/' },
+  { page: '管理', url: '/management', adminOnly: true },
+];
 
 function TheAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const username = useUsername();
   const [, , removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME])
+  const navigate = useNavigate();
+  const isAdmin = useIsAdmin();
 
+  const pagesFiltered = useMemo(() =>
+    username === null
+      ? [{
+        page: 'RiQiang',
+        url: '/'
+      }]
+      : pages
+        .filter(page => isAdmin || !page.adminOnly)
+    ,
+    [isAdmin, username])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -39,9 +63,10 @@ function TheAppBar() {
   }, []);
 
   const handleLogout = useCallback(() => {
-    setAnchorElUser(null);
+    handleCloseUserMenu();
     removeCookie(COOKIE_KEY_NORMAL_AUTH)
     removeCookie(COOKIE_KEY_USERNAME)
+    navigate('/')
   }, []);
 
   const handleCloseUserMenu = () => {
@@ -82,9 +107,13 @@ function TheAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pagesFiltered.map((page) => (
+                <MenuItem
+                  key={page.page}
+                  component={RouterLink}
+                  to={page.url}
+                  onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -92,8 +121,8 @@ function TheAppBar() {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={RouterLink}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -112,8 +141,8 @@ function TheAppBar() {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={RouterLink}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -127,13 +156,14 @@ function TheAppBar() {
             日强
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pagesFiltered.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                component={RouterLink}
+                key={page.page}
+                to={page.url}
+                sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none' }}
               >
-                {page}
+                {page.page}
               </Button>
             ))}
           </Box>
