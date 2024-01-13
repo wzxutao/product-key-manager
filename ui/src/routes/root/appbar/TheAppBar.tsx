@@ -12,13 +12,20 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useUsername } from '../../../common/hooks';
+import { deepPurple, grey } from '@mui/material/colors';
+import { useCallback } from 'react';
+import { useCookies } from 'react-cookie';
+import { COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME } from '../../../common/constants';
 
 const pages = ['生成序列号', '补录', '查询', '管理'];
-const settings = ['注销'];
 
 function TheAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const username = useUsername();
+  const [, , removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME])
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -27,9 +34,15 @@ function TheAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = useCallback(() => {
     setAnchorElNav(null);
-  };
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    setAnchorElUser(null);
+    removeCookie(COOKIE_KEY_NORMAL_AUTH)
+    removeCookie(COOKIE_KEY_USERNAME)
+  }, []);
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -39,24 +52,7 @@ function TheAppBar() {
     <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            日强
-          </Typography>
-
+          {/* xs */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -111,6 +107,25 @@ function TheAppBar() {
           >
             日强
           </Typography>
+
+          {/* md */}
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            日强
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
@@ -123,10 +138,12 @@ function TheAppBar() {
             ))}
           </Box>
 
+          {/* user */}
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="用户">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{ bgcolor: username != null ? deepPurple[500] : grey[500] }}>
+                  {username ? username.charAt(0) : ''}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
@@ -145,11 +162,9 @@ function TheAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleLogout} disabled={username === null}>
+                <Typography textAlign="center">注销</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

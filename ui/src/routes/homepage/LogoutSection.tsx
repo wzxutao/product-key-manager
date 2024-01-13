@@ -18,7 +18,7 @@ const LogoutSection = (props: {
   }, [])
 
   return (
-    <Grid id="LoginSection" item xs={12} lg={5} component={Paper} elevation={6} square>
+    <Grid id="LogoutSection" item xs={12} lg={5} component={Paper} elevation={6} square>
       <Box
         sx={{
           my: 8,
