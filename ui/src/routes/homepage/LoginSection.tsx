@@ -6,7 +6,7 @@ import {
   TextField, Checkbox, Button, Tooltip, Chip
 } from '@mui/material';
 import { useCookies } from 'react-cookie';
-import { login } from '../../http/auth';
+import { login } from '../../http/auth-api';
 import { COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME, COOKIE_KEY_ADMIN_AUTH } from '../../common/constants';
 
 const LoginSection = () => {
@@ -28,7 +28,7 @@ const LoginSection = () => {
       }
       setCookie(COOKIE_KEY_USERNAME, iusername)
     }
-  }, [iusername, ipassword, setCookie, adminChecked])
+  }, [iusername, ipassword, setCookie, adminChecked, removeCookie])
 
   const handleToggleAdminCheckbox = useCallback(() => {
     setAdminChecked(prev => !prev)

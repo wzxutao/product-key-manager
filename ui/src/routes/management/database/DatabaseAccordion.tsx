@@ -9,8 +9,11 @@ import { Button, Divider, Stack } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import RestoreIcon from '@mui/icons-material/Restore';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
+import BackupDialog from './BackupDialogue';
 
 export default function DatabaseAccordion() {
+  const [backupDialogOpen, setBackupDialogOpen] = React.useState(false);
+
   return (
     <Accordion defaultExpanded className='man-page-section'>
       <AccordionSummary
@@ -21,7 +24,8 @@ export default function DatabaseAccordion() {
       <AccordionDetails>
       <Divider variant="middle">本地备份/恢复</Divider>
         <Stack direction='row' sx={{ justifyContent: 'space-around' }}>
-          <Button startIcon={<ContentCopyIcon />}>立即本地备份</Button>
+          <Button startIcon={<ContentCopyIcon />} onClick={() => setBackupDialogOpen(true)}>立即本地备份</Button>
+          <BackupDialog open={backupDialogOpen} handleClose={() => setBackupDialogOpen(false)}/>
           <Button startIcon={<RestoreIcon />}>查看/恢复本地备份</Button>
         </Stack>
         <Divider variant="middle">自动本地备份</Divider>
