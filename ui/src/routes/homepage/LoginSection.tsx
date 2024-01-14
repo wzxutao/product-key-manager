@@ -3,7 +3,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Box, FormControlLabel, Grid, Paper,
   Avatar, Typography,
-  TextField, Checkbox, Button, Tooltip
+  TextField, Checkbox, Button, Tooltip, Chip
 } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { login } from '../../http/auth';
@@ -19,10 +19,10 @@ const LoginSection = () => {
     ev.preventDefault()
     const resp = await login(iusername!, ipassword!, adminChecked)
     if (resp !== null) {
-      if(adminChecked) {
+      if (adminChecked) {
         removeCookie(COOKIE_KEY_NORMAL_AUTH)
         setCookie(COOKIE_KEY_ADMIN_AUTH, resp)
-      }else{
+      } else {
         removeCookie(COOKIE_KEY_ADMIN_AUTH)
         setCookie(COOKIE_KEY_NORMAL_AUTH, resp)
       }
@@ -75,14 +75,14 @@ const LoginSection = () => {
             onInput={(ev: any) => setIpassword(ev.target.value)}
           />
           <Grid container>
-            <Tooltip title="无论选不选都需要您手动登出或者等30天以后自动被踢掉，所以就帮您选上了">
-              <Grid item component={FormControlLabel} xs={6}
-                sx={{ visibility: adminChecked ? 'hidden' : 'visible' }}
-                control={
-                  <Checkbox value="remember" color="primary" defaultChecked disabled />}
-                label="30天内免登录"
-              />
-            </Tooltip>
+            <Grid item component={Chip} xs={6}
+              sx={{ 
+                visibility: adminChecked ? 'hidden' : 'visible',
+                backgroundColor: 'transparent',
+                justifyContent: 'flex-start'
+              }}
+              label={<Chip label="30天内免登录" />}
+            />
             <Tooltip title="以管理员身份登录">
               <Grid item component={FormControlLabel} xs={6} sx={{ justifyContent: 'end' }}
                 control={

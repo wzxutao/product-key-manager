@@ -27,8 +27,9 @@ interface PageAndURL {
 
 const pages: PageAndURL[] = [
   { page: '生成序列号', url: '/' },
-  { page: '补录', url: '/', },
-  { page: '查询', url: '/' },
+  {page: '今日已生成的序列号', url: '/'},
+  { page: '补录', url: '/', adminOnly: true },
+  { page: '查询', url: '/', adminOnly: true },
   { page: '管理', url: '/management', adminOnly: true },
 ];
 
