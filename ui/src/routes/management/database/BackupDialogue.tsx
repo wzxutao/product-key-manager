@@ -43,11 +43,15 @@ export default function BackupDialog(props: {
             <SnackbarAlert msg={alertMsg} />
             <Dialog
                 open={open}
-                onClose={handleClose}
+                onClose={(_, reason) => {
+                    if(reason === 'escapeKeyDown')
+                    handleClose();
+                }}
                 PaperProps={{
                     component: 'form',
                     onSubmit: handleConfirm,
                 }}
+            
             >
                 <DialogTitle>请输入备份文件名</DialogTitle>
                 <DialogContent>
@@ -70,8 +74,8 @@ export default function BackupDialog(props: {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} disabled={working}>Cancel</Button>
-                    <Button type="submit" disabled={working}>Subscribe</Button>
+                    <Button onClick={handleClose} disabled={working}>取消</Button>
+                    <Button type="submit" disabled={working} variant='contained'>提交</Button>
                     {working && <CircularProgress
                         size={24}
                         sx={{
