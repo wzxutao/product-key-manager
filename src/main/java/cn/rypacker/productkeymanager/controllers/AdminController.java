@@ -101,8 +101,7 @@ public class AdminController {
 
         var basePath = StaticInformation.USER_DB_BACKUP_DIR + File.separator;
         if(!FileSystemUtil.isValidFilePath(basePath + fileName)){
-            // 422
-            return new ResponseEntity<>("Invalid filename.", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("Invalid filename.", HttpStatus.BAD_REQUEST);
         }
 
         FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_BACKUP_DIR);
@@ -110,7 +109,7 @@ public class AdminController {
                 Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName),
                 StandardCopyOption.REPLACE_EXISTING);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = "/restore")
