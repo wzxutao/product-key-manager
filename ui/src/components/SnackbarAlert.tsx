@@ -7,6 +7,14 @@ export type SnackbarAlertMessage = {
     severity?: AlertColor
 }
 
+export function useAlert(): [SnackbarAlertMessage | undefined, (msg: string, severity?: SnackbarAlertMessage['severity']) => void] {
+    const [alertMsg, setAlertMsg] = React.useState<SnackbarAlertMessage | undefined>(undefined);
+    const handleAlert = React.useCallback((msg: string, severity?: SnackbarAlertMessage['severity']) => {
+        setAlertMsg({ text: msg, severity });
+    }, [])
+    return [ alertMsg, handleAlert ]
+}
+
 export default function SnackbarAlert(props: {
     msg?: SnackbarAlertMessage,
     autoHideDuration?: number
