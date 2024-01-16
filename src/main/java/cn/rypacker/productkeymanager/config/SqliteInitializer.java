@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,7 +15,10 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import static cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil.getCurrentDbPath;
+
 @Configuration
+@Slf4j
 public class SqliteInitializer {
 
     @Profile("dev")
@@ -36,19 +40,10 @@ public class SqliteInitializer {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.sqlite.JDBC");
         var pwd = System.getProperty("user.dir");
-        String dbName = "records.db-00000000";
-        try(var stream = Files.list(Paths.get(pwd, "data"))) {
-            var optionalDbName = stream
-                    .filter(f -> !Files.isDirectory(f))
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .filter(n -> n.startsWith("records.db")).max(Comparator.naturalOrder());
-            if(optionalDbName.isPresent()){
-                dbName = optionalDbName.get();
-            }
-        }
-        dataSource.setUrl(String.format("jdbc:sqlite:%s%sdata%s%s",
-                pwd, File.separator, File.separator, dbName));
+        var dbName = getCurrentDbPath();
+        log.info("current db name: {}", dbName);
+        dataSource.setUrl(String.format("jdbc:sqlite:%s%s%s",
+                pwd, File.separator, dbName));
         dataSource.setUsername("sa");
         dataSource.setPassword("");
         return dataSource;

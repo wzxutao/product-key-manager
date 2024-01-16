@@ -1,6 +1,7 @@
 package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
+import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
@@ -112,7 +113,7 @@ public class AdminController {
         }
 
         FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_BACKUP_DIR);
-        Files.copy(Path.of(StaticInformation.USER_DB_PATH),
+        Files.copy(Path.of(Sqlite3DBVersionUtil.getCurrentDbPath()),
                 Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName),
                 StandardCopyOption.REPLACE_EXISTING);
 

@@ -26,6 +26,7 @@ export default function RestoreDialog(props: {
 
         getBackupFiles(handleAlert)
             .then(setBackupFileNames)
+            .catch((err) => handleAlert(err.message))
     }, [open])
 
     const handleSubmit = React.useCallback(async (event: React.FormEvent<HTMLFormElement>) => {

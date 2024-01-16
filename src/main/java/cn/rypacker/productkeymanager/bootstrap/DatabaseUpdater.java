@@ -1,11 +1,13 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
+import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.models.RecordStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteException;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,11 +16,6 @@ public class DatabaseUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUpdater.class);
 
-    protected static String dbUrl;
-
-    static {
-        setDbPath(StaticInformation.USER_DB_PATH);
-    }
 
     public static void updateIfNeeded() {
         try{
@@ -43,8 +40,10 @@ public class DatabaseUpdater {
 
     private static Connection getDbConnection(){
         try{
+            var dbUrl = String.format(
+                    "jdbc:sqlite:%s", Sqlite3DBVersionUtil.getCurrentDbPath());
             return DriverManager.getConnection(dbUrl);
-        }catch (SQLException e){
+        }catch (SQLException | IOException e){
             throw new RuntimeException(e);
         }
     }
@@ -57,10 +56,6 @@ public class DatabaseUpdater {
         }
     }
 
-    protected static void setDbPath(String dbPath){
-        dbUrl = String.format(
-                "jdbc:sqlite:%s", dbPath);
-    }
 
     /**
      * added a column to JSONRecord: status

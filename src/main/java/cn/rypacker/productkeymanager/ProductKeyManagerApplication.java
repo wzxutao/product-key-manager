@@ -26,17 +26,16 @@ public class ProductKeyManagerApplication {
     private static final ThreadPoolExecutor mainThreadPool = new ThreadPoolExecutor(
             1, 1,
             0L, java.util.concurrent.TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<>(2)
+            new ArrayBlockingQueue<>(3)
     );
 
     public static void main(String[] args) {
+        ProductKeyManagerApplication.args = args;
         mainThreadPool.submit(() -> ProductKeyManagerApplication.doMain(args));
     }
 
     public static void doMain(String[] args) {
-        ProductKeyManagerApplication.args = args;
-
-        try{
+        try {
             FirstTimeInitializer.initIfNecessary();
             DbRestorer.restoreDbIfRequested();
             DatabaseUpdater.updateIfNeeded();
@@ -44,9 +43,9 @@ public class ProductKeyManagerApplication {
             var app =
                     new SpringApplicationBuilder(ProductKeyManagerApplication.class) {
                     }
-                            .headless(false);
+                            .headless(true);
             context = app.run(args);
-        }catch (Throwable t){
+        } catch (Throwable t) {
             log.error(t.getMessage(), t);
             System.exit(1);
         }
@@ -69,10 +68,9 @@ public class ProductKeyManagerApplication {
             }
         });
         mainThreadPool.submit(() -> {
-                    log.info("restarting application");
-                    doMain(ProductKeyManagerApplication.args);
-                }
-        );
+            log.info("restarting application");
+            doMain(ProductKeyManagerApplication.args);
+        });
     }
 
 }
