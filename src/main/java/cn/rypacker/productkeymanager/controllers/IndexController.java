@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping({"", "/", "index", "index.html"})
+@RequestMapping("/")
 public class IndexController {
 
-    @GetMapping
+    @GetMapping(path = {"", "/", "index", "index.html", "legacy"})
     public String get(){
         return "index";
     }

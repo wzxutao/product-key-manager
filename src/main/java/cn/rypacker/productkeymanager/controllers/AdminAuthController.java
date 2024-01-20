@@ -6,6 +6,7 @@ import cn.rypacker.productkeymanager.models.RequestBodies;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +36,9 @@ public class AdminAuthController {
         return "admin/adminAuth";
     }
 
-    @PostMapping("/login")
+    @PostMapping(path = "/login",
+            consumes = MediaType.ALL_VALUE,
+            produces = "application/json")
     public ResponseEntity<?> getAuthToken(@RequestBody RequestBodies.LoginForm loginForm,
                                           HttpServletRequest request){
         if(loginForm == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
