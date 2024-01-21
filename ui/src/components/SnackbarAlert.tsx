@@ -34,7 +34,7 @@ export default function SnackbarAlert(props: {
             spacing={2}
             sx={{
                 position: 'fixed',
-                top: '5vh',
+                top: '10vh',
                 right: '5vw',
                 zIndex: 9999,
             }}>
