@@ -11,6 +11,7 @@ import {
 import ManagementPage from './routes/management/ManagementPage';
 import Root from './routes/root/Root';
 import RootErrorPage from './routes/root/RootErrorPage';
+import ListingPage from './routes/listing/ListingPage';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/management",
         element: <ManagementPage />,
+      },
+      {
+        path: "/listing",
+        element: <ListingPage />,
       },
     ]
   }
