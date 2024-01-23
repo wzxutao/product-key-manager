@@ -40,10 +40,8 @@ public class CheckKeyController {
     }
 
     @PostMapping(path="/info", consumes = "application/json")
-    public ResponseEntity<?> retrieveInfo(@RequestBody RequestBodies.Key key,
-                                          @CookieValue(value = "auth", required = false) String authToken){
+    public ResponseEntity<?> retrieveInfo(@RequestBody RequestBodies.Key key){
         if(key == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         var record = jsonRecordRepository.findByProductKey(key.key);
         if(record.isEmpty()){

@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static cn.rypacker.productkeymanager.common.Constants.ADMIN_AUTH_COOKIE_KEY;
+import static cn.rypacker.productkeymanager.common.Constants.COOKIE_KEY_ADMIN_AUTH;
 
 @Component
 @Slf4j
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private AdminAuth adminAuth;
@@ -31,7 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             var cookieAge = getTokenValidMinutes() * 60;
             var token = adminAuth.signNewToken(cookieAge);
             // cookie: auth token
-            var cookie = new Cookie(ADMIN_AUTH_COOKIE_KEY, token);
+            var cookie = new Cookie(COOKIE_KEY_ADMIN_AUTH, token);
             cookie.setMaxAge(cookieAge);
             cookie.setPath("/");
             response.addCookie(cookie);
@@ -41,9 +41,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             cookie.setMaxAge(cookieAge);
             response.addCookie(cookie);
 
-            // CORS
-            response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-            response.addHeader("Access-Control-Allow-Credentials", "true");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

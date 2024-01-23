@@ -79,18 +79,12 @@ public class TodayRecordsListController {
     }
 
     @PostMapping(path = "/delete")
-    public ResponseEntity<?> markDelete(@RequestParam(value = "key") String key,
-                                        @CookieValue(value = "normalAuth", required = false)
-                                                String authToken){
-        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> markDelete(@RequestParam(value = "key") String key){
         return changeRecordStatus(key, RecordStatus.MARKED_DELETE);
     }
 
     @PostMapping(path = "/undo-delete")
-    public ResponseEntity<?> undoDelete(@RequestParam(value = "key") String key,
-                                        @CookieValue(value = "normalAuth", required = false)
-                                                String authToken){
-        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> undoDelete(@RequestParam(value = "key") String key){
         return changeRecordStatus(key, RecordStatus.NORMAL);
 
     }

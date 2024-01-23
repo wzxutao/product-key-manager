@@ -102,10 +102,8 @@ public class AdminController {
     }
 
     @PostMapping(path = "/backup")
-    public ResponseEntity<?> requestBackup(@RequestParam(value = "fileName") String fileName,
-                                           @CookieValue(value = "auth", required = false) String authToken)
+    public ResponseEntity<?> requestBackup(@RequestParam(value = "fileName") String fileName)
             throws IOException {
-        if (!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         var basePath = StaticInformation.USER_DB_BACKUP_DIR + File.separator;
         if (!FileSystemUtil.isValidFilePath(basePath + fileName)) {
@@ -129,16 +127,13 @@ public class AdminController {
 
     @ResponseBody
     @GetMapping(path = "/backup-files")
-    public ResponseEntity<List<String>> getBackupFiles(@CookieValue(value = "auth", required = false) String authToken) {
-        if (!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<List<String>> getBackupFiles() {
         return ResponseEntity.ok(FileSystemUtil.getBackupFileNames().stream().sorted().collect(Collectors.toList()));
     }
 
     @PostMapping(path = "/restore")
-    public ResponseEntity<?> requestRestore(@RequestParam(value = "fileName") String fileName,
-                                            @CookieValue(value = "auth", required = false) String authToken) {
+    public ResponseEntity<?> requestRestore(@RequestParam(value = "fileName") String fileName) {
 
-        if (!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         var restoreSrc = Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName);
         if (!restoreSrc.toFile().exists()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -248,11 +243,8 @@ public class AdminController {
 
     @PostMapping(path = "/accounts-add")
     public ResponseEntity<?> addAccounts(
-            @CookieValue(value = "auth", required = false) String authToken,
             @RequestBody Map<String, String> reqBody
     ) {
-        if (!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         reqBody.forEach((k, v) -> {
             normalAccountRepository.add(k, v);
         });
@@ -262,10 +254,7 @@ public class AdminController {
 
     @PostMapping(path = "/accounts-remove", consumes = "application/json")
     public ResponseEntity<?> removeAccounts(
-            @CookieValue(value = "auth", required = false) String authToken,
             @RequestBody RequestBodies.OneList<String> reqBody) {
-        if (!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         var list = reqBody.list;
 
         if (list == null) {

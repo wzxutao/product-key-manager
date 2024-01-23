@@ -34,10 +34,7 @@ public class AdminSetMandatoryFieldsController {
     }
 
     @PostMapping(path = "/modify")
-    public ResponseEntity<?> modify(@RequestBody RequestBodies.MandatoryFieldNames reqBody,
-                                    @CookieValue(value = "auth", required = false) String authToken){
-
-        if(!isAuthorized(authToken)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<?> modify(@RequestBody RequestBodies.MandatoryFieldNames reqBody){
 
         var listOfNames = reqBody.mandatoryFieldNames;
         userConfigStore.update(
