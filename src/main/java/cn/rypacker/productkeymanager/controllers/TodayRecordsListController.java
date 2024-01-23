@@ -9,6 +9,7 @@ import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +28,8 @@ public class TodayRecordsListController {
     @Autowired
     AdminAuth adminAuth;
 
-    private boolean isAuthorized(String authToken){
-        return authToken != null && normalAccountAuth.isTokenValid(authToken);
-    }
-
-    private String returnTemplateIfAuthSucceed(String original, String authToken){
-        return isAuthorized(authToken) ? original : "new-key-auth";
-    }
-
     @GetMapping(path = "")
-    public String get(Model model,
-                      @CookieValue(value = "normalAuth", required = false) String authToken){
+    public String get(Model model){
 
         var fromS = DatetimeUtil.getTodayEpochSeconds(true);
         var toS = DatetimeUtil.getTodayEpochSeconds(false);
@@ -47,6 +39,7 @@ public class TodayRecordsListController {
                         fromS * 1000, (toS * 1000) + 999,
                         RecordStatus.NORMAL);
 
+        var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         String username = normalAccountAuth.getUsername(authToken);
 //        System.out.println("username: " + username);
         model.addAttribute("records",
@@ -61,7 +54,7 @@ public class TodayRecordsListController {
                 }).collect(Collectors.toList())
                 );
 
-        return returnTemplateIfAuthSucceed("today-records-list", authToken);
+        return "today-records-list";
     }
 
 

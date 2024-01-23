@@ -148,16 +148,14 @@ public class AdminController {
     }
 
     @GetMapping(path = "/records")
-    public String getAllRecords(Model model,
-                                @CookieValue(value = "auth", required = false) String authToken) {
+    public String getAllRecords(Model model) {
         model.addAttribute("records", jsonRecordRepository.findAll());
-        return returnTemplateIfAuthSucceed(model, "admin/recordsView", authToken);
+        return "admin/recordsView";
     }
 
     @PostMapping(path = "/records", consumes = "application/json")
     public String getRecords(Model model,
-                             @RequestBody RequestBodies.RecordsQuery recordsQuery,
-                             @CookieValue(value = "auth", required = false) String authToken) {
+                             @RequestBody RequestBodies.RecordsQuery recordsQuery) {
 //        System.out.println(recordsQuery.fromTime + ", " + recordsQuery.toTime);
 
         if (recordsQuery.fromTime == null || recordsQuery.fromTime.isBlank()) {
@@ -184,7 +182,7 @@ public class AdminController {
         }
 
 
-        return returnTemplateIfAuthSucceed(model, "admin/recordsView", authToken);
+        return "admin/recordsView";
     }
 
     @PostMapping(path = "/key-length")
@@ -233,12 +231,11 @@ public class AdminController {
 
     @GetMapping(path = "/accounts")
     public String getAccountsManagementPage(
-            Model model,
-            @CookieValue(value = "auth", required = false) String authToken) {
+            Model model) {
 
         model.addAttribute("accounts",
                 normalAccountRepository.findAllExistingUserNames());
-        return returnTemplateIfAuthSucceed(model, "admin/normalAccountsManager", authToken);
+        return "admin/normalAccountsManager";
     }
 
     @PostMapping(path = "/accounts-add")

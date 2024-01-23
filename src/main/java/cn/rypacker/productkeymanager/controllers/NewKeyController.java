@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,23 +35,12 @@ public class NewKeyController {
     private UserConfigStore userConfigStore;
     @Autowired
     private NormalAccountAuth normalAccountAuth;
-    @Autowired
     private NormalAccountRepository normalAccountRepository;
 
-
-    private boolean isAuthorized(String authToken){
-        return authToken != null && normalAccountAuth.isTokenValid(authToken);
-    }
-
-    private String returnTemplateIfAuthSucceed(String original, String authToken){
-        return isAuthorized(authToken) ? original : "new-key-auth";
-    }
-
     @GetMapping("")
-    public String get(Model model,
-                      @CookieValue(value = "normalAuth", required = false) String authToken){
+    public String get(Model model){
         model.addAttribute("requiredFields", userConfigStore.getData().getRecord().getMandatoryFields());
-        return returnTemplateIfAuthSucceed("new-key", authToken);
+        return "new-key";
     }
 
     @GetMapping("/auth")
@@ -81,11 +71,11 @@ public class NewKeyController {
     // deliberately omit auth for user experience
     @PostMapping(path = "/submit", consumes = "application/json")
     public ResponseEntity<?> postNewKey(
-            @RequestBody Map<String, String> reqBody,
-            @CookieValue(value = "normalAuth") String authToken
+            @RequestBody Map<String, String> reqBody
             ){
         if(reqBody == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         String username = normalAccountAuth.getUsername(authToken);
 
         reqBody.put("__username", username);

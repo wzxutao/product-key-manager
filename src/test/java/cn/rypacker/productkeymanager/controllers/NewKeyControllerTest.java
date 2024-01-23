@@ -31,28 +31,28 @@ class NewKeyControllerTest {
     @Autowired
     NormalAccountAuth normalAccountAuth;
 
-    private void insertRecordsWithoutDuplication(long recordCount) throws Exception {
-        Map<String, String> dummyReqbody = new HashMap<>();
-        var random = new Random();
-
-        var authToken = normalAccountAuth.signNewToken("__unit_test");
-        for(long i=0; i<recordCount; i++){
-            dummyReqbody.put("日期", "700101");
-            var rv = newKeyController.postNewKey(dummyReqbody, authToken);
-            assertEquals(rv.getStatusCode(), HttpStatus.CREATED);
-            log.info("Inserting record " + i);
-        }
-        var allRecords = jsonRecordRepository.findAll();
-        int count = 0;
-        for (var record :
-                allRecords) {
-            log.info("checking record " + count);
-            assertEquals(jsonRecordRepository.findByProductKey(record.getProductKey()).size(), 1);
-            count++;
-        }
-
-        assertTrue(count >= recordCount);
-    }
+//    private void insertRecordsWithoutDuplication(long recordCount) throws Exception {
+//        Map<String, String> dummyReqbody = new HashMap<>();
+//        var random = new Random();
+//
+//        var authToken = normalAccountAuth.signNewToken("__unit_test");
+//        for(long i=0; i<recordCount; i++){
+//            dummyReqbody.put("日期", "700101");
+//            var rv = newKeyController.postNewKey(dummyReqbody, authToken);
+//            assertEquals(rv.getStatusCode(), HttpStatus.CREATED);
+//            log.info("Inserting record " + i);
+//        }
+//        var allRecords = jsonRecordRepository.findAll();
+//        int count = 0;
+//        for (var record :
+//                allRecords) {
+//            log.info("checking record " + count);
+//            assertEquals(jsonRecordRepository.findByProductKey(record.getProductKey()).size(), 1);
+//            count++;
+//        }
+//
+//        assertTrue(count >= recordCount);
+//    }
 
     @Test
     void expand() throws Exception {
