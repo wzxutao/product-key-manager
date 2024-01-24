@@ -17,7 +17,7 @@ function deleteAllCookies() {
 
 
 export const handleAndThrowAuthError = (err: any, errorLogger?: (msg: string) => void) => {
-    if (err?.response?.status in [401, 403]) {
+    if ([401, 403].includes(err?.response?.status)) {
         errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
         deleteAllCookies();
         window.location.href = '/';
