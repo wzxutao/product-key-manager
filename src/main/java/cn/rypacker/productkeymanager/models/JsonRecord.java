@@ -1,27 +1,40 @@
 package cn.rypacker.productkeymanager.models;
 
-import cn.rypacker.productkeymanager.services.DatetimeUtil;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
+@Table(name="json_record")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode
 public class JsonRecord {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
+    @Column(name = "json_string")
     private String jsonString;
 
+    @Column(name= "product_key")
     private String productKey;
 
-    private final long CREATED_MILLI = System.currentTimeMillis();
+    @Column(name = "created_milli")
+    private Long createdMilli = System.currentTimeMillis();
 
     private int status = RecordStatus.NORMAL;
+
+    private transient Map<String, String> expandedFields = new HashMap<>();
 
     public JsonRecord(String jsonString) {
         this.jsonString = jsonString;
@@ -32,83 +45,19 @@ public class JsonRecord {
         this.productKey = Objects.requireNonNull(productKey);
     }
 
-    public JsonRecord() {
+    public JsonRecord withFieldsExpanded(List<String> keys) {
+        var json = new JSONObject(jsonString);
+        for(var k: keys){
+            if(json.has(k)){
+                var v = json.get(k);
+                if(v instanceof JSONArray) {
+                    expandedFields.put(k, ((JSONArray) v).get(0).toString());
+                }else {
+                    expandedFields.put(k, v.toString());
+                }
+            }
+        }
+        return this;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getStatusString(){
-        return RecordStatus.toString(status);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getJsonString() {
-        return jsonString;
-    }
-
-    public void setJsonString(String jsonString) {
-        this.jsonString = jsonString;
-    }
-
-    public String getProductKey() {
-        return productKey;
-    }
-
-    public void setProductKey(String productKey) {
-        this.productKey = productKey;
-    }
-
-    public long getCREATED_MILLI() {
-        return CREATED_MILLI;
-    }
-
-    public String getCreatedFinalDate(){
-        return DatetimeUtil.epochSecondsToFinalDate(CREATED_MILLI / 1000L);
-    }
-
-    public String getBeautifiedContents(){
-        return jsonString
-                .replaceAll("[{}\\]\\[]", "");
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        JsonRecord that = (JsonRecord) o;
-
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-
-    @Override
-    public String toString() {
-        return "JsonRecord{" +
-                "id=" + id +
-                ", jsonString='" + jsonString + '\'' +
-                ", productKey='" + productKey + '\'' +
-                ", CREATED_MILLI=" + CREATED_MILLI +
-                ", status=" + status +
-                '}';
-    }
 }

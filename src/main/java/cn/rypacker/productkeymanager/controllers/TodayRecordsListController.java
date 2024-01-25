@@ -6,6 +6,7 @@ import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
+import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,7 @@ public class TodayRecordsListController {
         var toS = DatetimeUtil.getTodayEpochSeconds(false);
 
         var records = jsonRecordRepository.
-                findByMilliCreatedBetweenAndStatusEquals(
-                        fromS * 1000, (toS * 1000) + 999,
-                        RecordStatus.NORMAL);
-
+                findAll(JsonRecordSpecs.createdMilliBetween(fromS * 1000, (toS * 1000) + 999).and(JsonRecordSpecs.statusEquals(RecordStatus.NORMAL)));
         var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         String username = normalAccountAuth.getUsername(authToken);
 //        System.out.println("username: " + username);

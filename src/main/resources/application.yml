@@ -10,12 +10,12 @@ spring:
   resources:
     static-locations: classpath:/static/
 
-
 logging:
   level:
     org:
       springframework:
-        security: TRACE
+        security: WARN
+
 
 # production
 ---
@@ -27,7 +27,7 @@ spring:
         dialect: cn.rypacker.productkeymanager.databasehelpers.sqlite.SQLiteDialect
         hbm2ddl:
           auto: update
-        show_sql: false
+        show_sql: true
 
 
 # development

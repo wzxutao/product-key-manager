@@ -13,6 +13,7 @@ import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import cn.rypacker.productkeymanager.services.update.UpdateFailedException;
 import cn.rypacker.productkeymanager.services.update.Updater;
+import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,8 +173,7 @@ public class AdminController {
         try {
             var fromS = DatetimeUtil.finalDateToEpochSeconds(recordsQuery.fromTime);
             var toS = DatetimeUtil.finalDateToEpochSeconds(recordsQuery.toTime);
-            var records = jsonRecordRepository.
-                    findByMilliCreatedBetween(fromS * 1000, (toS * 1000) + 999);
+            var records = jsonRecordRepository.findAll(JsonRecordSpecs.createdMilliBetween(fromS * 1000, (toS * 1000) + 999));
 //            System.out.println(fromS * 1000 + " -> " + ((toS * 1000) + 999));
             model.addAttribute("records", records);
 
