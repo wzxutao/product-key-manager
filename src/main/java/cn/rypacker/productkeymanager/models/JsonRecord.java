@@ -34,7 +34,8 @@ public class JsonRecord {
 
     private int status = RecordStatus.NORMAL;
 
-    private transient Map<String, String> expandedFields = new HashMap<>();
+    private transient Map<String, String> expandedAllFields = new HashMap<>();
+    private transient Map<String, String> expandedMandatoryFields = new HashMap<>();
 
     public JsonRecord(String jsonString) {
         this.jsonString = jsonString;
@@ -47,13 +48,20 @@ public class JsonRecord {
 
     public JsonRecord withFieldsExpanded(List<String> keys) {
         var json = new JSONObject(jsonString);
+        for(var k: json.keySet()) {
+            if(json.get(k) instanceof JSONArray) {
+                expandedAllFields.put(k, ((JSONArray) json.get(k)).get(0).toString());
+            }else {
+                throw new RuntimeException("field " + k + " is not an array");
+            }
+        }
         for(var k: keys){
             if(json.has(k)){
                 var v = json.get(k);
                 if(v instanceof JSONArray) {
-                    expandedFields.put(k, ((JSONArray) v).get(0).toString());
+                    expandedMandatoryFields.put(k, ((JSONArray) v).get(0).toString());
                 }else {
-                    expandedFields.put(k, v.toString());
+                    throw new RuntimeException("field " + k + " is not an array");
                 }
             }
         }

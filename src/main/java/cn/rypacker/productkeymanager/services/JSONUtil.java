@@ -14,7 +14,7 @@ public class JSONUtil {
      */
     public static String toStringFrom(Map<String, String> map){
         var json = new JSONObject();
-        map.forEach(json::put);
+        map.forEach(json::append);
         return json.toString();
     }
 
