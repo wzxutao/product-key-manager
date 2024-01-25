@@ -66,7 +66,5 @@ public class QueryRecordsRequest {
 
 
     private Criterion criterion;
-    private String id;
-
 
 }
