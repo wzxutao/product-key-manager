@@ -1,6 +1,7 @@
 package cn.rypacker.productkeymanager.controllers;
 
 
+import cn.rypacker.productkeymanager.dto.JsonRecordDto;
 import cn.rypacker.productkeymanager.dto.adminlisting.QueryRecordsRequest;
 import cn.rypacker.productkeymanager.exception.IdentifiedWebException;
 import cn.rypacker.productkeymanager.models.JsonRecord;
@@ -26,13 +27,13 @@ public class AdminListingControllerV2 {
     private UserConfigStore userConfigStore;
 
     @GetMapping("/query-records")
-    public List<JsonRecord> queryRecords(@RequestBody QueryRecordsRequest reqBody) {
+    public List<JsonRecordDto> queryRecords(@RequestBody QueryRecordsRequest reqBody) {
         var mandatoryFields = userConfigStore.getData().getRecord().getMandatoryFields();
 
         try{
             return jsonRecordRepository.findAll(reqBody.getCriterion() == null ? null : reqBody.getCriterion().toSpecs())
                     .stream()
-                    .map(record -> record.withFieldsExpanded(mandatoryFields))
+                    .map(record -> JsonRecordDto.fromEntity(record, mandatoryFields))
                     .collect(Collectors.toList());
         }catch (UnsupportedOperationException | IllegalArgumentException e) {
             throw new IdentifiedWebException(e.getMessage(), 400);

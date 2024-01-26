@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.models;
+package cn.rypacker.productkeymanager.common;
 
 public class RecordStatus {
     public static final int NORMAL = 0;

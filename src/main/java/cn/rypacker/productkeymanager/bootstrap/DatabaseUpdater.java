@@ -1,8 +1,7 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
-import cn.rypacker.productkeymanager.config.StaticInformation;
-import cn.rypacker.productkeymanager.models.RecordStatus;
+import cn.rypacker.productkeymanager.common.RecordStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteException;

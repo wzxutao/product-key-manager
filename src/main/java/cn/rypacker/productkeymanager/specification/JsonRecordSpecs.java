@@ -20,4 +20,24 @@ public class JsonRecordSpecs {
                         builder.literal("$.username[0]")),
                 username);
     }
+
+    public static Specification<JsonRecord> usernameContains(String substring) {
+        return (root, query, builder) -> builder.like(builder.function("json_extract",
+                        String.class,
+                        root.get("jsonString"),
+                        builder.literal("$.username[0]")),
+                "%" + substring + "%");
+    }
+
+    public static Specification<JsonRecord> payloadContains(String substring) {
+        return (root, query, builder) -> builder.like(root.get("jsonString"), "%" + substring + "%");
+    }
+
+    public static Specification<JsonRecord> fieldEquals(String field, String value) {
+        return (root, query, builder) -> builder.equal(builder.function("json_extract",
+                        String.class,
+                        root.get("jsonString"),
+                        builder.literal("$." + field + "[0]")),
+                value);
+    }
 }

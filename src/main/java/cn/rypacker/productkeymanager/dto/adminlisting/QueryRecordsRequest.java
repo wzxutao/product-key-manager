@@ -16,7 +16,11 @@ public class QueryRecordsRequest {
     public enum Operator {
         CREATED_MILLIS_BETWEEN,
         USERNAME_EQUALS,
-        STATUS_EQUALS
+        USERNAME_CONTAINS,
+        STATUS_EQUALS,
+        PAYLOAD_CONTAINS,
+        FIELD_EQUALS,
+
     }
 
     @Data
@@ -46,8 +50,17 @@ public class QueryRecordsRequest {
                 case USERNAME_EQUALS:
                     specs = usernameEquals(this.operand1);
                     break;
+                case USERNAME_CONTAINS:
+                    specs = usernameContains(this.operand1);
+                    break;
                 case CREATED_MILLIS_BETWEEN:
                     specs = createdMilliBetween(Long.parseLong(this.operand1), Long.parseLong(this.operand2));
+                    break;
+                case PAYLOAD_CONTAINS:
+                    specs = payloadContains(this.operand1);
+                    break;
+                case FIELD_EQUALS:
+                    specs = fieldEquals(this.operand1, this.operand2);
                     break;
                 default:
                     throw new UnsupportedOperationException("Unsupported operator: " + this.operator);

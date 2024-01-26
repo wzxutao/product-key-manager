@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
+
 @RequestMapping("/new-key")
 @Controller
 @Slf4j
@@ -78,7 +80,7 @@ public class NewKeyController {
         var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         String username = normalAccountAuth.getUsername(authToken);
 
-        reqBody.put("__username", username);
+        reqBody.put(RECORD_KEY_USERNAME, username);
         var contents = JSONUtil.toStringFrom(reqBody);
         var date = reqBody.get("日期");
         if(date == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

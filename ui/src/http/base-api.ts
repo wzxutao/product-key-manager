@@ -4,6 +4,8 @@ export { API_URL };
 
 export const AUTH_ERROR = new Error('401')
 
+export type ErrorLogger = (msg: string) => void;
+
 function deleteAllCookies() {
     var cookies = document.cookie.split(";");
 
@@ -16,7 +18,7 @@ function deleteAllCookies() {
 }
 
 
-export const handleAndThrowAuthError = (err: any, errorLogger?: (msg: string) => void) => {
+export const handleAndThrowAuthError = (err: any, errorLogger?: ErrorLogger) => {
     if ([401, 403].includes(err?.response?.status)) {
         errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
         deleteAllCookies();
@@ -25,7 +27,7 @@ export const handleAndThrowAuthError = (err: any, errorLogger?: (msg: string) =>
     }
 }
 
-export const logAndRethrowOtherError = (err: any, errorLogger?: (msg: string) => void): void => {
+export const logAndRethrowOtherError = (err: any, errorLogger?: ErrorLogger): void => {
     console.error(err);
     const msg = '操作失败：' + (err?.response?.status ?? '未知错误')
     errorLogger ? errorLogger(msg) : alert(msg)

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { API_URL } from './base-api'
+import { API_URL, ErrorLogger } from './base-api'
 
 export const login = async (username: string, password: string, 
     isAdmin: boolean, 
-    errorLogger?: (msg: string) => void): Promise<void> => {
+    errorLogger?: ErrorLogger): Promise<void> => {
     try {
         const fd = new FormData();
         fd.append('account', username);

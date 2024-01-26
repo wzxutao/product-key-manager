@@ -1,7 +1,7 @@
 import axios from "axios"
-import { API_URL, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
+import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
 
-export const backup = async (fileName: string, errorLogger?: (msg: string) => void) => {
+export const backup = async (fileName: string, errorLogger?: ErrorLogger) => {
     try {
         await axios.post(
             `${API_URL}/admin/backup?fileName=${encodeURIComponent(fileName)}`,
@@ -18,7 +18,7 @@ export const backup = async (fileName: string, errorLogger?: (msg: string) => vo
     }
 }   
 
-export const getBackupFiles = async (errorLogger?: (msg: string) => void): Promise<string[]>=> {
+export const getBackupFiles = async (errorLogger?: ErrorLogger): Promise<string[]>=> {
     try {
         const {data} = await axios.get(
             `${API_URL}/admin/backup-files`,
@@ -28,11 +28,11 @@ export const getBackupFiles = async (errorLogger?: (msg: string) => void): Promi
     }catch(err: any) { 
         handleAndThrowAuthError(err, errorLogger);
         logAndRethrowOtherError(err, errorLogger);
-        throw err;
+        return Promise.reject(err);
     }
 }
 
-export const restore = async (fileName: string, errorLogger?: (msg: string) => void) => {
+export const restore = async (fileName: string, errorLogger?: ErrorLogger) => {
     try {
         await axios.post(
             `${API_URL}/admin/restore?fileName=${encodeURIComponent(fileName)}`,

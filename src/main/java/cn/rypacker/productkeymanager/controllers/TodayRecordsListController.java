@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
-import cn.rypacker.productkeymanager.models.RecordStatus;
+import cn.rypacker.productkeymanager.common.RecordStatus;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.JSONUtil;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestMapping("/today-records")
