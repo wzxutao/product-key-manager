@@ -8,10 +8,7 @@ import cn.rypacker.productkeymanager.models.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,14 +23,17 @@ public class AdminListingControllerV2 {
     @Autowired
     private UserConfigStore userConfigStore;
 
-    @GetMapping("/query-records")
-    public List<JsonRecordDto> queryRecords(@RequestBody QueryRecordsRequest reqBody) {
-        var mandatoryFields = userConfigStore.getData().getRecord().getMandatoryFields();
+    @GetMapping("/mandatory-fields")
+    public List<String> getMandatoryFields() {
+        return userConfigStore.getData().getRecord().getMandatoryFields();
+    }
 
+    @PostMapping("/query-records")
+    public List<JsonRecordDto> queryRecords(@RequestBody QueryRecordsRequest reqBody) {
         try{
             return jsonRecordRepository.findAll(reqBody.getCriterion() == null ? null : reqBody.getCriterion().toSpecs())
                     .stream()
-                    .map(record -> JsonRecordDto.fromEntity(record, mandatoryFields))
+                    .map(JsonRecordDto::fromEntity)
                     .collect(Collectors.toList());
         }catch (UnsupportedOperationException | IllegalArgumentException e) {
             throw new IdentifiedWebException(e.getMessage(), 400);

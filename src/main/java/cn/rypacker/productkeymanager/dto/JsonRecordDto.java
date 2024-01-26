@@ -30,9 +30,8 @@ public class JsonRecordDto {
     private String Status;
 
     private transient Map<String, String> expandedAllFields = new HashMap<>();
-    private transient Map<String, String> expandedMandatoryFields = new HashMap<>();
 
-    public static JsonRecordDto fromEntity(JsonRecord entity, List<String> mandatoryFields) {
+    public static JsonRecordDto fromEntity(JsonRecord entity) {
         var dto = new JsonRecordDto();
         dto.setId(entity.getId());
         dto.setCreatedMilli(entity.getCreatedMilli());
@@ -47,13 +46,6 @@ public class JsonRecordDto {
                 dto.setUsername(v);
             }else{
                 dto.expandedAllFields.put(k, v);
-            }
-        }
-        if(mandatoryFields != null){
-            for(var k: mandatoryFields){
-                if(json.has(k)){
-                    dto.expandedMandatoryFields.put(k, ((JSONArray) json.get(k)).get(0).toString());
-                }
             }
         }
         return dto;

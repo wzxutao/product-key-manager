@@ -9,50 +9,21 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import "./ListingPage.less"
+import { RecordDto } from '../../http/dto/record-dto';
 
-interface Data {
-    key: string;
-    creationTime: string;
-    contents: string;
-    status: string;
-}
 
 interface Column {
-    id: keyof Data;
+    id: string;
     label: string;
+    format: (row: RecordDto) => any;
     minWidth?: number;
     align?: 'right';
-    format?: (value: number) => string;
 }
 
-const columns: readonly Column[] = [
-    { id: 'key', label: 'Key', minWidth: 170 },
-    { id: 'creationTime', label: '生成时间', minWidth: 100 },
-    {
-        id: 'contents',
-        label: '内容',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'status',
-        label: '状态',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toFixed(2),
-    },
-];
-
-const rows: Data[] = Array(90).fill(null).map(() => ({
-    key: 'abcdes',
-    creationTime: '1,380,004,385',
-    contents: "string",
-    status: "normal",
-}));
-
-
-export default function ListingResultTable() {
+export default function ListingResultTable(props: {
+    data: RecordDto[] | null
+}) {
+    const { data } = props;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -65,6 +36,68 @@ export default function ListingResultTable() {
         setPage(0);
     };
 
+    const columns: Column[] = React.useMemo(() => {
+        return [
+            {
+                "id": "productKey",
+                "label": "序列号",
+                "format": dto => dto.productKey
+            },
+            {
+                "id": "status",
+                "label": "状态",
+                "format": dto => dto.status
+            },
+            {
+                "id": "username",
+                "label": "创建者",
+                "format": dto => dto.username
+            },
+            {
+                "id": "createdAt",
+                "label": "创建时间",
+                "format": dto => new Date(dto.createdMilli).toLocaleString()
+            },
+            {
+                "id": "contents",
+                "label": "内容",
+                "format": dto => {
+                    var fields = dto.expandedAllFields;
+                    const rv = [];
+                    for (const k in fields) {
+                        rv.push(
+                            <p className='content-row'>
+                                <span className='content-key'>{k}: </span>{fields[k]}
+                            </p>
+                        )
+                    }
+                    return rv;
+                }
+            }
+        ]
+    }, [])
+
+    const rows = React.useMemo(() => {
+        return (
+            data
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                    return (
+                        <TableRow
+                            hover role="checkbox" tabIndex={-1} key={row.id}>
+                            {columns.map((column) => {
+                                return (
+                                    <TableCell className='table-row-cell'
+                                        key={column.id} align={column.align}>
+                                        {column.format(row)}
+                                    </TableCell>
+                                );
+                            })}
+                        </TableRow>
+                    );
+                }))
+    }, [data, page, rowsPerPage])
+
     return (
         <Paper className="list-page-table">
             <TableContainer>
@@ -73,9 +106,10 @@ export default function ListingResultTable() {
                         <TableRow>
                             {columns.map((column) => (
                                 <TableCell
+                                    className='table-head-cell'
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth }}
+                                    style={{ minWidth: column.minWidth ?? 170 }}
                                 >
                                     {column.label}
                                 </TableCell>
@@ -83,31 +117,14 @@ export default function ListingResultTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.key}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.format && typeof value === 'number'
-                                                        ? column.format(value)
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                        {rows}
                     </TableBody>
                 </Table>
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={data?.length ?? 0}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

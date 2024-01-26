@@ -20,26 +20,37 @@ export type QueryRecordCriterion = {
 }
 
 export type QueryRecordsRequest = {
-    criterion: QueryRecordCriterion
+    criterion?: QueryRecordCriterion
 }
 
 
 export const queryRecords = async (
     request: QueryRecordsRequest,
-    errorLogger: ErrorLogger
-): Promise<RecordDto> => {
+    errorLogger?: ErrorLogger
+): Promise<RecordDto[]> => {
     try {
-        const { data } = await axios.request(
-            {
-                method: 'GET',
-                url: `${API_URL}/admin/listing/query-records`,
-                withCredentials: true,
-                data: request
-            }
+        const { data } = await axios.post(
+            `${API_URL}/admin/listing/query-records`,
+            request,
+            { withCredentials: true }
         )
 
         return data;
     } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err);
+    }
+}
+
+export const getMandatoryFields = async (errorLogger?: ErrorLogger): Promise<string[]> => {
+    try {
+        const {data} = await axios.get(
+            `${API_URL}/admin/listing/mandatory-fields`,
+            {withCredentials: true}
+        )
+        return data;
+    }catch(err: any){
         handleAndThrowAuthError(err, errorLogger);
         logAndRethrowOtherError(err, errorLogger);
         return Promise.reject(err);

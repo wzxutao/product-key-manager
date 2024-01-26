@@ -4,6 +4,5 @@ export type RecordDto = {
     createdMilli: number,
     productKey: string,
     status: string,
-    expandedAllFields: Record<string, string>,
-    expandedMandatoryFields: Record<string, string>
+    expandedAllFields: Record<string, string>
 }

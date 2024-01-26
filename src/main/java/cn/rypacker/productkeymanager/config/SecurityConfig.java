@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,9 +39,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             var cors = new org.springframework.web.cors.CorsConfiguration();
-            cors.addAllowedOriginPattern("http://localhost:3000");
+            cors.addAllowedOrigin("http://localhost:3000");
             List.of("GET", "POST", "PUT", "DELETE", "OPTIONS").forEach(cors::addAllowedMethod);
             cors.setAllowCredentials(true);
+            cors.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
             return cors;
         };
     }

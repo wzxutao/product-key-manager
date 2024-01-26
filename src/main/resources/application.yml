@@ -14,7 +14,7 @@ logging:
   level:
     org:
       springframework:
-        security: WARN
+        security: TRACE
 
 
 # production
