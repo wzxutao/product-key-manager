@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 
 import "./ListingPage.less"
 import { RecordDto } from '../../http/dto/record-dto';
+import { CircularProgress } from '@mui/material';
 
 
 interface Column {
@@ -117,7 +118,16 @@ export default function ListingResultTable(props: {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows}
+                        {data === null &&
+                            <TableRow>
+                                <TableCell colSpan={columns.length} sx={{
+                                    textAlign: 'center',
+                                }}>
+                                    <CircularProgress />
+                                </TableCell>
+                            </TableRow>
+                        }
+                        {data !== null && rows}
                     </TableBody>
                 </Table>
             </TableContainer>
