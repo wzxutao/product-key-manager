@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Divider, Paper } from '@mui/material';
 import NewRuleInput from './NewRuleInput';
 import RulesGraph from './RulesGraph';
-import { QueryRecordCriterion } from '../../http/listing-api';
+import { QueryRecordCriterion, ROOT_CRITERION } from '../../http/listing-api';
 
 export type OperandConfig = {
     label: string,
@@ -143,9 +143,16 @@ const operators: OperatorDefinition = {
 
 
 export default function FilterAccordion() {
+    const [rootCr, setRootCr] = React.useState<QueryRecordCriterion>({ ...ROOT_CRITERION });
+    const [selectedCriteria, setSelectedCriteria] = React.useState<QueryRecordCriterion>(rootCr);
 
-    const [criteria, setCriteria] = React.useState<QueryRecordCriterion | null>(null);
-    const [selectedCriteria, setSelectedCriteria] = React.useState<QueryRecordCriterion | null>(null);
+
+    const handleAddCriterion = React.useCallback((criterion: QueryRecordCriterion) => { 
+        selectedCriteria.children.push(criterion)
+        const newCr = {...rootCr}
+        setRootCr(newCr);
+        setSelectedCriteria(criterion);
+    }, [rootCr]);
 
     return (
         <Paper className='list-page-filter' elevation={3}>
@@ -156,13 +163,16 @@ export default function FilterAccordion() {
                     <Typography><b>筛选条件</b></Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <NewRuleInput operators={operators} />
+                    <NewRuleInput
+                        operators={operators}
+                        isFirstCriterion={selectedCriteria === null}
+                        onAddCriterion={handleAddCriterion} />
                     <Divider />
                     <Typography>
                         <b>当前条件：</b>
                     </Typography>
                     <RulesGraph
-                        criteria={criteria}
+                        criteria={rootCr}
                         selectedCriteria={selectedCriteria}
                         setSelectedCriteria={setSelectedCriteria} />
                 </AccordionDetails>

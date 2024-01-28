@@ -2,21 +2,23 @@ import axios from "axios"
 import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
 import { RecordDto } from "./dto/record-dto";
 
-export type QueryRecordCriterionOperator =
-    'CREATED_MILLIS_BETWEEN' |
-    'USERNAME_EQUALS' |
-    'USERNAME_CONTAINS' |
-    'STATUS_EQUALS' |
-    'PAYLOAD_CONTAINS' |
-    'FIELD_EQUALS';
+export const ROOT_CRITERION: Readonly<QueryRecordCriterion> = Object.freeze({
+    children: [],
+    operand1: '',
+    operand2: '',
+    operator: "ROOT"
+});
+
+export function isRootCriterion(criterion: QueryRecordCriterion): boolean {
+    return criterion.operator === ROOT_CRITERION.operator;
+}
 
 export type QueryRecordCriterion = {
-    child: QueryRecordCriterion,
-    next: QueryRecordCriterion,
-    connectedByAnd: boolean,
+    children: QueryRecordCriterion[],
     operand1: string,
     operand2: string,
-    operator: QueryRecordCriterionOperator
+    operator: string
+    helperText?: string
 }
 
 export type QueryRecordsRequest = {

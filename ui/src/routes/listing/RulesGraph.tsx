@@ -5,37 +5,46 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import StarIcon from '@mui/icons-material/Star';
-import { QueryRecordCriterion } from '../../http/listing-api';
+import { QueryRecordCriterion, isRootCriterion } from '../../http/listing-api';
+
+let key = 0;
+
+function buildListItemFromCriterion(
+    criterion: QueryRecordCriterion,
+    selectedCriterion: QueryRecordCriterion,
+    onClick: (cr: QueryRecordCriterion) => void
+) {
+    return <ListItem key={key++} disablePadding
+        onClick={(ev) => {
+            onClick(criterion)
+            ev.stopPropagation();
+        }}
+    >
+        <ListItemButton>
+            {criterion === selectedCriterion && <ListItemIcon><StarIcon /></ListItemIcon>}
+            <ListItemText inset primary={isRootCriterion(criterion) ? '所有数据' : criterion.helperText} />
+        </ListItemButton>
+        {criterion.children && criterion.children.length > 0 &&
+            <List>
+                {criterion.children.map(c => buildListItemFromCriterion(c, selectedCriterion, onClick))}
+            </List>
+        }
+    </ListItem>
+}
 
 
 export default function RulesGraph(props: {
-    criteria: QueryRecordCriterion | null,
-    selectedCriteria: QueryRecordCriterion | null,
-    setSelectedCriteria: (criteria: QueryRecordCriterion | null) => void,
+    criteria: QueryRecordCriterion,
+    selectedCriteria: QueryRecordCriterion,
+    setSelectedCriteria: (criteria: QueryRecordCriterion) => void,
 }) {
     const { criteria, selectedCriteria, setSelectedCriteria } = props;
 
     const graph = React.useMemo(() => {
-        if (criteria === null) {
-            return <p>所有数据</p>
-        }
-
         return <List
             className="rule-graph-list"
         >
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemIcon>
-                        <StarIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Chelsea Otakan" />
-                </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-                <ListItemButton>
-                    <ListItemText inset primary="Eric Hoffman" />
-                </ListItemButton>
-            </ListItem>
+            {buildListItemFromCriterion(criteria, selectedCriteria, setSelectedCriteria)}
         </List>
     }, [criteria, selectedCriteria])
 

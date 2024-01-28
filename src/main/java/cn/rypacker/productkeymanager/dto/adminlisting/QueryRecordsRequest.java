@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 import static cn.rypacker.productkeymanager.specification.JsonRecordSpecs.*;
 
 @Data
@@ -14,6 +16,7 @@ import static cn.rypacker.productkeymanager.specification.JsonRecordSpecs.*;
 public class QueryRecordsRequest {
 
     public enum Operator {
+        ROOT,
         CREATED_MILLIS_BETWEEN,
         CREATED_MILLIS_AFTER,
         CREATED_MILLIS_BEFORE,
@@ -33,10 +36,8 @@ public class QueryRecordsRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Criterion {
-        private Criterion child;
-
-        private Criterion next;
-        private Boolean connectedByAnd;
+        // parent and children are composed by AND, while siblings are composed by OR
+        private List<Criterion> children;
 
         private String operand1;
         private String operand2;
@@ -44,12 +45,10 @@ public class QueryRecordsRequest {
         private Operator operator;
 
         public Specification<JsonRecord> toSpecs() {
-            if (this.child != null) { // not leaf node
-                return this.child.toSpecs();
-            }
-
             Specification<JsonRecord> specs = null;
             switch (this.operator) {
+                case ROOT:
+                    specs = Specification.where(null);
                 case CREATED_MILLIS_BETWEEN:
                     specs = createdMilliBetween(Long.parseLong(this.operand1), Long.parseLong(this.operand2));
                     break;
@@ -89,19 +88,17 @@ public class QueryRecordsRequest {
                 case FIELD_NOT_CONTAINS:
                     specs = fieldNotContains(this.operand1, this.operand2);
                     break;
-
                 default:
                     throw new UnsupportedOperationException("Unsupported operator: " + this.operator);
             }
-            if (next == null) return specs;
-            if (connectedByAnd == null) {
-                throw new IllegalArgumentException("connectedByAnd cannot be null");
+
+            if(this.children == null || this.children.isEmpty()) return specs;
+
+            Specification<JsonRecord> childSpec = Specification.where(null);
+            for(var child: children) {
+                childSpec = childSpec.or(child.toSpecs());
             }
-            if (connectedByAnd) {
-                return specs.and(next.toSpecs());
-            } else {
-                return specs.or(next.toSpecs());
-            }
+            return specs.and(childSpec);
         }
     }
 

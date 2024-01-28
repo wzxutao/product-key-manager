@@ -67,7 +67,7 @@ export default function ListingResultTable(props: {
                     const rv = [];
                     for (const k in fields) {
                         rv.push(
-                            <p className='content-row'>
+                            <p key={k} className='content-row'>
                                 <span className='content-key'>{k}: </span>{fields[k]}
                             </p>
                         )
