@@ -146,13 +146,13 @@ export default function FilterAccordion() {
     const [rootCr, setRootCr] = React.useState<QueryRecordCriterion>({ ...ROOT_CRITERION });
     const [selectedCriteria, setSelectedCriteria] = React.useState<QueryRecordCriterion>(rootCr);
 
-
     const handleAddCriterion = React.useCallback((criterion: QueryRecordCriterion) => { 
+        console.log('selected cr:', selectedCriteria)
         selectedCriteria.children.push(criterion)
         const newCr = {...rootCr}
         setRootCr(newCr);
         setSelectedCriteria(criterion);
-    }, [rootCr]);
+    }, [rootCr, selectedCriteria]);
 
     return (
         <Paper className='list-page-filter' elevation={3}>

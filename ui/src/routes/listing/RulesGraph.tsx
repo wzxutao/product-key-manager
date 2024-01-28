@@ -22,10 +22,10 @@ function buildListItemFromCriterion(
     >
         <ListItemButton>
             {criterion === selectedCriterion && <ListItemIcon><StarIcon /></ListItemIcon>}
-            <ListItemText inset primary={isRootCriterion(criterion) ? '所有数据' : criterion.helperText} />
+            <ListItemText inset={criterion !== selectedCriterion} primary={isRootCriterion(criterion) ? '所有数据' : criterion.helperText} />
         </ListItemButton>
         {criterion.children && criterion.children.length > 0 &&
-            <List>
+            <List className="rule-graph-list-nested">
                 {criterion.children.map(c => buildListItemFromCriterion(c, selectedCriterion, onClick))}
             </List>
         }
@@ -46,7 +46,7 @@ export default function RulesGraph(props: {
         >
             {buildListItemFromCriterion(criteria, selectedCriteria, setSelectedCriteria)}
         </List>
-    }, [criteria, selectedCriteria])
+    }, [criteria, selectedCriteria, setSelectedCriteria])
 
     return (
         <div className='rule-graph'>

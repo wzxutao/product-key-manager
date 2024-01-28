@@ -14,7 +14,53 @@
         }
 
         .rule-graph {
-            .rule-graph-list {
+            overflow: auto;
+            .rule-graph-list,
+            .rule-graph-list-nested {
+                li{
+                    margin-bottom: 4px;
+
+                    & > * {
+                        flex: 0 0 auto;
+
+                    }
+
+                    &::after {
+                        content: "";
+                        flex: 1 1 auto;
+                    }
+
+                    
+                }
+
+            }
+
+            .rule-graph-list-nested {
+                position: relative;
+                margin-left: 16px;
+
+                @border-color: #777;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 20px;
+                    height: 100%;
+                    border-top: 2px solid @border-color;
+                    border-bottom: 2px solid @border-color;
+                    border-left: 2px solid @border-color;
+                }
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    left: -16px;
+                    width: 16px;
+                    border-top: 2px solid @border-color;
+                }
 
             }
         }
