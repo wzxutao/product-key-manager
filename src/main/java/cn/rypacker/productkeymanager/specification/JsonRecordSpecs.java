@@ -3,7 +3,11 @@ package cn.rypacker.productkeymanager.specification;
 import cn.rypacker.productkeymanager.models.JsonRecord;
 import org.springframework.data.jpa.domain.Specification;
 
+import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
+
 public class JsonRecordSpecs {
+
+    private static final String usernameKey = String.format("$.%s[0]", RECORD_KEY_USERNAME);
 
     public static Specification<JsonRecord> createdMilliBetween(Long from, Long to) {
         return (root, query, builder) -> builder.between(root.get("createdMilli"), from, to);
@@ -22,7 +26,7 @@ public class JsonRecordSpecs {
         return (root, query, builder) -> builder.equal(builder.function("json_extract",
                         String.class,
                         root.get("jsonString"),
-                        builder.literal("$.username[0]")),
+                        builder.literal(usernameKey)),
                 username);
     }
 
@@ -30,7 +34,7 @@ public class JsonRecordSpecs {
         return (root, query, builder) -> builder.notEqual(builder.function("json_extract",
                         String.class,
                         root.get("jsonString"),
-                        builder.literal("$.username[0]")),
+                        builder.literal(usernameKey)),
                 username);
     }
 
@@ -38,7 +42,7 @@ public class JsonRecordSpecs {
         return (root, query, builder) -> builder.like(builder.function("json_extract",
                         String.class,
                         root.get("jsonString"),
-                        builder.literal("$.username[0]")),
+                        builder.literal(usernameKey)),
                 "%" + substring + "%");
     }
 

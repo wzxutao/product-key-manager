@@ -49,6 +49,7 @@ public class QueryRecordsRequest {
             switch (this.operator) {
                 case ROOT:
                     specs = Specification.where(null);
+                    break;
                 case CREATED_MILLIS_BETWEEN:
                     specs = createdMilliBetween(Long.parseLong(this.operand1), Long.parseLong(this.operand2));
                     break;

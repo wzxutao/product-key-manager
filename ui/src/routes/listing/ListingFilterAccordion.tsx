@@ -7,7 +7,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Divider, Paper } from '@mui/material';
 import NewRuleInput from './NewRuleInput';
 import RulesGraph from './RulesGraph';
-import { QueryRecordCriterion, ROOT_CRITERION } from '../../http/listing-api';
+import { QueryRecordCriterion, rootCriterion } from '../../http/listing-api';
+import ListingRuleOperations from './ListingRuleOperations';
 
 export type OperandConfig = {
     label: string,
@@ -121,13 +122,19 @@ const operators: OperatorDefinition = {
             operator: "等于",
             code: "FIELD_EQUALS",
             value1Config: {
-                label: "值"
+                label: "字段名"
+            },
+            value2Config: {
+                label: "字段值"
             },
         },
         {
             operator: "包含",
             code: "FIELD_CONTAINS",
             value1Config: {
+                label: "字段名"
+            },
+            value2Config: {
                 label: "字符串"
             },
         },
@@ -135,6 +142,9 @@ const operators: OperatorDefinition = {
             operator: "不包含",
             code: "FIELD_NOT_CONTAINS",
             value1Config: {
+                label: "字段名"
+            },
+            value2Config: {
                 label: "字符串"
             },
         }
@@ -142,17 +152,37 @@ const operators: OperatorDefinition = {
 }
 
 
-export default function FilterAccordion() {
-    const [rootCr, setRootCr] = React.useState<QueryRecordCriterion>({ ...ROOT_CRITERION });
+export default function FilterAccordion(
+    props: {
+        rootCr: QueryRecordCriterion,
+        setRootCr: (cr: QueryRecordCriterion) => void
+    }
+) {
+    const { rootCr, setRootCr } = props;
+
     const [selectedCriteria, setSelectedCriteria] = React.useState<QueryRecordCriterion>(rootCr);
 
-    const handleAddCriterion = React.useCallback((criterion: QueryRecordCriterion) => { 
-        console.log('selected cr:', selectedCriteria)
+    const handleAddCriterion = React.useCallback((criterion: QueryRecordCriterion) => {
+        criterion.parent = selectedCriteria;
         selectedCriteria.children.push(criterion)
-        const newCr = {...rootCr}
-        setRootCr(newCr);
         setSelectedCriteria(criterion);
-    }, [rootCr, selectedCriteria]);
+    }, [selectedCriteria]);
+
+    const handleClear = React.useCallback(() => {
+        const cr = rootCriterion()
+        setRootCr(cr)
+        setSelectedCriteria(cr)
+    }, [setRootCr]);
+
+    const handleDeleteSelected = React.useCallback(() => {
+        if (selectedCriteria === null) return;
+        const parent = selectedCriteria.parent;
+        if (!parent) return;
+
+        parent.children = parent.children.filter(c => c !== selectedCriteria);
+        setSelectedCriteria(parent);
+    }, [selectedCriteria]);
+
 
     return (
         <Paper className='list-page-filter' elevation={3}>
@@ -163,14 +193,17 @@ export default function FilterAccordion() {
                     <Typography><b>筛选条件</b></Typography>
                 </AccordionSummary>
                 <AccordionDetails>
+                    <Divider><b>添加新条件</b></Divider>
                     <NewRuleInput
                         operators={operators}
                         isFirstCriterion={selectedCriteria === null}
                         onAddCriterion={handleAddCriterion} />
-                    <Divider />
-                    <Typography>
-                        <b>当前条件：</b>
-                    </Typography>
+                    <Divider><b>操作：</b></Divider>
+                    <ListingRuleOperations
+                        onClear={handleClear}
+                        onDeleteSelected={handleDeleteSelected}
+                    />
+                    <Divider><b>当前条件：</b></Divider>
                     <RulesGraph
                         criteria={rootCr}
                         selectedCriteria={selectedCriteria}
