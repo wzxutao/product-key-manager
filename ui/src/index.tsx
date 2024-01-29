@@ -12,6 +12,7 @@ import ManagementPage from './routes/management/ManagementPage';
 import Root from './routes/root/Root';
 import RootErrorPage from './routes/root/RootErrorPage';
 import ListingPage from './routes/listing/ListingPage';
+import KeyGenPage from './routes/keygen/KeyGenPage';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "/keygen",
+        element: <KeyGenPage />,
       },
       {
         path: "/management",
