@@ -16,7 +16,7 @@ export default function ListingPage() {
 
     React.useEffect(() => {
         queryRecords({}, handleAlert).then(setData).catch(err => {})
-    }, [])
+    }, [handleAlert])
 
     return (<>
         <SnackbarAlert msg={alertMsg} />

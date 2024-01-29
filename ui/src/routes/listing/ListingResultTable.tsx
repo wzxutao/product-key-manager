@@ -97,7 +97,7 @@ export default function ListingResultTable(props: {
                         </TableRow>
                     );
                 }))
-    }, [data, page, rowsPerPage])
+    }, [data, page, rowsPerPage, columns])
 
     return (
         <Paper className="list-page-table">

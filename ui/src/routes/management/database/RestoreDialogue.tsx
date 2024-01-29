@@ -1,14 +1,13 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { backup as doBackup, getBackupFiles, restore } from '../../../http/admin-api';
+import { getBackupFiles, restore } from '../../../http/admin-api';
 import { CircularProgress, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { green } from '@mui/material/colors';
-import SnackbarAlert, { SnackbarAlertMessage, useAlert } from '../../../components/SnackbarAlert';
+import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 
 export default function RestoreDialog(props: {
     open: boolean
@@ -27,7 +26,7 @@ export default function RestoreDialog(props: {
         getBackupFiles(handleAlert)
             .then(setBackupFileNames)
             .catch((err) => handleAlert(err.message))
-    }, [open])
+    }, [open, handleAlert])
 
     const handleSubmit = React.useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -42,7 +41,7 @@ export default function RestoreDialog(props: {
             setSubmitting(false);
         }
 
-    }, [selectedFile]);
+    }, [selectedFile, handleAlert, handleClose]);
 
     return (
         <>
@@ -56,6 +55,10 @@ export default function RestoreDialog(props: {
                 PaperProps={{
                     component: 'form',
                     onSubmit: handleSubmit,
+                }}
+                sx={{
+                    overflow: 'scroll',
+                    maxHeight: '80vh'
                 }}
 
             >

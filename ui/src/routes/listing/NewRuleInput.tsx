@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Stack, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Stack, TextField, Tooltip } from '@mui/material';
 import { OperatorDefinition } from './ListingFilterAccordion';
 import { QueryRecordCriterion } from '../../http/listing-api';
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
@@ -14,7 +14,7 @@ export default function NewRuleInput(props: {
     isFirstCriterion: boolean
     onAddCriterion: (criterion: QueryRecordCriterion) => void
 }) {
-    const { operators, isFirstCriterion, onAddCriterion } = props;
+    const { operators, onAddCriterion } = props;
 
     const [filterTarget, setFilterTarget] = React.useState<string | null>(null);
     const [filterOperator, setFilterOperator] = React.useState<OperatorDefinition[0][0] | null>(null)
@@ -175,7 +175,7 @@ export default function NewRuleInput(props: {
             helperText: `${filterTarget} ${filterOperator.operator} ${value1Formatted} ${value2Formatted}`
         }
         onAddCriterion(cr)
-    }, [onAddCriterion, value1, value2, filterOperator])
+    }, [onAddCriterion, value1, value2, filterOperator, filterTarget, handleAlert])
 
 
     return (
