@@ -2,10 +2,11 @@ import React from 'react';
 
 import './KeyGenPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
-import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControlLabel, Grid, Input, Paper, Stack, TextField } from '@mui/material';
+import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
 import { getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 const INPUT_DATE_KEY = "__date";
 
@@ -19,6 +20,7 @@ export default function KeyGenPage() {
 
     const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
     const [additionalFields, setAdditionalFields] = React.useState<string[]>([]);
+    const [batchGenCount, setBatchGenCount] = React.useState<number>(1);
 
     React.useEffect(() => {
         getMandatoryFields(handleAlert)
@@ -54,7 +56,28 @@ export default function KeyGenPage() {
         setAdditionalFields((prev) => [...prev, '']);
     }, [])
 
-    console.log(additionalFields);
+    const handleSubmit = React.useCallback(() => {
+        if (formRef === null) return;
+
+        const valueInputs: HTMLInputElement[] = [];
+        for (let i = 0; i < formRef.elements.length; i++) {
+            const el = formRef.elements[i];
+
+            if (!el.hasAttribute("name")) continue;
+            if (el.nodeName !== "INPUT") continue;
+
+            if(el.getAttribute("name")!.trim().length === 0) continue;
+
+            valueInputs.push(el as any);
+        }
+
+        const kvPairs: Record<string, string> = {}
+        for (const el of valueInputs) {
+            kvPairs[el.getAttribute("name")!] = el.value;
+        }
+        console.log(kvPairs)
+    }, [formRef])
+
 
     return (<>
         <SnackbarAlert msg={alertMsg} />
@@ -80,7 +103,7 @@ export default function KeyGenPage() {
                             label="今天" />
                         <Grid item component={Input}
                             placeholder='YYMMDD'
-                            id={INPUT_DATE_KEY}
+                            name={INPUT_DATE_KEY}
                             onBlur={validateDate}
                             error={!dateValid}
                             disabled={todayChecked} xs={8} />
@@ -98,7 +121,7 @@ export default function KeyGenPage() {
                                 xs={4} value={f} />
                             <Grid item component={Input}
                                 placeholder={f}
-                                id={f}
+                                name={f}
                                 xs={8} />
                         </div>
                     )}
@@ -111,15 +134,37 @@ export default function KeyGenPage() {
                         className="add-field-btn"
                         onClick={handleAddAdditionalField}
                         xs={12} />
-                    {additionalFields.map((f, i) => (
-                        <div className="key-gen-form-row" key={i}>
+                    {additionalFields.map((f, i) => {
+                        if (f === undefined) return undefined;
+
+                        return <div className="key-gen-form-row" key={i}>
                             <Grid item component={TextField} className='field-key' variant="filled"
-                                xs={4} />
+                                xs={4}
+                                onChange={(ev: any) => {
+                                    setAdditionalFields((prev) => {
+                                        const rv = [...prev];
+                                        rv[i] = ev.target.value;
+                                        return rv;
+                                    });
+                                }}
+                                value={f}
+                            />
                             <Grid item component={Input}
                                 placeholder={f}
-                                xs={8} />
+                                name={f}
+                                xs={7} />
+                            <Grid item component={RemoveCircleOutlineIcon}
+                                className='remove-field-btn'
+                                onClick={() => {
+                                    setAdditionalFields((prev) => {
+                                        const rv = [...prev];
+                                        delete rv[i];
+                                        return rv;
+                                    });
+                                }}
+                                xs={1} />
                         </div>
-                    ))}
+                    })}
                 </Grid>
             </Paper>
 
@@ -127,7 +172,16 @@ export default function KeyGenPage() {
                 <Grid container justifyContent='space-evenly'>
                     <Grid item component={Button} variant='contained' xs={2}
                         className="gen-btn"
+                        onClick={handleSubmit}
                     >生成</Grid>
+                    <Grid item component={FormControl} xs={1} variant="outlined">
+                        <OutlinedInput
+                            value={batchGenCount}
+                            type='number'
+                            onChange={(ev) => { setBatchGenCount(parseInt(ev.target.value)) }}
+                            endAdornment={<InputAdornment position="end">个</InputAdornment>}
+                        />
+                    </Grid>
                     <Grid item component={Box} className="key-container" xs={8}>
                         <code>123123</code>
                     </Grid>
