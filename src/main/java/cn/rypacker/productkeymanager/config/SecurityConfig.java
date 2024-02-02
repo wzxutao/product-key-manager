@@ -56,9 +56,10 @@ public class SecurityConfig {
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .antMatchers(
                         "/check-key/**",
-                        "/new-key",
-                        "/today-records",
-                        "/util").hasAuthority(ROLE_NORMAL)
+                        "/new-key/**",
+                        "/today-records/**",
+                        "/keygen/v2/**",
+                        "/util/**").hasAuthority(ROLE_NORMAL)
                 .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable()

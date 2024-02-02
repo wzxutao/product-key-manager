@@ -1,20 +1,48 @@
 #KeyGenPage {
-    #key-gen-form {
-        margin: 20px 14px 0;
+    #key-gen-form-container {
+        margin: 14px 20px;
 
-        .key-gen-form-row {
-            display: contents;
+        #key-gen-form {
+            padding: 14px 14px 14px;
 
-            .MuiInputBase-input {
-                padding: 8px 4px;
+            .form-divider {
+
+                &:first-of-type {
+                    margin: 0;
+                }
+
+                margin: 18px 0 0;
             }
 
-            .mandatory-key .Mui-disabled {
-                text-align: center;
-
-                color: black;
-                -webkit-text-fill-color: black;
+            .add-field-btn {
+                font-size: 36px;
+                cursor: pointer;
             }
+
+            .key-gen-form-row {
+                display: contents;
+
+                .MuiInputBase-input {
+                    padding: 8px 4px;
+                }
+
+                .field-key .MuiInputBase-root{
+                    input {
+                        text-align: center;
+                        color: black;
+                        -webkit-text-fill-color: black;
+                    }
+                    width: 95%;
+                }
+            }
+        }
+    }
+
+    #key-gen-result-container {
+        margin: 28px 20px;
+
+        .key-container{
+            border: 1px solid black;
         }
     }
 }
