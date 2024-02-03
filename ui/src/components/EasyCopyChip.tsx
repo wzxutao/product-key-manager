@@ -22,7 +22,7 @@ export function EasyCopyChip(props: {
         <Tooltip title={tooltipShowCopied ? '已复制' : '单击复制'}>
             <input className={['easy-copy-chip',
                 copied ? 'easy-copy-chip-copied' : ''].join(' ')}
-                onClick={handleClick} value={text}
+                onClick={handleClick} value={text} readOnly
                 onBlur={() => setTooltipShowCopied(false)}></input>
         </Tooltip>
     </>)

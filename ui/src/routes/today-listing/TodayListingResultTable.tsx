@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import { RecordDto } from '../../http/dto/record-dto';
-import { CircularProgress } from '@mui/material';
+import { Checkbox, CircularProgress } from '@mui/material';
 
 
 interface Column {
@@ -20,21 +20,42 @@ interface Column {
     align?: 'right';
 }
 
-export default function ListingResultTable(props: {
+export interface TodayListingResultTableProps {
     data: RecordDto[] | null
-}) {
+}
+
+export interface TodayListingResultTableHandle {
+    getSelectedKeys: () => string[]
+}
+
+const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, TodayListingResultTableProps>((props, ref) => {
     const { data } = props;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsSelected, setRowsSelected] = React.useState<number[]>([])
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = React.useCallback((_event: unknown, newPage: number) => {
         setPage(newPage);
-    };
+        setRowsSelected([]);
+    }, []);
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeRowsPerPage = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-    };
+        setRowsSelected([]);
+    }, []);
+
+    React.useEffect(() => {
+        setRowsSelected([]);
+    }, [data])
+
+    React.useImperativeHandle(ref, () => {
+        return {
+            getSelectedKeys: () => {
+                return data?.filter((_, i) => rowsSelected.indexOf(i) !== -1).map(r => r.productKey) ?? []
+            }
+        }
+    }, [data, rowsSelected]);
 
     const columns: Column[] = React.useMemo(() => {
         return [
@@ -81,10 +102,24 @@ export default function ListingResultTable(props: {
         return (
             data
                 ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row, idx) => {
                     return (
                         <TableRow
                             hover role="checkbox" tabIndex={-1} key={row.id}>
+                            <TableCell padding="checkbox">
+                                <Checkbox
+                                    color="primary"
+                                    checked={rowsSelected.indexOf(idx) !== -1}
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setRowsSelected([...rowsSelected, idx])
+                                        } else {
+                                            setRowsSelected(rowsSelected.filter(i => idx !== i))
+                                        }
+                                    }}
+                                />
+                            </TableCell>
+
                             {columns.map((column) => {
                                 return (
                                     <TableCell className='table-row-cell'
@@ -96,7 +131,7 @@ export default function ListingResultTable(props: {
                         </TableRow>
                     );
                 }))
-    }, [data, page, rowsPerPage, columns])
+    }, [data, page, rowsPerPage, columns, rowsSelected])
 
     return (
         <Paper className="list-page-table">
@@ -104,6 +139,7 @@ export default function ListingResultTable(props: {
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
+                            <TableCell className='table-head-cell'></TableCell>
                             {columns.map((column) => (
                                 <TableCell
                                     className='table-head-cell'
@@ -141,4 +177,6 @@ export default function ListingResultTable(props: {
             />
         </Paper>
     );
-}
+});
+
+export default TodayListingResultTable;

@@ -116,7 +116,7 @@ export default function KeyGenPage() {
                     {/* date */}
                     <div className="key-gen-form-row">
                         <Grid item component={TextField} className='field-key' variant="filled" disabled
-                            xs={3} value='日期' />
+                            xs={3} defaultValue='日期'/>
                         <Grid item component={FormControlLabel} control={
                             <Checkbox value={todayChecked}
                                 onChange={handleTodayCheckboxChange} />}
@@ -139,7 +139,7 @@ export default function KeyGenPage() {
                     {mandatoryFields?.map(f =>
                         <div key={f} className="key-gen-form-row">
                             <Grid item component={TextField} className='field-key' variant="filled" disabled
-                                xs={4} value={f} />
+                                xs={4} defaultValue={f} />
                             <Grid item component={Input}
                                 placeholder={f}
                                 name={f}

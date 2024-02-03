@@ -1,5 +1,4 @@
 import React from 'react'
-import "./ListingPage.less"
 import { Stack } from '@mui/material';
 import ListingResultTable from './ListingResultTable';
 import ListingFilterAccordion from './ListingFilterAccordion';
@@ -7,6 +6,8 @@ import { RecordDto } from "../../http/dto/record-dto";
 import { QueryRecordCriterion, rootCriterion, queryRecords } from '../../http/listing-api';
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import ListingToolBar from './ListingToolBar';
+import "./ListingPage.less"
+
 
 export default function ListingPage() {
 
