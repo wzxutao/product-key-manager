@@ -2,13 +2,14 @@ import React from 'react';
 
 import './KeyGenPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
-import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField } from '@mui/material';
+import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
-import { getMandatoryFields } from '../../http/keygen-api';
+import { genKeys, getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { EasyCopyChip } from '../../components/EasyCopyChip';
 
-const INPUT_DATE_KEY = "__date";
+const INPUT_DATE_KEY = "日期";
 
 export default function KeyGenPage() {
     const [alertMsg, handleAlert] = useAlert();
@@ -21,6 +22,9 @@ export default function KeyGenPage() {
     const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
     const [additionalFields, setAdditionalFields] = React.useState<string[]>([]);
     const [batchGenCount, setBatchGenCount] = React.useState<number>(1);
+
+    const [generatedKeys, setGeneratedKeys] = React.useState<string[]>([]);
+    const [multiKeysSeparator, setMultiKeysSeparator] = React.useState<string>(' ');
 
     React.useEffect(() => {
         getMandatoryFields(handleAlert)
@@ -56,7 +60,7 @@ export default function KeyGenPage() {
         setAdditionalFields((prev) => [...prev, '']);
     }, [])
 
-    const handleSubmit = React.useCallback(() => {
+    const handleSubmit = React.useCallback(async () => {
         if (formRef === null) return;
 
         const valueInputs: HTMLInputElement[] = [];
@@ -66,7 +70,7 @@ export default function KeyGenPage() {
             if (!el.hasAttribute("name")) continue;
             if (el.nodeName !== "INPUT") continue;
 
-            if(el.getAttribute("name")!.trim().length === 0) continue;
+            if (el.getAttribute("name")!.trim().length === 0) continue;
 
             valueInputs.push(el as any);
         }
@@ -75,9 +79,26 @@ export default function KeyGenPage() {
         for (const el of valueInputs) {
             kvPairs[el.getAttribute("name")!] = el.value;
         }
-        console.log(kvPairs)
-    }, [formRef])
 
+        try {
+            const keys = await genKeys({
+                count: batchGenCount,
+                data: kvPairs
+            }, handleAlert);
+
+            setGeneratedKeys(keys);
+        } catch (err) {
+
+        }
+
+
+    }, [formRef, batchGenCount, handleAlert])
+
+    const handleCopyAll = React.useCallback(() => {
+        const str = generatedKeys.join(multiKeysSeparator);
+        navigator.clipboard.writeText(str);
+        handleAlert('已复制: ' + str, 'success');
+    }, [multiKeysSeparator, generatedKeys])
 
     return (<>
         <SnackbarAlert msg={alertMsg} />
@@ -178,13 +199,37 @@ export default function KeyGenPage() {
                         <OutlinedInput
                             value={batchGenCount}
                             type='number'
+                            inputProps={{
+                                min: 1,
+                                step: 1,
+                            }}
                             onChange={(ev) => { setBatchGenCount(parseInt(ev.target.value)) }}
                             endAdornment={<InputAdornment position="end">个</InputAdornment>}
                         />
                     </Grid>
-                    <Grid item component={Box} className="key-container" xs={8}>
-                        <code>123123</code>
+                    <Grid item component={Container} className="key-container" xs={8}>
+                        {
+                            generatedKeys.map((key, i) => {
+                                return <EasyCopyChip key={key} text={key} />
+                            })
+                        }
+
+                        {generatedKeys.length > 1 && <>
+                            <Divider />
+                            <Container>
+                                <OutlinedInput
+                                    type='text'
+                                    value={multiKeysSeparator}
+                                    onChange={(ev) => { setMultiKeysSeparator(ev.target.value) }}
+                                    startAdornment={<InputAdornment position="end">分隔符</InputAdornment>}
+                                />
+                                <Button variant='contained' onClick={handleCopyAll}>
+                                    复制全部
+                                </Button>
+                            </Container>
+                        </>}
                     </Grid>
+
                 </Grid>
             </Paper>
         </Stack>

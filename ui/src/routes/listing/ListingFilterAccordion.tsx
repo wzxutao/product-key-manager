@@ -198,7 +198,7 @@ export default function FilterAccordion(
                         operators={operators}
                         isFirstCriterion={selectedCriteria === null}
                         onAddCriterion={handleAddCriterion} />
-                    <Divider><b>操作：</b></Divider>
+                    <Divider><b>条件操作：</b></Divider>
                     <ListingRuleOperations
                         onClear={handleClear}
                         onDeleteSelected={handleDeleteSelected}

@@ -32,12 +32,13 @@
                     padding: 8px 4px;
                 }
 
-                .field-key .MuiInputBase-root{
+                .field-key .MuiInputBase-root {
                     input {
                         text-align: center;
                         color: black;
                         -webkit-text-fill-color: black;
                     }
+
                     width: 95%;
                 }
             }
@@ -47,8 +48,14 @@
     #key-gen-result-container {
         margin: 28px 20px;
 
-        .key-container{
-            border: 1px solid black;
+        .key-container {
+            box-shadow: inset 0px 3px 0px -2px rgba(0, 0, 0, 0.2),
+                inset 0px 3px 4px 0px rgba(0, 0, 0, 0.14),
+                inset 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+
+            * {
+              margin: 8px 4px;  
+            }
         }
     }
 }

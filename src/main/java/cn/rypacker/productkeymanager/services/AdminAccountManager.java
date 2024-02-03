@@ -35,6 +35,7 @@ public class AdminAccountManager {
         }
     }
 
+
     public static boolean isAdminAccount(String username, String password){
         try(var scanner = new Scanner(new FileInputStream(ACCOUNT_INFO_FILE))){
             var userExpected = scanner.nextLine();

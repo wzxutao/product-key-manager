@@ -15,7 +15,7 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class JsonRecord {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
