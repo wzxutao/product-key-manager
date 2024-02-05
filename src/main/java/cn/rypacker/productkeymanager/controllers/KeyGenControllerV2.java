@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
 
 @RestController
-@RequestMapping("/keygen/v2")
+@RequestMapping("/normal/keygen/v2")
 public class KeyGenControllerV2 {
 
     @Autowired

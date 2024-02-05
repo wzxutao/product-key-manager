@@ -1,11 +1,12 @@
 import axios from "axios"
 import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
 
+const API_BASE = `${API_URL}/normal/keygen/v2`;
 
 export const getMandatoryFields = async (errorLogger?: ErrorLogger): Promise<string[]> => {
     try {
         const { data } = await axios.get(
-            `${API_URL}/keygen/v2/mandatory-fields`,
+            `${API_BASE}/mandatory-fields`,
             { withCredentials: true }
         )
         return data;
@@ -24,7 +25,7 @@ export type genKeyRequest = {
 export const genKeys = async (request: genKeyRequest, errorLogger?: ErrorLogger): Promise<string[]> => {
     try {
         const { data } = await axios.post(
-            `${API_URL}/keygen/v2/new-key`,
+            `${API_BASE}/new-key`,
             request,
             { withCredentials: true }
         )

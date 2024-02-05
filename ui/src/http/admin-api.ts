@@ -1,10 +1,12 @@
 import axios from "axios"
 import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
 
+const API_BASE = `${API_URL}/admin/man/v2`;
+
 export const backup = async (fileName: string, errorLogger?: ErrorLogger) => {
     try {
         await axios.post(
-            `${API_URL}/admin/backup?fileName=${encodeURIComponent(fileName)}`,
+            `${API_BASE}/backup?fileName=${encodeURIComponent(fileName)}`,
             null,
             { withCredentials: true }
         )
@@ -21,7 +23,7 @@ export const backup = async (fileName: string, errorLogger?: ErrorLogger) => {
 export const getBackupFiles = async (errorLogger?: ErrorLogger): Promise<string[]>=> {
     try {
         const {data} = await axios.get(
-            `${API_URL}/admin/backup-files`,
+            `${API_BASE}/backup-files`,
             { withCredentials: true }
         )
         return data;
@@ -35,7 +37,7 @@ export const getBackupFiles = async (errorLogger?: ErrorLogger): Promise<string[
 export const restore = async (fileName: string, errorLogger?: ErrorLogger) => {
     try {
         await axios.post(
-            `${API_URL}/admin/restore?fileName=${encodeURIComponent(fileName)}`,
+            `${API_BASE}/restore?fileName=${encodeURIComponent(fileName)}`,
             null,
             { withCredentials: true }
         )

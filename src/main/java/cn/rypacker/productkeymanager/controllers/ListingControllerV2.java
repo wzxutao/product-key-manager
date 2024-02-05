@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/normal/listing")
+@RequestMapping("/normal/listing/v2")
 public class ListingControllerV2 {
 
     @Autowired
@@ -61,7 +61,8 @@ public class ListingControllerV2 {
             specs = specs.and(JsonRecordSpecs.usernameEquals(username));
         }
         var records = jsonRecordRepository.findAll(specs);
-        jsonRecordRepository.deleteAll(records);
+        records.forEach(r -> r.setStatus(RecordStatus.DELETED));
+        jsonRecordRepository.saveAll(records);
         return ResponseEntity.ok().build();
     }
 }

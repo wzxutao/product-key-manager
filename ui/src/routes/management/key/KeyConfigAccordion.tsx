@@ -9,8 +9,11 @@ import { Button, Divider, Stack, TextField } from '@mui/material';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BlockIcon from '@mui/icons-material/Block';
+import MandatoryFieldsDialogue from './MandatoryFieldsDialogue';
 
 export default function KeyConfigAccordion() {
+  const [mandatoryFieldsDialogueOpen, setMandatoryFieldsDialogueOpen] = React.useState(false);
+
   return (
     <Accordion defaultExpanded className='man-page-section'>
       <AccordionSummary
@@ -20,9 +23,10 @@ export default function KeyConfigAccordion() {
       </AccordionSummary>
       <AccordionDetails>
         <Stack direction='column' sx={{ justifyContent: 'space-around' }}>
-          <Button startIcon={<ChecklistIcon />}>
+          <Button startIcon={<ChecklistIcon />} onClick={() => setMandatoryFieldsDialogueOpen(true)}>
             必填项
           </Button>
+          <MandatoryFieldsDialogue open={mandatoryFieldsDialogueOpen} handleClose={() => setMandatoryFieldsDialogueOpen(false)}/>
         </Stack>
         <Divider />
         <Stack direction='column' sx={{ justifyContent: 'space-around' }}>

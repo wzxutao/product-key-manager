@@ -31,8 +31,7 @@ export default function KeyGenPage() {
             .then((fields) => {
                 setMandatoryFields(fields);
             })
-            .catch((err) => {
-                handleAlert(err.message);
+            .catch((_err) => {
             });
     }, []);
 

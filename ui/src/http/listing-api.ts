@@ -4,6 +4,8 @@ import { RecordDto } from "./dto/record-dto";
 
 const ROOT_OPERATOR = "ROOT";
 
+const API_BASE = `${API_URL}/admin/listing/v2`;
+
 export const rootCriterion: () => QueryRecordCriterion = () => ({
     children: [],
     operand1: '',
@@ -49,7 +51,7 @@ export const queryRecords = async (
         // remove extension fields
 
         const { data } = await axios.post(
-            `${API_URL}/admin/listing/query-records`,
+            `${API_BASE}/query-records`,
             {
                 ...request,
                 criterion: withoutExtensionFields(request.criterion)
@@ -68,7 +70,7 @@ export const queryRecords = async (
 export const getMandatoryFields = async (errorLogger?: ErrorLogger): Promise<string[]> => {
     try {
         const { data } = await axios.get(
-            `${API_URL}/admin/listing/mandatory-fields`,
+            `${API_BASE}/mandatory-fields`,
             { withCredentials: true }
         )
         return data;

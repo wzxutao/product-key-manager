@@ -8,12 +8,14 @@ export default function ListingRuleOperations(props: {
 }) {
     return (
         <Stack direction='row' spacing={1} justifyContent='space-evenly'>
-            <Button variant='outlined' color="error"
+            <Button variant='outlined' color="error" sx={{ flexGrow: 2 }}
                 onClick={props.onDeleteSelected}>
                 删除所选
             </Button>
-            <Button variant='contained' color="error"
-                onClick={props.onClear}>
+            <Button variant='outlined' color="error"
+                onClick={props.onClear}
+                sx={{ flexGrow: 1 }}
+            >
                 重置
             </Button>
         </Stack>

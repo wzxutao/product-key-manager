@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin/listing")
+@RequestMapping("/admin/listing/v2")
 public class AdminListingControllerV2 {
 
     @Autowired

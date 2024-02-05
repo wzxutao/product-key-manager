@@ -8,9 +8,9 @@ export default function ListingToolBar(
     }
 ) {
     return (
-        <Paper elevation={2} className='list-page-toolbar'>
-            <Stack direction='row' spacing={1} justifyContent='space-evenly'>
-                <Button variant='contained' onClick={props.onQuery}>加载数据</Button>
+        <Paper elevation={0} className='list-page-toolbar'>
+            <Stack direction='row' justifyContent='space-evenly'>
+                <Button variant='contained' onClick={props.onQuery} sx={{flexGrow: 1}}>按条件加载数据</Button>
             </Stack>
         </Paper>
     )
