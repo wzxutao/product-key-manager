@@ -1,7 +1,7 @@
 package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.dto.keygen.GenKeyRequest;
-import cn.rypacker.productkeymanager.models.JsonRecord;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;

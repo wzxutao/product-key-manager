@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
-import cn.rypacker.productkeymanager.models.RequestBodies;
+import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

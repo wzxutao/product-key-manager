@@ -1,7 +1,7 @@
 package cn.rypacker.productkeymanager.dto;
 
 import cn.rypacker.productkeymanager.common.RecordStatus;
-import cn.rypacker.productkeymanager.models.JsonRecord;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;

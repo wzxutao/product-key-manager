@@ -55,7 +55,7 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
             var token = jokeCipher.insecureDecrypt(cipherToken);
             return JSONUtil.getValue(token, KEY_USERNAME);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return null;
         }
     }

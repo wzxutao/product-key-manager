@@ -3,7 +3,7 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
-import cn.rypacker.productkeymanager.models.RequestBodies;
+import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.repositories.NormalAccountRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;

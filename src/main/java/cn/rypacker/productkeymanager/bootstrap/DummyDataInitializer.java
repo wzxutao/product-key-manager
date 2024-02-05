@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
-import cn.rypacker.productkeymanager.models.JsonRecord;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;

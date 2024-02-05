@@ -59,7 +59,9 @@ public class SecurityConfig {
                         "/new-key/**",
                         "/today-records/**",
                         "/keygen/v2/**",
+                        "/normal/listing/**",
                         "/util/**").hasAuthority(ROLE_NORMAL)
+//                todo remove this line
                 .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable()

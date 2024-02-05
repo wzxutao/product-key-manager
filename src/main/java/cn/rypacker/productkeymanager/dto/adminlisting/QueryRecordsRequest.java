@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.dto.adminlisting;
 
-import cn.rypacker.productkeymanager.models.JsonRecord;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

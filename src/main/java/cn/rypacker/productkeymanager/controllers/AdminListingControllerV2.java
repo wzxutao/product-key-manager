@@ -4,7 +4,6 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.dto.JsonRecordDto;
 import cn.rypacker.productkeymanager.dto.adminlisting.QueryRecordsRequest;
 import cn.rypacker.productkeymanager.exception.IdentifiedWebException;
-import cn.rypacker.productkeymanager.models.JsonRecord;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.springframework.beans.factory.annotation.Autowired;

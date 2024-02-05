@@ -15,3 +15,20 @@ export async function getMyTodayRecords(errorLogger?: ErrorLogger): Promise<Reco
     }
 
 }
+
+export async function batchDeleteMyTodayRecords(productKeys: string[], errorLogger?: ErrorLogger) {
+    const url = new URL(`${API_URL}/normal/listing/batch-delete`);
+    const params = url.searchParams;
+    productKeys.forEach((productKey) => params.append('productKey', productKey));
+
+    try {
+        await axios.delete(
+            url.toString(),
+            {withCredentials: true}
+        )
+    }catch(err){
+        handleAndThrowAuthError(err);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err)
+    }
+}

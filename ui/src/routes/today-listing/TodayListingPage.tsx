@@ -22,12 +22,17 @@ export function TodayListingPage() {
         handleLoadData();
     }, [])
 
+    const handleDataDeleted = React.useCallback(() => {
+        handleAlert('删除成功', 'success');
+        handleLoadData();
+    }, []);
+
     return (
         <>
             <SnackbarAlert msg={alertMsg} />
             <Stack id="TodayListingPage" direction='column'>
                 <Stack id="today-listing-page-tool-bar" direction='row' spacing={2}>
-                    <BatchDeleteButton tableRef={tableRef} />
+                    <BatchDeleteButton tableRef={tableRef} onDeleted={handleDataDeleted}/>
                     <Button className="reload-btn" variant='outlined' onClick={handleLoadData}>重新加载</Button>
                 </Stack>
                 <TodayListingResultTable data={data} ref={attachTableRef} />

@@ -10,9 +10,7 @@ import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +27,7 @@ public class ListingControllerV2 {
     private AdminAuth adminAuth;
 
     @GetMapping("/my-today-records")
-    public ResponseEntity<List<JsonRecordDto>> getMyTodayRecords() {
+    public ResponseEntity<?> getMyTodayRecords() {
         var fromS = DatetimeUtil.getTodayEpochSeconds(true);
         var toS = DatetimeUtil.getTodayEpochSeconds(false);
 
@@ -38,9 +36,32 @@ public class ListingControllerV2 {
         var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         if(!adminAuth.isValidToken(authToken)){
             String username = normalAccountAuth.getUsername(authToken);
+            if(username == null) return ResponseEntity.badRequest().body("Invalid token");
             specs = specs.and(JsonRecordSpecs.usernameEquals(username));
         }
         var records = jsonRecordRepository.findAll(specs);
         return ResponseEntity.ok(records.stream().map(JsonRecordDto::fromEntity).collect(Collectors.toList()));
+    }
+
+    @DeleteMapping("/batch-delete")
+    public ResponseEntity<?> batchDeleteMyTodayRecords(@RequestParam("productKey") List<String> productKeys) {
+        if(productKeys == null || productKeys.isEmpty())
+            return ResponseEntity.badRequest().body("No product keys provided");
+
+        var fromS = DatetimeUtil.getTodayEpochSeconds(true);
+        var toS = DatetimeUtil.getTodayEpochSeconds(false);
+
+        var specs = JsonRecordSpecs.createdMilliBetween(fromS * 1000, (toS * 1000) + 999)
+                .and(JsonRecordSpecs.statusEquals(RecordStatus.NORMAL))
+                .and(JsonRecordSpecs.productKeyIn(productKeys));
+        var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        if(!adminAuth.isValidToken(authToken)){
+            String username = normalAccountAuth.getUsername(authToken);
+            if(username == null) return ResponseEntity.badRequest().body("Invalid token");
+            specs = specs.and(JsonRecordSpecs.usernameEquals(username));
+        }
+        var records = jsonRecordRepository.findAll(specs);
+        jsonRecordRepository.deleteAll(records);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,13 +1,19 @@
 package cn.rypacker.productkeymanager.specification;
 
-import cn.rypacker.productkeymanager.models.JsonRecord;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.List;
 
 import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
 
 public class JsonRecordSpecs {
 
     private static final String usernameKey = String.format("$.%s[0]", RECORD_KEY_USERNAME);
+
+    public static Specification<JsonRecord> productKeyIn(List<String> productKeys) {
+        return (root, query, builder) -> root.get("productKey").in(productKeys);
+    }
 
     public static Specification<JsonRecord> createdMilliBetween(Long from, Long to) {
         return (root, query, builder) -> builder.between(root.get("createdMilli"), from, to);

@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
-import cn.rypacker.productkeymanager.models.RequestBodies;
+import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

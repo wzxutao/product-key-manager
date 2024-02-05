@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.models;
+package cn.rypacker.productkeymanager.entity;
 
 import cn.rypacker.productkeymanager.common.RecordStatus;
 import lombok.Data;

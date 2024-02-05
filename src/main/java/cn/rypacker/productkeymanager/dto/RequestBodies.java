@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.models;
+package cn.rypacker.productkeymanager.dto;
 
 import java.util.List;
 
