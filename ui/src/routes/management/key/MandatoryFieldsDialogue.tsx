@@ -11,6 +11,7 @@ import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 import { getMandatoryFields } from '../../../http/keygen-api';
 import StarIcon from '@mui/icons-material/Star';
 import ReplayIcon from '@mui/icons-material/Replay';
+import { updateMandatoryFields } from '../../../http/admin-api';
 
 export default function MandatoryFieldsDialogue(props: {
     open: boolean
@@ -24,6 +25,8 @@ export default function MandatoryFieldsDialogue(props: {
     const [selectedFieldIdx, setSeletedFieldIdx] = React.useState<number | null>(null);
 
     const [nameHasError, setNameHasError] = React.useState(false);
+
+    const [newFieldName, setNewFieldName] = React.useState<string>('');
 
     const validateName = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
         const value = ev.target.value;
@@ -52,7 +55,7 @@ export default function MandatoryFieldsDialogue(props: {
         getMandatoryFields(handleAlert)
             .then((fields) => {
                 setMandatoryFields(fields);
-                setSeletedFieldIdx(0);
+                setSeletedFieldIdx(fields.length === 0 ? null : 0);
             })
             .catch((_err) => {
             });
@@ -89,11 +92,107 @@ export default function MandatoryFieldsDialogue(props: {
         )
     }, [mandatoryFields, selectedFieldIdx])
 
+    const handleMoveField = React.useCallback(
+        (direction: 'up' | 'down' | 'top' | 'bottom', steps?: number) => () => {
+            if (selectedFieldIdx === null || mandatoryFields === null) return;
 
+            const stepsDefined = steps ?? 1;
+
+            let fields = mandatoryFields;
+            let targetIdx = 0;
+            switch (direction) {
+                case 'up':
+                    targetIdx = selectedFieldIdx - stepsDefined;
+                    break;
+                case 'down':
+                    targetIdx = selectedFieldIdx + stepsDefined;
+                    break;
+                case 'top':
+                    targetIdx = 0;
+                    break;
+                case 'bottom':
+                    targetIdx = fields.length - 1;
+                    break;
+            }
+
+            targetIdx = Math.min(targetIdx, fields.length - 1);
+            targetIdx = Math.max(targetIdx, 0);
+
+            if (targetIdx === selectedFieldIdx) return;
+            else if (targetIdx < selectedFieldIdx) {
+                fields = fields.slice(0, targetIdx).concat(fields[selectedFieldIdx], fields.slice(targetIdx, selectedFieldIdx), fields.slice(selectedFieldIdx + 1));
+            } else {
+                fields = fields.slice(0, selectedFieldIdx).concat(fields.slice(selectedFieldIdx + 1, targetIdx + 1), fields[selectedFieldIdx], fields.slice(targetIdx + 1));
+            }
+
+            setMandatoryFields(fields);
+            setSeletedFieldIdx(targetIdx);
+
+        }, [mandatoryFields, selectedFieldIdx])
+
+    const handleDeleteField = React.useCallback(() => {
+        if (selectedFieldIdx === null || mandatoryFields === null) return;
+
+        const fields = mandatoryFields.slice(0, selectedFieldIdx).concat(mandatoryFields.slice(selectedFieldIdx + 1));
+        setMandatoryFields(fields);
+        setSeletedFieldIdx(Math.max(Math.min(selectedFieldIdx, fields.length - 1), 0));
+        if(fields.length === 0) {
+            setSeletedFieldIdx(null);
+        }
+    }, [mandatoryFields, selectedFieldIdx])
+
+    const handleDeleteAllFields = React.useCallback(() => {
+        setMandatoryFields([]);
+        setSeletedFieldIdx(null);
+    }, []);
+
+
+    const handleAddField = React.useCallback((direction: 'up' | 'down' | 'top' | 'bottom') => () => {
+        const selectedFieldIdxDefined = selectedFieldIdx ?? 0;
+
+        if (mandatoryFields === null) return;
+
+        if (newFieldName.trim().length === 0) {
+            handleAlert("字段名不能为空");
+            return;
+        }
+
+        if (mandatoryFields.includes(newFieldName)) {
+            handleAlert("字段名不能重复");
+            return;
+        }
+
+        let fields = [...mandatoryFields];
+        switch (direction) {
+            case 'up':
+                fields.splice(selectedFieldIdxDefined, 0, newFieldName);
+                setSeletedFieldIdx(selectedFieldIdxDefined + 1);
+                break;
+            case 'down':
+                fields.splice(selectedFieldIdxDefined + 1, 0, newFieldName);
+                break;
+            case 'top':
+                fields.splice(0, 0, newFieldName);
+                setSeletedFieldIdx(selectedFieldIdxDefined + 1);
+                break;
+            case 'bottom':
+                fields.splice(fields.length, 0, newFieldName);
+                break;
+        }
+
+        if (selectedFieldIdx === null) {
+            setSeletedFieldIdx(0);
+        }
+        setMandatoryFields(fields);
+    }, [mandatoryFields, selectedFieldIdx, newFieldName])
 
     const handleConfirm = React.useCallback(() => {
-
-    }, [handleClose, handleAlert])
+        updateMandatoryFields(mandatoryFields ?? [])
+            .then(() => {
+                handleAlert('更新成功', 'success');
+                handleReload();
+            }).catch(_err => { });
+    }, [handleClose, handleAlert, mandatoryFields])
 
 
     return (
@@ -112,12 +211,13 @@ export default function MandatoryFieldsDialogue(props: {
                         <Divider>现有</Divider>
                         <Container sx={{ 'display': 'flex', 'justifyContent': 'center' }}>
                             <ButtonGroup size="small">
-                                <Button>上移</Button>
-                                <Button>下移</Button>
-                                <Button>置顶</Button>
-                                <Button>置底</Button>
+                                <Button onClick={handleMoveField('up')}>上移</Button>
+                                <Button onClick={handleMoveField('down')}>下移</Button>
+                                <Button onClick={handleMoveField('top')}>置顶</Button>
+                                <Button onClick={handleMoveField('bottom')}>置底</Button>
                                 <Button disabled></Button>
-                                <Button color='error'>删除</Button>
+                                <Button onClick={handleDeleteAllFields} color='error'>清空</Button>
+                                <Button onClick={handleDeleteField} color='error'>删除</Button>
                             </ButtonGroup>
                         </Container>
 
@@ -134,21 +234,23 @@ export default function MandatoryFieldsDialogue(props: {
                             variant='outlined'
                             error={nameHasError}
                             onBlur={validateName}
+                            value={newFieldName}
+                            onChange={(ev) => setNewFieldName(ev.target.value)}
                         />
                         <Stack direction='row' justifyContent='space-between' spacing={2}>
                             <Chip label="添加到: " />
                             <ButtonGroup size="small">
-                                <Button>选中项上</Button>
-                                <Button>选中项下</Button>
-                                <Button>顶部</Button>
-                                <Button>底部</Button>
+                                <Button onClick={handleAddField('up')}>选中项上</Button>
+                                <Button onClick={handleAddField('down')}>选中项下</Button>
+                                <Button onClick={handleAddField('top')}>顶部</Button>
+                                <Button onClick={handleAddField('bottom')}>底部</Button>
                             </ButtonGroup>
                         </Stack>
                     </Container>
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleReload} endIcon={<ReplayIcon />}>重置</Button>
+                    <Button onClick={handleReload} endIcon={<ReplayIcon />}>重新加载</Button>
                     <Button onClick={handleClose} disabled={submitting}>取消</Button>
                     <Button onClick={handleConfirm} disabled={submitting} variant='contained'>提交</Button>
                     {submitting && <CircularProgress

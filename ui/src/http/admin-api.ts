@@ -10,24 +10,24 @@ export const backup = async (fileName: string, errorLogger?: ErrorLogger) => {
             null,
             { withCredentials: true }
         )
-    }catch(err: any) {
+    } catch (err: any) {
         handleAndThrowAuthError(err, errorLogger);
-        if(err?.response?.status === 400) {
+        if (err?.response?.status === 400) {
             errorLogger?.('文件名不合法')
             throw err;
         }
         logAndRethrowOtherError(err, errorLogger)
     }
-}   
+}
 
-export const getBackupFiles = async (errorLogger?: ErrorLogger): Promise<string[]>=> {
+export const getBackupFiles = async (errorLogger?: ErrorLogger): Promise<string[]> => {
     try {
-        const {data} = await axios.get(
+        const { data } = await axios.get(
             `${API_BASE}/backup-files`,
             { withCredentials: true }
         )
         return data;
-    }catch(err: any) { 
+    } catch (err: any) {
         handleAndThrowAuthError(err, errorLogger);
         logAndRethrowOtherError(err, errorLogger);
         return Promise.reject(err);
@@ -41,7 +41,20 @@ export const restore = async (fileName: string, errorLogger?: ErrorLogger) => {
             null,
             { withCredentials: true }
         )
-    }catch(err: any) {
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+    }
+}
+
+export const updateMandatoryFields = async (fieldNames: string[], errorLogger?: ErrorLogger) => {
+    try {
+        await axios.put(
+            `${API_BASE}/mandatory-fields/update`,
+            fieldNames,
+            { withCredentials: true }
+        )
+    } catch (err: any) {
         handleAndThrowAuthError(err, errorLogger);
         logAndRethrowOtherError(err, errorLogger)
     }

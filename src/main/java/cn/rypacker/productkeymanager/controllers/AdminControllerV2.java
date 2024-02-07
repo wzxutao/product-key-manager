@@ -3,8 +3,11 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
+import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
+import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/man/v2")
 @Slf4j
 public class AdminControllerV2 {
+
+    @Autowired
+    private UserConfigStore userConfigStore;
 
 
     @PostMapping(path = "/backup")
@@ -59,6 +65,15 @@ public class AdminControllerV2 {
                 StandardCopyOption.REPLACE_EXISTING));
 
         log.info("restarting the server to restore db: " + fileName);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/mandatory-fields/update")
+    public ResponseEntity<?> modify(@RequestBody List<String> mandatoryFieldNames){
+        log.info("updating mandatory fields: " + mandatoryFieldNames);
+        userConfigStore.update(
+                userConfig -> userConfig.getRecord().setMandatoryFields(mandatoryFieldNames)
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
