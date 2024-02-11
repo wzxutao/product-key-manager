@@ -59,3 +59,30 @@ export const updateMandatoryFields = async (fieldNames: string[], errorLogger?: 
         logAndRethrowOtherError(err, errorLogger)
     }
 }
+
+export const getKeyLength = async (errorLogger?: ErrorLogger): Promise<number> => {
+    try {
+        const { data } = await axios.get(
+            `${API_BASE}/key-length/get`,
+            { withCredentials: true }
+        )
+        return data;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err);
+    }
+}
+
+export const updateKeyLength = async (length: number, errorLogger?: ErrorLogger) => {
+    try {
+        await axios.put(
+            `${API_BASE}/key-length/update?length=${length}`,
+            null,
+            { withCredentials: true }
+        )
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+    }
+}

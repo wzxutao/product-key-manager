@@ -1,4 +1,4 @@
-package cn.rypacker.productkeymanager.services.configstore;
+package cn.rypacker.productkeymanager.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

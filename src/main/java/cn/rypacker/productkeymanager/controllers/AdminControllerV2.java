@@ -7,6 +7,7 @@ import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,4 +78,19 @@ public class AdminControllerV2 {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    @GetMapping(path = "/key-length/get")
+    public int getKeyLength() {
+        return userConfigStore.getData().getKey().getLength();
+    }
+
+    @PutMapping(path = "/key-length/update")
+    public ResponseEntity<?> updateKeyLength(@RequestParam("length") Integer length) {
+        if(length == null || length < 1)
+            return ResponseEntity.badRequest().body("illegal key length: " + length);
+
+        userConfigStore.update(c -> c.getKey().setLength(length));
+
+        return ResponseEntity.ok().build();
+    }
 }

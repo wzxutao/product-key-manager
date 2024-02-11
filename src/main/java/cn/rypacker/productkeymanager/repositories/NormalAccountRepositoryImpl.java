@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.repositories;
 
-import cn.rypacker.productkeymanager.services.configstore.UserConfig;
+import cn.rypacker.productkeymanager.entity.UserConfig;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

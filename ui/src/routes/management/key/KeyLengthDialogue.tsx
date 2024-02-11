@@ -5,34 +5,37 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { backup as doBackup } from '../../../http/admin-api';
+import { updateKeyLength } from '../../../http/admin-api';
 import { CircularProgress } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 
-export default function BackupDialog(props: {
+export default function KeyLengthDialog(props: {
+    currentLength: number | null
     open: boolean
-    handleClose: () => void
+    onClose: (refresh ?: boolean) => void
 }) {
-    const { open, handleClose } = props;
+    const { open, onClose, currentLength } = props;
     const [submitting, setSubmitting] = React.useState(false);
     const [alertMsg, handleAlert] = useAlert();
+    const [length, setLength] = React.useState<number>(currentLength ?? 0);
 
-    const handleSubmit = React.useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    React.useEffect(() => {
+        setLength(currentLength ?? 0)
+    }, [currentLength])
+
+
+    const handleSubmit = React.useCallback(async () => {
         setSubmitting(true);
-        const formData = new FormData(event.currentTarget);
-        const formJson = Object.fromEntries((formData as any).entries());
-        const fileName = formJson.name;
         try {
-            await doBackup(fileName, handleAlert);
-            handleAlert('备份成功', 'success')
-            handleClose();
+            await updateKeyLength(length, handleAlert);
+            handleAlert('设置成功', 'success')
+            onClose(true);
         } catch (e) {
         } finally {
             setSubmitting(false);
         }
-    }, [handleClose, handleAlert])
+    }, [length, onClose, handleAlert])
 
 
     return (
@@ -41,37 +44,35 @@ export default function BackupDialog(props: {
             <Dialog
                 open={open}
                 onClose={(_, reason) => {
-                    if(reason === 'escapeKeyDown')
-                    handleClose();
+                    if (reason === 'escapeKeyDown')
+                        onClose();
                 }}
-                PaperProps={{
-                    component: 'form',
-                    onSubmit: handleSubmit,
-                }}
-            
             >
-                <DialogTitle>请输入备份文件名</DialogTitle>
+                <DialogTitle>请输入序列号长度</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         required
                         margin="dense"
-                        name="name"
-                        label="文件名"
-                        type="text"
+                        name="length"
+                        label="长度"
+                        type="number"
                         fullWidth
                         variant="standard"
-                        defaultValue={(() => {
-                            const now = new Date();
-                            return 'manual-' +
-                                `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-` +
-                                `${now.getHours()}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`
-                        })()}
+                        inputProps={
+                            {
+                                min: 1,
+                                max: 100,
+                                step: 1
+                            }
+                        }
+                        value={length}
+                        onChange={e => setLength(parseInt(e.target.value) || 1)}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} disabled={submitting}>取消</Button>
-                    <Button type="submit" disabled={submitting} variant='contained'>提交</Button>
+                    <Button onClick={() => onClose()} disabled={submitting}>取消</Button>
+                    <Button disabled={submitting} variant='contained' onClick={handleSubmit}>提交</Button>
                     {submitting && <CircularProgress
                         size={24}
                         sx={{

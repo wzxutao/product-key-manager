@@ -20,8 +20,9 @@ function deleteAllCookies() {
 
 export const handleAndThrowAuthError = (err: any, errorLogger?: ErrorLogger) => {
     if ([401, 403].includes(err?.response?.status)) {
-        errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
+        // errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
         deleteAllCookies();
+        alert("登录已到期");
         window.location.href = '/';
         throw AUTH_ERROR;
     }
@@ -29,7 +30,12 @@ export const handleAndThrowAuthError = (err: any, errorLogger?: ErrorLogger) => 
 
 export const logAndRethrowOtherError = (err: any, errorLogger?: ErrorLogger): void => {
     console.error(err);
-    const msg = '操作失败：' + (err?.response?.status ?? '未知错误')
+    let response = ''
+    try {
+        response = JSON.stringify(err?.response?.data)
+    }catch(_){}
+
+    const msg = '操作失败：' + (err?.response?.status ?? '未知错误') + ' ' + response;
     errorLogger ? errorLogger(msg) : alert(msg)
     throw err;
 }

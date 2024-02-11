@@ -1,7 +1,7 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
-import cn.rypacker.productkeymanager.services.configstore.UserConfig;
+import cn.rypacker.productkeymanager.entity.UserConfig;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
