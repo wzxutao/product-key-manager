@@ -12,6 +12,7 @@ import { getMandatoryFields } from '../../../http/keygen-api';
 import StarIcon from '@mui/icons-material/Star';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { updateMandatoryFields } from '../../../http/admin-api';
+import { INPUT_DATE_KEY } from '../../keygen/KeyGenPage';
 
 export default function MandatoryFieldsDialogue(props: {
     open: boolean
@@ -45,6 +46,12 @@ export default function MandatoryFieldsDialogue(props: {
         if (mandatoryFields.includes(value)) {
             setNameHasError(true);
             handleAlert("字段名不能重复")
+            return;
+        }
+
+        if(value === INPUT_DATE_KEY) {
+            setNameHasError(true);
+            handleAlert("日期为固定字段名，不能使用")
             return;
         }
 

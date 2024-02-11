@@ -60,10 +60,18 @@ export const updateMandatoryFields = async (fieldNames: string[], errorLogger?: 
     }
 }
 
-export const getKeyLength = async (errorLogger?: ErrorLogger): Promise<number> => {
+export type KeyGenStats = {
+    keyLength: number,
+    totalKeyCount: number,
+    usedKeyCount: number,
+    blackListedKeyCount: number,
+    remainingKeyCount: number
+}
+
+export const getKeyGenStatus = async (errorLogger?: ErrorLogger): Promise<KeyGenStats> => {
     try {
         const { data } = await axios.get(
-            `${API_BASE}/key-length/get`,
+            `${API_BASE}/key-gen-stats/get`,
             { withCredentials: true }
         )
         return data;

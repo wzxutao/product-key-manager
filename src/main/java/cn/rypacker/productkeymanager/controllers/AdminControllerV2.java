@@ -3,11 +3,11 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
-import cn.rypacker.productkeymanager.dto.RequestBodies;
+import cn.rypacker.productkeymanager.dto.KeyGenStats;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +28,9 @@ public class AdminControllerV2 {
 
     @Autowired
     private UserConfigStore userConfigStore;
+
+    @Autowired
+    private KeyGenerator keyGenerator;
 
 
     @PostMapping(path = "/backup")
@@ -79,18 +82,12 @@ public class AdminControllerV2 {
     }
 
 
-    @GetMapping(path = "/key-length/get")
-    public int getKeyLength() {
-        return userConfigStore.getData().getKey().getLength();
-    }
-
     @PutMapping(path = "/key-length/update")
     public ResponseEntity<?> updateKeyLength(@RequestParam("length") Integer length) {
-        if(length == null || length < 1)
-            return ResponseEntity.badRequest().body("Illegal key length: " + length);
+        if(length == null || length < KeyGenerator.MIN_LENGTH)
+            return ResponseEntity.badRequest().body("长度最少 " + KeyGenerator.MIN_LENGTH + " 位");
 
-        userConfigStore.update(c -> c.getKey().setLength(length));
-
+        keyGenerator.setKeyLength(length);
         return ResponseEntity.ok().build();
     }
 
@@ -108,5 +105,10 @@ public class AdminControllerV2 {
         userConfigStore.update(c -> c.getAuth().getAdmin().setValidMinutes(length));
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/key-gen-stats/get")
+    public KeyGenStats getKeyGenStats() {
+        return keyGenerator.getStats();
     }
 }

@@ -10,6 +10,9 @@ import { CircularProgress } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 
+const KEY_LEN_MIN = 8;
+const KEY_LEN_MAX = 11;
+
 export default function KeyLengthDialog(props: {
     currentLength: number | null
     open: boolean
@@ -26,6 +29,11 @@ export default function KeyLengthDialog(props: {
 
 
     const handleSubmit = React.useCallback(async () => {
+        if(length < KEY_LEN_MIN || length > KEY_LEN_MAX) {
+            handleAlert(`长度必须在${KEY_LEN_MIN}到${KEY_LEN_MAX}之间`, 'error');
+            return;
+        }
+
         setSubmitting(true);
         try {
             await updateKeyLength(length, handleAlert);
@@ -61,7 +69,8 @@ export default function KeyLengthDialog(props: {
                         variant="standard"
                         inputProps={
                             {
-                                min: 1,
+                                min: KEY_LEN_MIN,
+                                max: KEY_LEN_MAX,
                                 step: 1
                             }
                         }

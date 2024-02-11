@@ -87,20 +87,10 @@ public class NewKeyController {
 
         String key;
         // avoid duplication
-        var combinations = keyGenerator.getCombinationCount();
-        var count = 0;
-
         key = keyGenerator.generateKey(date);
         while (jsonRecordRepository.findByProductKey(key).size() > 0){
-            key = keyGenerator.nextSibling(key);
-            count++;
-            // expand on half full
-            if(count >= combinations / 2){
-                keyGenerator.expand();
-                combinations = keyGenerator.getCombinationCount();
-                count = 0;
-                key = keyGenerator.generateKey(date);
-            }
+            keyGenerator.refreshCandidates();
+            key = keyGenerator.generateKey(date);
         }
 
         var record = new JsonRecord(contents, key);

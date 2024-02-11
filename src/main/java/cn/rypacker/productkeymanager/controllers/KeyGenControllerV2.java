@@ -8,6 +8,7 @@ import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME
 
 @RestController
 @RequestMapping("/normal/keygen/v2")
+@Slf4j
 public class KeyGenControllerV2 {
 
     @Autowired
@@ -57,7 +59,7 @@ public class KeyGenControllerV2 {
             if (adminAuth.isValidToken(authToken)) {
                 username = "admin";
             } else {
-                return ResponseEntity.badRequest().body("usename not found");
+                return ResponseEntity.badRequest().body("username not found");
             }
         }
 
@@ -82,23 +84,15 @@ public class KeyGenControllerV2 {
         String jsonString = JSONUtil.toStringFrom(contents);
 
         String key;
-        // avoid duplication
-        var combinations = keyGenerator.getCombinationCount();
-        var count = 0;
 
         key = keyGenerator.generateKey(date);
-        while (jsonRecordRepository.findByProductKey(key).size() > 0) {
-            key = keyGenerator.nextSibling(key);
-            count++;
-            // expand on half full
-            if (count >= combinations / 2) {
-                keyGenerator.expand();
-                combinations = keyGenerator.getCombinationCount();
-                count = 0;
-                key = keyGenerator.generateKey(date);
-            }
+        while (!jsonRecordRepository.findByProductKey(key).isEmpty()) {
+            keyGenerator.refreshCandidates();
+            log.warn("duplicated key found, refreshing candidates and trying again. key: {}", key);
+            key = keyGenerator.generateKey(date);
         }
 
         return new JsonRecord(jsonString, key);
     }
+
 }

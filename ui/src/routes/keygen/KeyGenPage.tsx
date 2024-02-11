@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { EasyCopyChip } from '../../components/EasyCopyChip';
 
-const INPUT_DATE_KEY = "日期";
+export const INPUT_DATE_KEY = "日期";
 
 export default function KeyGenPage() {
     const [alertMsg, handleAlert] = useAlert();

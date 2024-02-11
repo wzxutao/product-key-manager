@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -31,10 +32,12 @@ public class UserConfig {
         private Admin admin = new Admin();
     }
 
+    /** ! values should not be set directly but via KeyGenerator as it caches the values*/
     @Data
     @NoArgsConstructor
     public static class Key {
         private int length = 15;
+        private List<String> blacklist = new ArrayList<>();
     }
 
     @Data
