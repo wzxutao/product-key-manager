@@ -14,6 +14,7 @@ import { KeyGenStats, getKeyGenStatus } from '../../../http/admin-api';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 import KeyLengthDialog from './KeyLengthDialogue';
 import KeyGenStatsChart from './KeyGenStatsChart';
+import BlacklistDialogue from './BlacklistDialogue';
 
 export default function KeyConfigAccordion() {
   const [mandatoryFieldsDialogueOpen, setMandatoryFieldsDialogueOpen] = React.useState(false);
@@ -24,6 +25,8 @@ export default function KeyConfigAccordion() {
   const [alertMsg, handleAlert] = useAlert();
 
   const [refreshFlag, setRefreshFlag] = React.useState<boolean>(false);
+
+  const [blackListDialogueOpen, setBlackListDialogueOpen] = React.useState(false);
 
   React.useEffect(() => {
     getKeyGenStatus(handleAlert).then(setKeyGenStats).catch()
@@ -52,10 +55,17 @@ export default function KeyConfigAccordion() {
           </Stack>
           <Divider />
           <Stack direction='column' sx={{ justifyContent: 'space-around' }}>
-            <Button startIcon={<BlockIcon />}>
+            <Button startIcon={<BlockIcon />} onClick={() => setBlackListDialogueOpen(true)}>
               屏蔽单词
             </Button>
           </Stack>
+          <BlacklistDialogue open={blackListDialogueOpen} onClose={(shouldRefresh?: boolean) => {
+            setBlackListDialogueOpen(false);
+            if (shouldRefresh) {
+              refresh();
+            }
+          
+          }}/>
           <Divider />
           <Stack direction='row' sx={{ justifyContent: 'center', marginTop: '8px' }}>
             <Button startIcon={<SettingsIcon />} onClick={() => setKeyLengthDialogOpen(true)}>
@@ -84,7 +94,7 @@ export default function KeyConfigAccordion() {
                 : <CircularProgress />
             }
           </Stack>
-          <Divider >使用情况</Divider>
+          <Divider>本日使用情况</Divider>
 
           <KeyGenStatsChart stats={keyGenStats} />
 

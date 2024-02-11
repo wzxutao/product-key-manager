@@ -111,4 +111,16 @@ public class AdminControllerV2 {
     public KeyGenStats getKeyGenStats() {
         return keyGenerator.getStats();
     }
+
+    @GetMapping("/key-gen-blacklist/get")
+    public List<String> getKeyGenBlacklist(){
+        return keyGenerator.getBlackList();
+    }
+
+    @PostMapping("/key-gen-blacklist/update")
+    public ResponseEntity<?> updateKeyGenBlacklist(@RequestBody List<String> blacklist) {
+        keyGenerator.setBlackList(blacklist);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -121,3 +121,30 @@ export const updateAdminExpiry = async (length: number, errorLogger?: ErrorLogge
         logAndRethrowOtherError(err, errorLogger)
     }
 }
+
+export const getKeyGenBlackList = async (errorLogger?: ErrorLogger): Promise<string[]> => {
+    try {
+        const { data } = await axios.get<string[]>(
+            `${API_BASE}/key-gen-blacklist/get`,
+            { withCredentials: true }
+        )
+        return data;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err);
+    }
+}
+
+export const updateKeyGenBlackList = async (blackList: string[], errorLogger?: ErrorLogger) => {
+    try {
+        await axios.post(
+            `${API_BASE}/key-gen-blacklist/update`,
+            blackList,
+            { withCredentials: true }
+        )
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+    }
+}
