@@ -87,9 +87,25 @@ public class AdminControllerV2 {
     @PutMapping(path = "/key-length/update")
     public ResponseEntity<?> updateKeyLength(@RequestParam("length") Integer length) {
         if(length == null || length < 1)
-            return ResponseEntity.badRequest().body("illegal key length: " + length);
+            return ResponseEntity.badRequest().body("Illegal key length: " + length);
 
         userConfigStore.update(c -> c.getKey().setLength(length));
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping(path = "/admin-expiry/get")
+    public int getAdminExpiryMinutes() {
+        return userConfigStore.getData().getAuth().getAdmin().getValidMinutes();
+    }
+
+    @PutMapping(path = "/admin-expiry/update")
+    public ResponseEntity<?> updateAdminExpiry(@RequestParam("length") Integer length) {
+        if(length == null || length < 1)
+            return ResponseEntity.badRequest().body("Illegal expiry minutes: " + length);
+
+        userConfigStore.update(c -> c.getAuth().getAdmin().setValidMinutes(length));
 
         return ResponseEntity.ok().build();
     }

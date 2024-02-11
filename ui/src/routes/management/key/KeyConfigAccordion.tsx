@@ -59,15 +59,16 @@ export default function KeyConfigAccordion() {
             <Button startIcon={<SettingsIcon />} onClick={() => setKeyLengthDialogOpen(true)}>
               序列号长度（不影响已创建的序列号）
             </Button>
-            <KeyLengthDialog currentLength={keyLength} open={KeyLengthDialogOpen} onClose={(shouldRefresh ?: boolean) => {
+            <KeyLengthDialog currentLength={keyLength} open={KeyLengthDialogOpen} onClose={(shouldRefresh?: boolean) => {
               setKeyLengthDialogOpen(false);
-              if(shouldRefresh) {
+              if (shouldRefresh) {
                 refresh();
               }
             }} />
             {
               keyLength !== null
                 ? <TextField
+                  disabled
                   InputProps={
                     {
                       readOnly: true,

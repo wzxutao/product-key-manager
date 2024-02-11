@@ -5,40 +5,75 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Button, Divider, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Divider, Stack, TextField } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
+import { getAdminExpiry } from '../../../http/admin-api';
+import AdminExpiryDialog from './AdminExpiryDialogue';
 
 export default function AccountConfigAccordion() {
-  return (
-    <Accordion defaultExpanded className='man-page-section'>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-      >
-        <Typography>账号管理</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Stack direction='row' sx={{ justifyContent: 'space-around' }}>
-          <Button startIcon={<ManageAccountsIcon />}>
-            普通账号
-          </Button>
-        </Stack>
-        <Divider />
-        <Stack direction='row' sx={{ justifyContent: 'center', marginTop: '8px' }}>
-          <Button startIcon={<SettingsIcon />}>
-            管理员登陆有效期（分钟）
-          </Button>
-          <TextField
-            disabled
-            label="当前值"
-            defaultValue="-1"
-            size="small"
-            variant='standard'
-          />
-        </Stack>
-        
 
-      </AccordionDetails>
-    </Accordion>
+  const [alertMsg, handleAlert] = useAlert();
+  const [adminExpiryDialogueOpen, setAdminExpiryDialogueOpen] = React.useState(false);
+  const [adminExpiry, setAdminExpiry] = React.useState<number | null>(null);
+  const [refreshFlag, setRefreshFlag] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    getAdminExpiry(handleAlert).then(setAdminExpiry).catch()
+  }, [refreshFlag, handleAlert])
+
+  const refresh = React.useCallback(() => {
+    setRefreshFlag(prev => !prev);
+  }, []);
+
+
+  return (
+    <>
+      <SnackbarAlert msg={alertMsg} />
+      <Accordion defaultExpanded className='man-page-section'>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+        >
+          <Typography>账号管理</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack direction='row' sx={{ justifyContent: 'space-around' }}>
+            <Button startIcon={<ManageAccountsIcon />}>
+              普通账号
+            </Button>
+          </Stack>
+          <Divider />
+          <Stack direction='row' sx={{ justifyContent: 'center', marginTop: '8px' }}>
+            <Button startIcon={<SettingsIcon />} onClick={() => setAdminExpiryDialogueOpen(true)}>
+              管理员登陆有效期（分钟）
+            </Button>
+            <AdminExpiryDialog open={adminExpiryDialogueOpen} onClose={(shouldRefresh?: boolean) => {
+              setAdminExpiryDialogueOpen(false)
+              if (shouldRefresh) {
+                refresh();
+              }
+            }} currentLength={adminExpiry} />
+            {
+              adminExpiry !== null ?
+                <TextField
+                  disabled
+                  inputProps={{
+                    readOnly: true,
+                  }}
+                  label="当前值"
+                  value={adminExpiry ?? -1}
+                  size="small"
+                  variant='standard'
+                />
+                : <CircularProgress />
+            }
+
+          </Stack>
+
+
+        </AccordionDetails>
+      </Accordion>
+    </>
   );
 }

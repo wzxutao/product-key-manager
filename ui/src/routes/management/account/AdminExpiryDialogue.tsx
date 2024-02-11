@@ -5,12 +5,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { updateKeyLength } from '../../../http/admin-api';
+import { updateAdminExpiry } from '../../../http/admin-api';
 import { CircularProgress } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 
-export default function KeyLengthDialog(props: {
+export default function AdminExpiryDialog(props: {
     currentLength: number | null
     open: boolean
     onClose: (refresh ?: boolean) => void
@@ -28,7 +28,7 @@ export default function KeyLengthDialog(props: {
     const handleSubmit = React.useCallback(async () => {
         setSubmitting(true);
         try {
-            await updateKeyLength(length, handleAlert);
+            await updateAdminExpiry(length, handleAlert);
             handleAlert('设置成功', 'success')
             onClose(true);
         } catch (e) {
@@ -48,14 +48,14 @@ export default function KeyLengthDialog(props: {
                         onClose();
                 }}
             >
-                <DialogTitle>请输入序列号长度</DialogTitle>
+                <DialogTitle>请输入管理员登陆有效期</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         required
                         margin="dense"
                         name="length"
-                        label="长度"
+                        label="分钟"
                         type="number"
                         fullWidth
                         variant="standard"

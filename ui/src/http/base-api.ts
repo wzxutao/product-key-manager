@@ -6,6 +6,8 @@ export const AUTH_ERROR = new Error('401')
 
 export type ErrorLogger = (msg: string) => void;
 
+let lastAlertTime = 0;
+
 function deleteAllCookies() {
     var cookies = document.cookie.split(";");
 
@@ -20,9 +22,12 @@ function deleteAllCookies() {
 
 export const handleAndThrowAuthError = (err: any, errorLogger?: ErrorLogger) => {
     if ([401, 403].includes(err?.response?.status)) {
-        // errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
+        errorLogger ? errorLogger("登录已到期") : alert("登录已到期")
         deleteAllCookies();
-        alert("登录已到期");
+        if (lastAlertTime < Date.now() - 10_000) {
+            alert("登录已到期");
+            lastAlertTime = Date.now();
+        }
         window.location.href = '/';
         throw AUTH_ERROR;
     }
@@ -32,10 +37,10 @@ export const logAndRethrowOtherError = (err: any, errorLogger?: ErrorLogger): vo
     console.error(err);
     let response = ''
     try {
-        response = JSON.stringify(err?.response?.data)
-    }catch(_){}
+        response = '\n' + JSON.stringify(err?.response?.data, null, 2)
+    } catch (_) { }
 
-    const msg = '操作失败：' + (err?.response?.status ?? '未知错误') + ' ' + response;
+    const msg = '操作失败：' + (err?.response?.status ?? '未知错误') + response;
     errorLogger ? errorLogger(msg) : alert(msg)
     throw err;
 }
