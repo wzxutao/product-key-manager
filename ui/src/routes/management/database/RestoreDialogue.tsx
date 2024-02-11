@@ -63,6 +63,7 @@ export default function RestoreDialog(props: {
 
             >
                 <DialogTitle>从...恢复</DialogTitle>
+                <DialogContent>
                 <RadioGroup
                     sx={{ margin: '0 8px' }}
                     onChange={(e) => setSelectedFile(e.target.value as string)}
@@ -82,8 +83,6 @@ export default function RestoreDialog(props: {
 
                     )}
                 </RadioGroup>
-                <DialogContent>
-
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} disabled={submitting}>取消</Button>

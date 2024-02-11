@@ -23,12 +23,7 @@ public class NormalAccountRepositoryImpl
 
 
     @Override
-    public void add(String username, String password) {
-        update(username, password);
-    }
-
-    @Override
-    public void update(String username, String password) {
+    public void upsert(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 

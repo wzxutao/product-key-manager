@@ -7,10 +7,6 @@ public class RequestBodies {
         public String key;
     }
 
-    public static class LoginForm {
-        public String account;
-        public String password;
-    }
 
     public static class MandatoryFieldNames {
         public List<String> mandatoryFieldNames;

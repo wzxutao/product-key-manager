@@ -4,6 +4,9 @@ import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
 import cn.rypacker.productkeymanager.dto.KeyGenStats;
+import cn.rypacker.productkeymanager.dto.UserCredentials;
+import cn.rypacker.productkeymanager.entity.UserConfig;
+import cn.rypacker.productkeymanager.repositories.NormalAccountRepository;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
@@ -13,11 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +36,9 @@ public class AdminControllerV2 {
 
     @Autowired
     private KeyGenerator keyGenerator;
+
+    @Autowired
+    private NormalAccountRepository normalAccountRepository;
 
 
     @PostMapping(path = "/backup")
@@ -122,5 +130,24 @@ public class AdminControllerV2 {
         keyGenerator.setBlackList(blacklist);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/normal-accounts/get")
+    public List<String> getNormalAccounts(){
+        return new ArrayList<>(normalAccountRepository.findAllExistingUserNames());
+    }
+
+    @PostMapping("/normal-accounts/upsert")
+    public ResponseEntity<?> upsertNormalAccount(@Valid @RequestBody UserCredentials credentials){
+        normalAccountRepository.upsert(credentials.username, credentials.getPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/normal-accounts/delete")
+    public ResponseEntity<?> deleteNormalAccount(@RequestParam String username){
+        normalAccountRepository.remove(username);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

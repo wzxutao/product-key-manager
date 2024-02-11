@@ -11,6 +11,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 import { getAdminExpiry } from '../../../http/admin-api';
 import AdminExpiryDialog from './AdminExpiryDialogue';
+import NormalAccountDialogue from './NormalAccountDialogue';
 
 export default function AccountConfigAccordion() {
 
@@ -18,6 +19,8 @@ export default function AccountConfigAccordion() {
   const [adminExpiryDialogueOpen, setAdminExpiryDialogueOpen] = React.useState(false);
   const [adminExpiry, setAdminExpiry] = React.useState<number | null>(null);
   const [refreshFlag, setRefreshFlag] = React.useState<boolean>(false);
+
+  const [normalAccountDialogueOpen, setNormalAccountDialogueOpen] = React.useState(false);
 
   React.useEffect(() => {
     getAdminExpiry(handleAlert).then(setAdminExpiry).catch()
@@ -39,9 +42,11 @@ export default function AccountConfigAccordion() {
         </AccordionSummary>
         <AccordionDetails>
           <Stack direction='row' sx={{ justifyContent: 'space-around' }}>
-            <Button startIcon={<ManageAccountsIcon />}>
+            <Button startIcon={<ManageAccountsIcon />} onClick={() => setNormalAccountDialogueOpen(true)}>
               普通账号
             </Button>
+            <NormalAccountDialogue open={normalAccountDialogueOpen} 
+            onClose={(shouldRefresh?: boolean) => { setNormalAccountDialogueOpen(false); if (shouldRefresh) { refresh(); } }} />
           </Stack>
           <Divider />
           <Stack direction='row' sx={{ justifyContent: 'center', marginTop: '8px' }}>

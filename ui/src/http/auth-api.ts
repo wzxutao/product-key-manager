@@ -6,7 +6,7 @@ export const login = async (username: string, password: string,
     errorLogger?: ErrorLogger): Promise<void> => {
     try {
         const fd = new FormData();
-        fd.append('account', username);
+        fd.append('username', username);
         fd.append('password', password);
 
         await axios.post(

@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
+import cn.rypacker.productkeymanager.dto.UserCredentials;
 import cn.rypacker.productkeymanager.entity.JsonRecord;
 import cn.rypacker.productkeymanager.dto.RequestBodies;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,20 +54,20 @@ public class NewKeyController {
 
     @PostMapping("/login")
     public ResponseEntity<?> requestLogin(
-            @RequestBody RequestBodies.LoginForm loginForm){
-        if(loginForm == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            @RequestBody UserCredentials credentials){
+        if(credentials == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        var account = loginForm.account;
-        var password = loginForm.password;
-        if(!normalAccountRepository.matches(account, password)){
+        var username = credentials.getUsername();
+        var password = credentials.getPassword();
+        if(!normalAccountRepository.matches(username, password)){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         try {
-            var token = normalAccountAuth.signNewToken(account);
+            var token = normalAccountAuth.signNewToken(username);
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

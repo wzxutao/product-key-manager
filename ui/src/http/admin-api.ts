@@ -148,3 +148,47 @@ export const updateKeyGenBlackList = async (blackList: string[], errorLogger?: E
         logAndRethrowOtherError(err, errorLogger)
     }
 }
+
+export const getNormalAccounts = async (errorLogger?: ErrorLogger): Promise<string[]> => {
+    try {
+        const { data } = await axios.get<string[]>(
+            `${API_BASE}/normal-accounts/get`,
+            { withCredentials: true }
+        )
+        return data;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err);
+    }
+}
+
+export const upsertNormalAccount = async (
+    username: string, password: string,  errorLogger?: ErrorLogger) => {
+    try {
+        await axios.post(
+            `${API_BASE}/normal-accounts/upsert`,
+            {
+                username,
+                password
+            },
+            { withCredentials: true }
+        )
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+    }
+}
+
+export const deleteNormalAccount = async (
+    username: string, errorLogger?: ErrorLogger) => {
+    try {
+        await axios.delete(
+            `${API_BASE}/normal-accounts/delete?username=${username}`,
+            { withCredentials: true }
+        )
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+    }
+}

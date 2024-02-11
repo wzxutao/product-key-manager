@@ -46,6 +46,7 @@ public class UserConfig {
         private List<String> mandatoryFields = new ArrayList<>();
     }
 
+    /** Should be accessed via NormalAccountRepository */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

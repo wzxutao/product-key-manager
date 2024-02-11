@@ -78,7 +78,7 @@ public class SecurityConfig {
     public UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() {
         var filter = new UsernamePasswordAuthenticationFilter(customProviderManager());
         filter.setFilterProcessesUrl("/auth/login");
-        filter.setUsernameParameter("account");
+        filter.setUsernameParameter("username");
         filter.setAuthenticationSuccessHandler(loginAuthenticationSuccessHandler);
         return filter;
     }

@@ -243,7 +243,7 @@ public class AdminController {
             @RequestBody Map<String, String> reqBody
     ) {
         reqBody.forEach((k, v) -> {
-            normalAccountRepository.add(k, v);
+            normalAccountRepository.upsert(k, v);
         });
         logger.info("accounts created: " + reqBody);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -3,6 +3,7 @@ package cn.rypacker.productkeymanager.controllers;
 
 import cn.rypacker.productkeymanager.desktopui.AdminConfirm;
 import cn.rypacker.productkeymanager.dto.RequestBodies;
+import cn.rypacker.productkeymanager.dto.UserCredentials;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,13 +40,13 @@ public class AdminAuthController {
     @PostMapping(path = "/login",
             consumes = MediaType.ALL_VALUE,
             produces = "application/json")
-    public ResponseEntity<?> getAuthToken(@RequestBody RequestBodies.LoginForm loginForm,
+    public ResponseEntity<?> getAuthToken(@RequestBody UserCredentials credentials,
                                           HttpServletRequest request){
-        if(loginForm == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(credentials == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        var account = loginForm.account;
-        var password = loginForm.password;
-        if(!adminAuth.isAdmin(account, password)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        var username = credentials.username;
+        var password = credentials.password;
+        if(!adminAuth.isAdmin(username, password)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
         var token = adminConfirm.getTokenIfApproved(request.getRemoteAddr());
 //        System.out.println(token);
