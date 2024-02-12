@@ -9,7 +9,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import { RecordDto } from '../../http/dto/record-dto';
-import { CircularProgress } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import EditKeyDialog from '../../components/app-specific/EditKeyDialogue';
 
 
 interface Column {
@@ -17,6 +19,7 @@ interface Column {
     label: string;
     format: (row: RecordDto) => any;
     minWidth?: number;
+    maxWidth?: number;
     align?: 'right';
 }
 
@@ -26,6 +29,7 @@ export default function ListingResultTable(props: {
     const { data } = props;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [selectedRecord, setSelectedRecord] = React.useState<RecordDto | null>(null);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -73,6 +77,16 @@ export default function ListingResultTable(props: {
                     }
                     return rv;
                 }
+            },
+            {
+                "id": 'edit',
+                "label": '修改',
+                "format": dto => {
+                    return <Button startIcon={<EditIcon />}
+                        onClick={() => setSelectedRecord(dto)}></Button>
+                },
+                "maxWidth": 12,
+                "minWidth": 0,
             }
         ]
     }, [])
@@ -99,46 +113,55 @@ export default function ListingResultTable(props: {
     }, [data, page, rowsPerPage, columns])
 
     return (
-        <Paper className="list-page-table">
-            <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    className='table-head-cell'
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth ?? 170 }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data === null &&
-                            <TableRow>
-                                <TableCell colSpan={columns.length} sx={{
-                                    textAlign: 'center',
-                                }}>
-                                    <CircularProgress />
-                                </TableCell>
-                            </TableRow>
-                        }
-                        {data !== null && rows}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={data?.length ?? 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+        <>
+            <EditKeyDialog isAdmin={true} record={selectedRecord}
+                onClose={() => setSelectedRecord(null)}
+                onSubmit={() => { }}
             />
-        </Paper>
+            <Paper className="list-page-table">
+                <TableContainer>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        className='table-head-cell'
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{
+                                            minWidth: column.minWidth ?? 170,
+                                            maxWidth: column.maxWidth ?? 'none'
+                                        }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data === null &&
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} sx={{
+                                        textAlign: 'center',
+                                    }}>
+                                        <CircularProgress />
+                                    </TableCell>
+                                </TableRow>
+                            }
+                            {data !== null && rows}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={data?.length ?? 0}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </>
     );
 }
