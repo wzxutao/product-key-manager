@@ -34,3 +34,17 @@ export async function batchDeleteMyTodayRecords(productKeys: string[], errorLogg
         return Promise.reject(err)
     }
 }
+
+export const updateRecord = async (record: RecordDto, errorLogger?: ErrorLogger) => {
+    try {
+        await axios.put(
+            `${API_BASE}/update-record`,
+            record,
+            { withCredentials: true }
+        )
+    }catch(err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+        return Promise.reject(err);
+    }
+}

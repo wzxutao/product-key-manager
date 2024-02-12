@@ -9,7 +9,10 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import { RecordDto } from '../../http/dto/record-dto';
-import { Checkbox, CircularProgress } from '@mui/material';
+import { Button, Checkbox, CircularProgress } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import EditKeyDialogue from '../../components/app-specific/EditKeyDialogue';
+import { updateRecord } from '../../http/today-listing-api';
 
 
 interface Column {
@@ -21,7 +24,8 @@ interface Column {
 }
 
 export interface TodayListingResultTableProps {
-    data: RecordDto[] | null
+    data: RecordDto[] | null,
+    onChange: () => void
 }
 
 export interface TodayListingResultTableHandle {
@@ -29,10 +33,12 @@ export interface TodayListingResultTableHandle {
 }
 
 const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, TodayListingResultTableProps>((props, ref) => {
-    const { data } = props;
+    const { data, onChange } = props;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [rowsSelected, setRowsSelected] = React.useState<number[]>([])
+
+    const [selectedRecord, setSelectedRecord] = React.useState<RecordDto | null>(null);
 
     const handleChangePage = React.useCallback((_event: unknown, newPage: number) => {
         setPage(newPage);
@@ -94,6 +100,16 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                     }
                     return rv;
                 }
+            },
+            {
+                "id": 'edit',
+                "label": '修改',
+                "format": dto => {
+                    return <Button startIcon={<EditIcon />}
+                        onClick={() => setSelectedRecord(dto)}></Button>
+                },
+                "maxWidth": 12,
+                "minWidth": 0,
             }
         ]
     }, [])
@@ -133,50 +149,63 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                 }))
     }, [data, page, rowsPerPage, columns, rowsSelected])
 
+
+    const handleUpdateRecord = React.useCallback((newRecord: RecordDto) => {
+        return updateRecord(newRecord).then(() => {
+            onChange();
+        })
+    }, [onChange])
+
     return (
-        <Paper className="list-page-table">
-            <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell className='table-head-cell'></TableCell>
-                            {columns.map((column) => (
-                                <TableCell
-                                    className='table-head-cell'
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth ?? 170 }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data === null &&
-                            <TableRow>
-                                <TableCell colSpan={columns.length} sx={{
-                                    textAlign: 'center',
-                                }}>
-                                    <CircularProgress />
-                                </TableCell>
-                            </TableRow>
-                        }
-                        {data !== null && rows}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={data?.length ?? 0}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+        <>
+            <EditKeyDialogue
+                record={selectedRecord}
+                onClose={() => setSelectedRecord(null)}
+                onSubmit={handleUpdateRecord}
             />
-        </Paper>
-    );
+            <Paper className="list-page-table">
+                <TableContainer>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className='table-head-cell'></TableCell>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        className='table-head-cell'
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth ?? 170 }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data === null &&
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} sx={{
+                                        textAlign: 'center',
+                                    }}>
+                                        <CircularProgress />
+                                    </TableCell>
+                                </TableRow>
+                            }
+                            {data !== null && rows}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={data?.length ?? 0}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </>);
 });
 
 export default TodayListingResultTable;

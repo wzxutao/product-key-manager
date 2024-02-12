@@ -35,7 +35,7 @@ export function TodayListingPage() {
                     <BatchDeleteButton tableRef={tableRef} onDeleted={handleDataDeleted}/>
                     <Button className="reload-btn" variant='outlined' onClick={handleLoadData}>重新加载</Button>
                 </Stack>
-                <TodayListingResultTable data={data} ref={attachTableRef} />
+                <TodayListingResultTable data={data} ref={attachTableRef} onChange={handleLoadData} />
             </Stack>
         </>
     )

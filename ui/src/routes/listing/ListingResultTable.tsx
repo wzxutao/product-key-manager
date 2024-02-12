@@ -12,7 +12,7 @@ import { RecordDto } from '../../http/dto/record-dto';
 import { Button, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditKeyDialog from '../../components/app-specific/EditKeyDialogue';
-import { updateRecord } from '../../http/listing-api';
+import { updateRecord } from '../../http/today-listing-api';
 
 
 interface Column {
@@ -126,7 +126,7 @@ export default function ListingResultTable(props: {
 
     return (
         <>
-            <EditKeyDialog isAdmin={true} record={selectedRecord}
+            <EditKeyDialog record={selectedRecord}
                 onClose={() => {setSelectedRecord(null);}}
                 onSubmit={handleUpdateRecord}
             />

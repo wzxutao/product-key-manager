@@ -4,6 +4,7 @@ import cn.rypacker.productkeymanager.common.RecordStatus;
 import cn.rypacker.productkeymanager.dto.JsonRecordDto;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
+import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
@@ -12,8 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
+import static cn.rypacker.productkeymanager.common.Constants.USERNAME_RECORD_VALUE_ADMIN;
 
 @RestController
 @RequestMapping("/normal/listing/v2")
@@ -63,6 +68,38 @@ public class ListingControllerV2 {
         var records = jsonRecordRepository.findAll(specs);
         records.forEach(r -> r.setStatus(RecordStatus.DELETED));
         jsonRecordRepository.saveAll(records);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-record")
+    public ResponseEntity<?> updateRecord(@Valid @RequestBody JsonRecordDto dto) {
+
+        var entityOptional = jsonRecordRepository.findById(dto.getId());
+        if(entityOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var entity = entityOptional.get();
+        String username = JSONUtil.getFirstValue(entity.getJsonString(), RECORD_KEY_USERNAME);
+
+        // normal account access control
+        var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        if(!adminAuth.isValidToken(authToken)) {
+            String requestUsername = normalAccountAuth.getUsername(authToken);
+            if(requestUsername == null) return ResponseEntity.status(403).body("Invalid token");
+            if(!requestUsername.equals(username)) return ResponseEntity.status(400).body("You are not allowed to update this record");
+
+            if(System.currentTimeMillis() - entity.getCreatedMilli() > 1000 * 60 * 60 * 24) {
+                return ResponseEntity.status(400).body("You are not allowed to update this record");
+            }
+        }
+
+        entity.setStatus(RecordStatus.parse(dto.getStatus()));
+        dto.getExpandedAllFields().put(RECORD_KEY_USERNAME, username != null ? username : USERNAME_RECORD_VALUE_ADMIN);
+
+        entity.setJsonString(JSONUtil.toStringFrom(dto.getExpandedAllFields()));
+        jsonRecordRepository.save(entity);
+
         return ResponseEntity.ok().build();
     }
 }

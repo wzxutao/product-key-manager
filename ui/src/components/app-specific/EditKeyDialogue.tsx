@@ -21,12 +21,11 @@ type KVPair = {
 }
 
 export default function EditKeyDialog(props: {
-    isAdmin?: boolean,
     record: RecordDto | null,
     onClose: () => void,
     onSubmit: (record: RecordDto) => Promise<any>
 }) {
-    const { isAdmin, record: pRecord, onClose, onSubmit } = props;
+    const { record: pRecord, onClose, onSubmit } = props;
     const [submitting, setSubmitting] = React.useState(false);
     const [alertMsg, handleAlert] = useAlert();
     const [mandatoryFieldKeys, setMandatoryFieldKeys] = React.useState<string[] | null>(null);

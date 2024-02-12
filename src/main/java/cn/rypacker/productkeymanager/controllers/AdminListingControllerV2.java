@@ -56,22 +56,4 @@ public class AdminListingControllerV2 {
         return JsonRecordDto.fromEntity(entity);
     }
 
-    @PutMapping("/update-record")
-    public ResponseEntity<?> updateRecord(@Valid @RequestBody JsonRecordDto dto) {
-
-        var entityOptional = jsonRecordRepository.findById(dto.getId());
-        if(entityOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var entity = entityOptional.get();
-        entity.setStatus(RecordStatus.parse(dto.getStatus()));
-        String username = JSONUtil.getFirstValue(entity.getJsonString(), RECORD_KEY_USERNAME);
-        dto.getExpandedAllFields().put(RECORD_KEY_USERNAME, username != null ? username : USERNAME_RECORD_VALUE_ADMIN);
-
-        entity.setJsonString(JSONUtil.toStringFrom(dto.getExpandedAllFields()));
-        jsonRecordRepository.save(entity);
-
-        return ResponseEntity.ok().build();
-    }
 }
