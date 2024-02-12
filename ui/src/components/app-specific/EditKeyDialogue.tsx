@@ -9,35 +9,177 @@ import { Backdrop, Card, CardContent, Chip, CircularProgress, Divider, FormContr
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import { RecordDto } from '../../http/dto/record-dto';
-import { RECORD_STATUS_DELETED, RECORD_STATUS_NORMAL } from '../../common/constants';
+import { INPUT_DATE_KEY, RECORD_STATUS_DELETED, RECORD_STATUS_NORMAL } from '../../common/constants';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { getMandatoryFields } from '../../http/keygen-api';
-import './EditKeyDialogue.less'
+import './EditKeyDialogue.less';
+
+type KVPair = {
+    k: string,
+    v: string
+}
 
 export default function EditKeyDialog(props: {
     isAdmin?: boolean,
     record: RecordDto | null,
     onClose: () => void,
-    onSubmit: (record: RecordDto) => void
+    onSubmit: (record: RecordDto) => Promise<any>
 }) {
-    const { isAdmin, record, onClose, onSubmit } = props;
+    const { isAdmin, record: pRecord, onClose, onSubmit } = props;
     const [submitting, setSubmitting] = React.useState(false);
     const [alertMsg, handleAlert] = useAlert();
-    const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
+    const [mandatoryFieldKeys, setMandatoryFieldKeys] = React.useState<string[] | null>(null);
+
+    const [record, setRecord] = React.useState<RecordDto | null>(pRecord);
+
+    const [mandatoryFields, setMandatoryFields] = React.useState<KVPair[]>([]);
+    const [optionalFields, setOptionalFields] = React.useState<KVPair[]>([]);
+
+    React.useEffect(() => {
+        if (pRecord === null) {
+            setRecord(null);
+            setMandatoryFields([]);
+            setOptionalFields([]);
+            return;
+        }
+
+        if (mandatoryFieldKeys === null) return;
+
+        const r: RecordDto = JSON.parse(JSON.stringify(pRecord));
+
+        const man: KVPair[] = mandatoryFieldKeys.map(k => ({
+            k,
+            v: r.expandedAllFields[k] ?? ''
+        }));
+        const opt: KVPair[] = [];
+
+
+
+        Object.getOwnPropertyNames(r.expandedAllFields).forEach((k) => {
+            if (k === INPUT_DATE_KEY) return;
+
+            if (!mandatoryFieldKeys.includes(k)) {
+                opt.push({
+                    k: k,
+                    v: r.expandedAllFields[k]
+                });
+            }
+        })
+
+        setMandatoryFields(man);
+        setOptionalFields(opt);
+        r.expandedAllFields = {}
+        setRecord(r);
+    }, [pRecord, mandatoryFieldKeys])
 
     React.useEffect(() => {
         getMandatoryFields(handleAlert)
             .then((fields) => {
-                setMandatoryFields(fields);
+                setMandatoryFieldKeys(fields);
             })
             .catch((_err) => {
             });
     }, []);
 
     const handleAddAdditionalField = React.useCallback(() => {
-
+        setOptionalFields(prev => [...prev, { k: '', v: '' }])
     }, []);
+
+    const mandatoryFieldRows = React.useMemo(() => {
+        return mandatoryFields.map((kv, idx) => {
+            if(kv === undefined) return undefined;
+
+            const { k, v } = kv;
+
+            return (<div key={k} className="key-gen-form-row">
+                <Grid item component={TextField} className='field-key' variant="filled"
+                    disabled
+                    xs={4} defaultValue={k} />
+                <Grid item component={Input}
+                    value={v}
+                    onChange={ev => {
+                        mandatoryFields[idx] = {
+                            k,
+                            v: ev.target.value
+                        }
+                        setMandatoryFields([...mandatoryFields])
+                    }}
+                    xs={8} />
+            </div>
+            )
+        })
+    }, [mandatoryFields])
+
+    const optionalFieldRows = React.useMemo(() => {
+        const rv: JSX.Element[] = []
+
+        optionalFields.map((f, idx) => {
+            if(f === undefined) return undefined;
+
+            const { k, v } = f;
+
+            rv.push(
+                <div className="key-gen-form-row" key={idx}>
+                    <Grid item component={TextField} className='field-key' variant="filled"
+                        xs={4}
+                        value={k}
+                        onChange={(ev: any) => {
+                            optionalFields[idx] = {
+                                k: ev.target.value,
+                                v
+                            };
+                            setOptionalFields([...optionalFields])
+                        }}
+                    />
+                    <Grid item component={Input}
+                        value={v}
+                        onChange={ev => {
+                            optionalFields[idx] = {
+                                k,
+                                v: ev.target.value
+                            }
+
+                            setOptionalFields([...optionalFields]);
+                        }}
+                        xs={7} />
+                    <Grid item component={RemoveCircleOutlineIcon}
+                        className='remove-field-btn'
+                        onClick={_ => {
+                            delete optionalFields[idx];
+                            setOptionalFields([...optionalFields])
+                        }}
+                        xs={1} />
+                </div>)
+        })
+
+
+        return rv;
+    }, [optionalFields]);
+
+    const handleSubmit = React.useCallback(() => {
+        if (record === null) return;
+
+        const fields: Record<string, string> = {}
+        for (const kv of [...mandatoryFields, ...optionalFields]) {
+            if (kv === undefined) continue;
+
+            const { k, v } = kv;
+            fields[k] = v;
+        }
+
+        setSubmitting(true);
+        onSubmit({ ...record, expandedAllFields: fields }).then(_ => {
+            handleAlert('修改成功', 'success');
+            onClose();
+        })
+            .catch(_ => {
+                handleAlert('修改失败', 'error');
+            })
+            .finally(() => {
+                setSubmitting(false);
+            })
+    }, [record, mandatoryFields, optionalFields, handleAlert])
 
     return (
         <>
@@ -50,10 +192,14 @@ export default function EditKeyDialog(props: {
                 }}
                 fullScreen
             >
-                <DialogTitle textAlign='center'>修改记录</DialogTitle>
+                <DialogTitle textAlign='center' sx={{
+                    color: 'white',
+                    backgroundColor: '#1976d2'
+                }}>修改记录</DialogTitle>
                 <DialogContent >
                     {record &&
-                        <Stack direction='column'>
+                        <Stack direction='column' mt='20px'>
+                            {/* readonly */}
                             <Card sx={{ backgroundColor: '#cecece' }}>
                                 <CardContent>
                                     <Typography variant="h5" component="div">
@@ -67,12 +213,16 @@ export default function EditKeyDialog(props: {
                                     </Typography>
                                 </CardContent>
                             </Card>
+                            {/* status */}
                             <Paper sx={{ marginTop: '16px' }} elevation={0}>
                                 <Stack direction='row' spacing={2} justifyContent='center' alignItems='center'>
-                                    <Chip label="状态： " />
+                                    <Chip label="状态：" />
                                     <FormControl variant="standard">
                                         <Select
                                             value={record.status}
+                                            onChange={ev => {
+                                                setRecord({ ...record, status: ev.target.value });
+                                            }}
                                         >
                                             <MenuItem value={RECORD_STATUS_NORMAL}>正常</MenuItem>
                                             <MenuItem value={RECORD_STATUS_DELETED}>删除</MenuItem>
@@ -80,7 +230,7 @@ export default function EditKeyDialog(props: {
                                     </FormControl>
                                 </Stack>
                             </Paper>
-
+                            {/* fields */}
                             <Paper sx={{ marginTop: '16px' }}>
                                 <Grid
                                     className="edit-key-form"
@@ -93,20 +243,11 @@ export default function EditKeyDialog(props: {
                                     {/* mandatory fields*/}
                                     <Backdrop
                                         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                                        open={mandatoryFields === null}
+                                        open={mandatoryFieldKeys === null}
                                     >
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
-                                    {mandatoryFields?.map(f =>
-                                        <div key={f} className="key-gen-form-row">
-                                            <Grid item component={TextField} className='field-key' variant="filled" disabled
-                                                xs={4} defaultValue={f} />
-                                            <Grid item component={Input}
-                                                placeholder={f}
-                                                name={f}
-                                                xs={8} />
-                                        </div>
-                                    )}
+                                    {mandatoryFieldRows}
                                     {/* additional fields*/}
                                     <Grid item className="form-divider" component={Divider} xs={12}>
                                         <Chip label="额外项" size="small" />
@@ -116,43 +257,35 @@ export default function EditKeyDialog(props: {
                                         className="add-field-btn"
                                         onClick={handleAddAdditionalField}
                                         xs={12} />
-                                    {[].map((f, i) => {
-                                        if (f === undefined) return undefined;
-
-                                        return <div className="key-gen-form-row" key={i}>
-                                            <Grid item component={TextField} className='field-key' variant="filled"
-                                                xs={4}
-                                                value={f}
-                                            />
-                                            <Grid item component={Input}
-                                                placeholder={f}
-                                                name={f}
-                                                xs={7} />
-                                            <Grid item component={RemoveCircleOutlineIcon}
-                                                className='remove-field-btn'
-                                                xs={1} />
-                                        </div>
-                                    })}
+                                    {optionalFieldRows}
                                 </Grid>
                             </Paper>
                         </Stack>
                     }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose} disabled={submitting}>取消(Esc)</Button>
-                    <Button disabled={submitting} variant='contained'>提交</Button>
-                    {submitting && <CircularProgress
-                        size={24}
-                        sx={{
-                            color: green[500],
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            marginTop: '-12px',
-                            marginLeft: '-12px',
+                    <Stack direction='row' justifyContent='space-between' width='100%' spacing={2}>
+                        <Button sx={{
+                            flexGrow: 1
+                        }} onClick={onClose} disabled={submitting} variant='outlined'>取消(Esc)</Button>
+                        <Button sx={{
+                            flexGrow: 1
                         }}
-                    />
-                    }
+                            onClick={handleSubmit}
+                            disabled={submitting} variant='contained'>提交</Button>
+                        {submitting && <CircularProgress
+                            size={24}
+                            sx={{
+                                color: green[500],
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px',
+                            }}
+                        />
+                        }
+                    </Stack>
                 </DialogActions>
             </Dialog>
         </>

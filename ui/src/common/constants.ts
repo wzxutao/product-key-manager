@@ -6,3 +6,5 @@ export const COOKIE_KEY_USERNAME = "username";
 
 export const RECORD_STATUS_NORMAL = '正常';
 export const RECORD_STATUS_DELETED = '删除';
+
+export const INPUT_DATE_KEY = "日期";

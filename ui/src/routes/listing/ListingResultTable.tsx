@@ -12,6 +12,7 @@ import { RecordDto } from '../../http/dto/record-dto';
 import { Button, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditKeyDialog from '../../components/app-specific/EditKeyDialogue';
+import { updateRecord } from '../../http/listing-api';
 
 
 interface Column {
@@ -25,11 +26,16 @@ interface Column {
 
 export default function ListingResultTable(props: {
     data: RecordDto[] | null
+    onChange: () => void,
 }) {
-    const { data } = props;
+    const { data, onChange } = props;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [selectedRecord, setSelectedRecord] = React.useState<RecordDto | null>(null);
+
+    React.useEffect(() => {
+        setPage(0);
+    }, [data])
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -112,11 +118,17 @@ export default function ListingResultTable(props: {
                 }))
     }, [data, page, rowsPerPage, columns])
 
+    const handleUpdateRecord = React.useCallback((newRecord: RecordDto) => {
+        return updateRecord(newRecord).then(() => {
+            onChange();
+        })
+    }, [onChange])
+
     return (
         <>
             <EditKeyDialog isAdmin={true} record={selectedRecord}
-                onClose={() => setSelectedRecord(null)}
-                onSubmit={() => { }}
+                onClose={() => {setSelectedRecord(null);}}
+                onSubmit={handleUpdateRecord}
             />
             <Paper className="list-page-table">
                 <TableContainer>

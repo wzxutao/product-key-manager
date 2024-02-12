@@ -16,6 +16,8 @@ todo:
     2. fix date time issues
     3. order by column in listing table
     4. listing table go to page
+    5. filter date can use relative days
+    6. able to save & load search cr. auto use last used cr
 
 backlog:
 store account credentials in db

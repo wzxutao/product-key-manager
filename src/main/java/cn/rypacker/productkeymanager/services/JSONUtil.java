@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.services;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,16 @@ public class JSONUtil {
         var jsonObject = new JSONObject(jsonString);
         try{
             return jsonObject.get(key).toString();
+        }catch (JSONException e){
+            return null;
+        }
+    }
+
+    public static String getFirstValue(String jsonString, String key){
+        var jsonObject = new JSONObject(jsonString);
+        try{
+            var valueArr = ((JSONArray) jsonObject.get(key));
+            return !valueArr.isEmpty() ? valueArr.getString(0) : null;
         }catch (JSONException e){
             return null;
         }

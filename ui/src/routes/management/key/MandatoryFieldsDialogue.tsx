@@ -12,7 +12,7 @@ import { getMandatoryFields } from '../../../http/keygen-api';
 import StarIcon from '@mui/icons-material/Star';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { updateMandatoryFields } from '../../../http/admin-api';
-import { INPUT_DATE_KEY } from '../../keygen/KeyGenPage';
+import { INPUT_DATE_KEY } from '../../../common/constants';
 
 export default function MandatoryFieldsDialogue(props: {
     open: boolean

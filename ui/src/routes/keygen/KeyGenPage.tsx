@@ -8,8 +8,10 @@ import { genKeys, getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { EasyCopyChip } from '../../components/EasyCopyChip';
+import { INPUT_DATE_KEY } from '../../common/constants';
 
-export const INPUT_DATE_KEY = "日期";
+
+const BATCH_COUNT_MAX = 10;
 
 export default function KeyGenPage() {
     const [alertMsg, handleAlert] = useAlert();
@@ -61,6 +63,10 @@ export default function KeyGenPage() {
 
     const handleSubmit = React.useCallback(async () => {
         if (formRef === null) return;
+        if(batchGenCount > BATCH_COUNT_MAX) {
+            handleAlert(`批量生成上限为${BATCH_COUNT_MAX}个`);
+            return;
+        }
 
         const valueInputs: HTMLInputElement[] = [];
         for (let i = 0; i < formRef.elements.length; i++) {
@@ -200,6 +206,7 @@ export default function KeyGenPage() {
                             type='number'
                             inputProps={{
                                 min: 1,
+                                max: BATCH_COUNT_MAX,
                                 step: 1,
                             }}
                             onChange={(ev) => { setBatchGenCount(parseInt(ev.target.value)) }}

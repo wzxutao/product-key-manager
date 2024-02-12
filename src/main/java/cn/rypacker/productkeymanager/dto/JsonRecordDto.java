@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME
 @AllArgsConstructor
 public class JsonRecordDto {
 
+    @NotNull
     private Long id;
 
     private String username;
@@ -26,8 +29,10 @@ public class JsonRecordDto {
 
     private String productKey;
 
+    @NotEmpty
     private String Status;
 
+    @NotNull
     private transient Map<String, String> expandedAllFields = new HashMap<>();
 
     public static JsonRecordDto fromEntity(JsonRecord entity) {

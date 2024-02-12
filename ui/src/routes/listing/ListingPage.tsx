@@ -39,7 +39,7 @@ export default function ListingPage() {
         <Stack id="ListingPage">
             <ListingToolBar onQuery={handleQueryByProductKey} />
             <ListingFilterAccordion rootCr={rootCr} setRootCr={setRootCr} onQuery={onQueryRecords} />
-            <ListingResultTable data={data} />
+            <ListingResultTable data={data} onChange={onQueryRecords} />
         </Stack>
     </>);
 }

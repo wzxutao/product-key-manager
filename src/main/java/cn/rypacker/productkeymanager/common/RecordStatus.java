@@ -14,4 +14,15 @@ public class RecordStatus {
                 return Integer.toString(statusCode);
         }
     }
+
+    public static int parse(String statusString){
+        switch (statusString){
+            case "正常":
+                return NORMAL;
+            case "删除":
+                return DELETED;
+            default:
+                return Integer.parseInt(statusString);
+        }
+    }
 }

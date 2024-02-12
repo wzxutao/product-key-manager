@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
+import static cn.rypacker.productkeymanager.common.Constants.USERNAME_RECORD_VALUE_ADMIN;
 
 @RestController
 @RequestMapping("/normal/keygen/v2")
@@ -57,7 +58,7 @@ public class KeyGenControllerV2 {
         String username = normalAccountAuth.getUsername(authToken);
         if (username == null) {
             if (adminAuth.isValidToken(authToken)) {
-                username = "admin";
+                username = USERNAME_RECORD_VALUE_ADMIN;
             } else {
                 return ResponseEntity.badRequest().body("username not found");
             }
