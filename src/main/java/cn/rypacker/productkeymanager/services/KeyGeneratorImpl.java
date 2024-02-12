@@ -39,7 +39,7 @@ public class KeyGeneratorImpl implements KeyGenerator {
 
     @Override
     public void refreshCandidates() {
-        var fromS = DatetimeUtil.getTodayEpochSeconds(true);
+        var fromS = DatetimeUtil.getTodayEpochSeconds(true) * 1000;
 
         var used = recordRepository.findAll(
                 JsonRecordSpecs.createdMilliAfter(fromS)
