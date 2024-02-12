@@ -98,7 +98,7 @@ export default function NormalAccountDialogue(props: {
             <ListItem
                 key={username}
                 secondaryAction={[
-                    <Tooltip title="修改密码" placement="right-start">
+                    <Tooltip key={username + '_' + 'edit'} title="修改密码" placement="right-start">
                         <IconButton edge="end" onClick={() => {
                             setSelectedUsername(username);
                             setCredentialsDialogMode('edit');
@@ -106,7 +106,7 @@ export default function NormalAccountDialogue(props: {
                             <KeyIcon />
                         </IconButton>
                     </Tooltip>,
-                    <Tooltip title="删除账号" placement="right">
+                    <Tooltip key={username + '_' + 'delete'} title="删除账号" placement="right">
                         <IconButton edge="end" onClick={() => {
                             setSelectedUsername(username);
                             setCredentialsDialogMode('delete');
