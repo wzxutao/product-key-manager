@@ -14,5 +14,5 @@ public interface JsonRecordRepository extends
         PagingAndSortingRepository<JsonRecord, Long>,
         JpaSpecificationExecutor<JsonRecord> {
 
-    List<JsonRecord> findByProductKey(String productKey);
+    JsonRecord findByProductKey(String productKey);
 }

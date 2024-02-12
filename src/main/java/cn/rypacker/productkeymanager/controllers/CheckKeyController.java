@@ -26,12 +26,10 @@ public class CheckKeyController {
         if(key == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         var record = jsonRecordRepository.findByProductKey(key.key);
-        if(record.isEmpty()){
+        if(record == null){
             return new ResponseEntity<>("无效序列号", HttpStatus.NOT_FOUND);
-        }else if(record.size() != 1){
-            throw new RuntimeException("key duplication");
         }
 
-        return new ResponseEntity<>(record.get(0).getJsonString(), HttpStatus.OK);
+        return new ResponseEntity<>(record.getJsonString(), HttpStatus.OK);
     }
 }

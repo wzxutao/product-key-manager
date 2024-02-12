@@ -86,7 +86,7 @@ public class KeyGenControllerV2 {
         String key;
 
         key = keyGenerator.generateKey(date);
-        while (!jsonRecordRepository.findByProductKey(key).isEmpty()) {
+        while (jsonRecordRepository.findByProductKey(key) != null) {
             keyGenerator.refreshCandidates();
             log.warn("duplicated key found, refreshing candidates and trying again. key: {}", key);
             key = keyGenerator.generateKey(date);

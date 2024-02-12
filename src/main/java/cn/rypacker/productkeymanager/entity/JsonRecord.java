@@ -22,7 +22,7 @@ public class JsonRecord {
     @Column(name = "json_string")
     private String jsonString;
 
-    @Column(name= "product_key")
+    @Column(name= "product_key", unique = true)
     private String productKey;
 
     @Column(name = "created_milli")

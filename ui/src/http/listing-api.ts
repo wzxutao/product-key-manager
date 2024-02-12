@@ -80,3 +80,17 @@ export const getMandatoryFields = async (errorLogger?: ErrorLogger): Promise<str
         return Promise.reject(err);
     }
 }
+
+export const getByProductKey = async (productKey: string, errorLogger?: ErrorLogger): Promise<RecordDto | null> => {
+    try {
+        const { data } = await axios.get<RecordDto>(
+            `${API_BASE}/get-by-product-key?productKey=${productKey}`,
+            { withCredentials: true }
+        )
+        return data || null;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+        return Promise.reject(err);
+    }
+}

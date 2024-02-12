@@ -4,7 +4,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Divider, Paper } from '@mui/material';
+import { Button, Divider, Paper, Stack } from '@mui/material';
 import NewRuleInput from './NewRuleInput';
 import RulesGraph from './RulesGraph';
 import { QueryRecordCriterion, rootCriterion } from '../../http/listing-api';
@@ -155,10 +155,11 @@ const operators: OperatorDefinition = {
 export default function FilterAccordion(
     props: {
         rootCr: QueryRecordCriterion,
-        setRootCr: (cr: QueryRecordCriterion) => void
+        setRootCr: (cr: QueryRecordCriterion) => void,
+        onQuery: () => void,
     }
 ) {
-    const { rootCr, setRootCr } = props;
+    const { rootCr, setRootCr, onQuery } = props;
 
     const [selectedCriteria, setSelectedCriteria] = React.useState<QueryRecordCriterion>(rootCr);
 
@@ -186,11 +187,11 @@ export default function FilterAccordion(
 
     return (
         <Paper className='list-page-filter' elevation={3}>
-            <Accordion defaultExpanded>
+            <Accordion defaultExpanded={false}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
-                    <Typography><b>筛选条件</b></Typography>
+                    <Typography><b>高级查找</b></Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Divider><b>添加新条件</b></Divider>
@@ -208,6 +209,10 @@ export default function FilterAccordion(
                         criteria={rootCr}
                         selectedCriteria={selectedCriteria}
                         setSelectedCriteria={setSelectedCriteria} />
+
+                    <Stack direction='row' justifyContent='space-evenly'>
+                        <Button variant='contained' onClick={onQuery} sx={{ flexGrow: 1 }}>按条件加载数据</Button>
+                    </Stack>
                 </AccordionDetails>
             </Accordion>
         </Paper>

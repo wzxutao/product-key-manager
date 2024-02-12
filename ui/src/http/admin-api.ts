@@ -1,5 +1,6 @@
 import axios from "axios"
 import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
+import { RecordDto } from "./dto/record-dto";
 
 const API_BASE = `${API_URL}/admin/man/v2`;
 
@@ -164,7 +165,7 @@ export const getNormalAccounts = async (errorLogger?: ErrorLogger): Promise<stri
 }
 
 export const upsertNormalAccount = async (
-    username: string, password: string,  errorLogger?: ErrorLogger) => {
+    username: string, password: string, errorLogger?: ErrorLogger) => {
     try {
         await axios.post(
             `${API_BASE}/normal-accounts/upsert`,
@@ -196,7 +197,7 @@ export const deleteNormalAccount = async (
 export const verifyNormalAccount = async (
     username: string, password: string, errorLogger?: ErrorLogger): Promise<boolean> => {
     try {
-        const {data} = await axios.post<boolean>(
+        const { data } = await axios.post<boolean>(
             `${API_BASE}/normal-accounts/verify`,
             {
                 username,
@@ -211,3 +212,4 @@ export const verifyNormalAccount = async (
         return Promise.reject(err);
     }
 }
+

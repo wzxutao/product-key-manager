@@ -7,6 +7,7 @@ import { QueryRecordCriterion, rootCriterion, queryRecords } from '../../http/li
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import ListingToolBar from './ListingToolBar';
 import "./ListingPage.less"
+import { getByProductKey } from '../../http/listing-api';
 
 
 export default function ListingPage() {
@@ -20,8 +21,14 @@ export default function ListingPage() {
         setData(null)
         queryRecords({
             criterion: rootCr
-        }, handleAlert).then(setData).catch(err => {})
+        }, handleAlert).then(setData).catch()
     }, [handleAlert, rootCr])
+
+    const handleQueryByProductKey = React.useCallback((productKey: string) => {
+        setData(null);
+        getByProductKey(productKey)
+        .then(rv => setData(rv !== null ? [rv] : [])).catch()
+    }, [handleAlert])
 
     React.useEffect(() => {
         onQueryRecords()
@@ -30,8 +37,8 @@ export default function ListingPage() {
     return (<>
         <SnackbarAlert msg={alertMsg} />
         <Stack id="ListingPage">
-            <ListingFilterAccordion rootCr={rootCr} setRootCr={setRootCr}/>
-            <ListingToolBar onQuery={onQueryRecords}/>
+            <ListingToolBar onQuery={handleQueryByProductKey} />
+            <ListingFilterAccordion rootCr={rootCr} setRootCr={setRootCr} onQuery={onQueryRecords} />
             <ListingResultTable data={data} />
         </Stack>
     </>);

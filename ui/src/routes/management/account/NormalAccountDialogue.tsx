@@ -85,7 +85,7 @@ export default function NormalAccountDialogue(props: {
             return '修改密码';
         } else if (credentialsDialogMode === 'verify') {
             return '验证密码';
-        }else if (credentialsDialogMode === 'delete') {
+        } else if (credentialsDialogMode === 'delete') {
             return '确认删除账号？'
         }
         return undefined;
@@ -116,7 +116,6 @@ export default function NormalAccountDialogue(props: {
                     </Tooltip>
                 ]
                 }
-                disablePadding
             >
                 <Tooltip title="点击验证密码" placement="left">
                     <ListItemButton dense onClick={
@@ -153,7 +152,7 @@ export default function NormalAccountDialogue(props: {
             >
                 <DialogTitle>普通账号</DialogTitle>
                 <DialogContent>
-                    <List sx={{ minWidth: '200px' }}>
+                    <List sx={{ minWidth: '200px', maxHeight: '70vh', overflow: 'scroll' }}>
                         {listItems}
                     </List>
                     <Divider />

@@ -38,4 +38,14 @@ public class AdminListingControllerV2 {
             throw new IdentifiedWebException(e.getMessage(), 400);
         }
     }
+
+    @GetMapping("/get-by-product-key")
+    public JsonRecordDto getByProductKey(@RequestParam("productKey") String productKey) {
+        var entity = jsonRecordRepository.findByProductKey(productKey);
+        if(entity == null) {
+            return null;
+        }
+
+        return JsonRecordDto.fromEntity(entity);
+    }
 }

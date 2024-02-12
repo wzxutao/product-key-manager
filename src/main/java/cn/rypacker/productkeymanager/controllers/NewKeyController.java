@@ -90,7 +90,7 @@ public class NewKeyController {
         String key;
         // avoid duplication
         key = keyGenerator.generateKey(date);
-        while (jsonRecordRepository.findByProductKey(key).size() > 0){
+        while (jsonRecordRepository.findByProductKey(key) != null){
             keyGenerator.refreshCandidates();
             key = keyGenerator.generateKey(date);
         }
