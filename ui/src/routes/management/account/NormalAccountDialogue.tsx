@@ -4,16 +4,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { getNormalAccounts, updateAdminExpiry } from '../../../http/admin-api';
-import { CircularProgress, Container, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
+import { deleteNormalAccount, getNormalAccounts, upsertNormalAccount, verifyNormalAccount } from '../../../http/admin-api';
+import { CircularProgress, Container, Divider, IconButton, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PasswordIcon from '@mui/icons-material/Password';
 import KeyIcon from '@mui/icons-material/Key';
 import UserCredentialDialogue from './UserCredentialDialogue';
 
-type CredentialDialogueMode = 'add' | 'edit' | 'verify' | 'off';
+type CredentialDialogueMode = 'add' | 'edit' | 'verify' | 'delete' | 'off';
 
 export default function NormalAccountDialogue(props: {
     open: boolean
@@ -28,16 +27,54 @@ export default function NormalAccountDialogue(props: {
     const [credentialsDialogMode, setCredentialsDialogMode] = React.useState<CredentialDialogueMode>('off');
     const [selectedUsername, setSelectedUsername] = React.useState<string | null>(null);
 
-    React.useEffect(() => {
+    const refreshAccounts = React.useCallback(() => {
         getNormalAccounts(handleAlert).then(setNormalAccounts).catch()
+    }, [handleAlert])
+
+    React.useEffect(() => {
+        refreshAccounts();
     }, []);
 
     const handleCredentialsDialogueSubmit = React.useCallback(async (username: string, password: string) => {
-        if (credentialsDialogMode === 'add') {
-            // add
-        } else if (credentialsDialogMode === 'edit') {
+        if (credentialsDialogMode === 'add' || credentialsDialogMode === 'edit') {
+            setSubmitting(true);
+            upsertNormalAccount(username, password, handleAlert)
+                .then(_ => {
+                    handleAlert("操作成功", 'success')
+                    refreshAccounts();
+                })
+                .catch()
+                .finally(() => {
+                    setSubmitting(false);
+                    setCredentialsDialogMode('off');
+                })
         } else if (credentialsDialogMode === 'verify') {
-            // verify
+            setSubmitting(true);
+            verifyNormalAccount(username, password, handleAlert)
+                .then(rv => {
+                    if (rv === true) {
+                        handleAlert("密码正确", 'success')
+                        setCredentialsDialogMode('off');
+                    } else if (rv === false) {
+                        handleAlert("密码错误", 'error')
+                    }
+                })
+                .catch()
+                .finally(() => {
+                    setSubmitting(false);
+                })
+        } else if (credentialsDialogMode === 'delete') {
+            setSubmitting(true);
+            deleteNormalAccount(username, handleAlert)
+                .then(_ => {
+                    handleAlert("删除成功", 'success')
+                    refreshAccounts();
+                })
+                .catch()
+                .finally(() => {
+                    setSubmitting(false);
+                    setCredentialsDialogMode('off');
+                })
         }
     }, [credentialsDialogMode]);
 
@@ -48,6 +85,8 @@ export default function NormalAccountDialogue(props: {
             return '修改密码';
         } else if (credentialsDialogMode === 'verify') {
             return '验证密码';
+        }else if (credentialsDialogMode === 'delete') {
+            return '确认删除账号？'
         }
         return undefined;
     }, [credentialsDialogMode]);
@@ -68,7 +107,10 @@ export default function NormalAccountDialogue(props: {
                         </IconButton>
                     </Tooltip>,
                     <Tooltip title="删除账号" placement="right">
-                        <IconButton edge="end">
+                        <IconButton edge="end" onClick={() => {
+                            setSelectedUsername(username);
+                            setCredentialsDialogMode('delete');
+                        }}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -100,6 +142,7 @@ export default function NormalAccountDialogue(props: {
                 onClose={() => setCredentialsDialogMode('off')}
                 onSubmit={handleCredentialsDialogueSubmit}
                 username={selectedUsername}
+                hidePasswordInput={credentialsDialogMode === 'delete'}
             />
             <Dialog
                 open={open}
@@ -115,12 +158,12 @@ export default function NormalAccountDialogue(props: {
                     </List>
                     <Divider />
                     <Container sx={{ textAlign: 'center', margin: '4px auto 0' }}>
-                        <Button variant='contained' 
-                        onClick={() => {
-                            setCredentialsDialogMode('add');
-                            setSelectedUsername(null);
-                        }}
-                        sx={{ width: '100%' }}>添加</Button>
+                        <Button variant='contained'
+                            onClick={() => {
+                                setCredentialsDialogMode('add');
+                                setSelectedUsername(null);
+                            }}
+                            sx={{ width: '100%' }}>添加</Button>
                     </Container>
                 </DialogContent>
                 <DialogActions>

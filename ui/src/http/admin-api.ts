@@ -192,3 +192,22 @@ export const deleteNormalAccount = async (
         logAndRethrowOtherError(err, errorLogger)
     }
 }
+
+export const verifyNormalAccount = async (
+    username: string, password: string, errorLogger?: ErrorLogger): Promise<boolean> => {
+    try {
+        const {data} = await axios.post<boolean>(
+            `${API_BASE}/normal-accounts/verify`,
+            {
+                username,
+                password
+            },
+            { withCredentials: true }
+        )
+        return data;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+        return Promise.reject(err);
+    }
+}

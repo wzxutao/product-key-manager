@@ -148,6 +148,11 @@ public class AdminControllerV2 {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/normal-accounts/verify")
+    public ResponseEntity<Boolean> verifyNormalAccount(@Valid @RequestBody UserCredentials credentials){
+        return ResponseEntity.ok(normalAccountRepository.matches(credentials.username, credentials.getPassword()));
+    }
+
 
 
 }

@@ -12,12 +12,13 @@ export default function UserCredentialDialogue(props: {
     title?: string
     username: string | null
     open: boolean
+    hidePasswordInput?: boolean
     onClose: () => void
     onSubmit: (username: string, password: string) => Promise<void>
 }) {
     const { title, username: pUsername, open, onClose, onSubmit } = props;
     const [submitting, setSubmitting] = React.useState(false);
-    const [alertMsg, handleAlert] = useAlert();
+    const [alertMsg, _handleAlert] = useAlert();
 
     const [username, setUsername] = React.useState<string>('');
     const [password, setPassword] = React.useState<string>('');
@@ -25,7 +26,7 @@ export default function UserCredentialDialogue(props: {
     React.useEffect(() => {
         if (pUsername !== null) {
             setUsername(pUsername);
-        }else{
+        } else {
             setUsername('')
         }
 
@@ -60,14 +61,24 @@ export default function UserCredentialDialogue(props: {
                             value={username}
                             onChange={ev => setUsername(ev.target.value)}
                             disabled={props.username !== null} />
-                        <TextField label='密码'
-                            onChange={ev => setPassword(ev.target.value)}
-                            value={password} />
+                        {!props.hidePasswordInput &&
+                            <TextField label='密码'
+                                onChange={ev => setPassword(ev.target.value)}
+                                onKeyDown={ev => {
+                                    if (ev.key === 'Enter') {
+                                        handleSubmit();
+                                    }
+
+                                }}
+                                value={password} />
+                        }
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={onClose} disabled={submitting}>返回</Button>
-                    <Button onClick={handleSubmit} disabled={submitting} variant='contained'>提交</Button>
+                    <Button onClick={onClose} disabled={submitting}>返回</Button>
+                    <Button onClick={handleSubmit} disabled={submitting}
+                        variant='contained'
+                    >提交</Button>
                     {submitting && <CircularProgress
                         size={24}
                         sx={{
