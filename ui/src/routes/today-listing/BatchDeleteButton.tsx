@@ -52,7 +52,7 @@ export function BatchDeleteButton(props: {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Button variant='outlined' color='error' onClick={() => setOpen(true)}>批量删除</Button>
+            <Button variant='outlined' color='error' onClick={() => setOpen(true)}>删除所选</Button>
         </>
 
     )

@@ -32,12 +32,17 @@ public class ListingControllerV2 {
     private AdminAuth adminAuth;
 
     @GetMapping("/my-today-records")
-    public ResponseEntity<?> getMyTodayRecords() {
+    public ResponseEntity<?> getMyTodayRecords(@RequestParam(value = "onlyNormal", required = false) Boolean onlyNormal,
+                                               @RequestParam(value = "onlyDeleted", required = false) Boolean onlyDeleted){
         var fromS = DatetimeUtil.getTodayEpochSeconds(true);
         var toS = DatetimeUtil.getTodayEpochSeconds(false);
 
-        var specs = JsonRecordSpecs.createdMilliBetween(fromS * 1000, (toS * 1000) + 999)
-                .and(JsonRecordSpecs.statusEquals(RecordStatus.NORMAL));
+        var specs = JsonRecordSpecs.createdMilliBetween(fromS * 1000, (toS * 1000) + 999);
+        if(onlyNormal != null && onlyNormal) {
+            specs = specs.and(JsonRecordSpecs.statusEquals(RecordStatus.NORMAL));
+        }else if(onlyDeleted != null && onlyDeleted) {
+            specs = specs.and(JsonRecordSpecs.statusEquals(RecordStatus.DELETED));
+        }
         var authToken = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         if(!adminAuth.isValidToken(authToken)){
             String username = normalAccountAuth.getUsername(authToken);

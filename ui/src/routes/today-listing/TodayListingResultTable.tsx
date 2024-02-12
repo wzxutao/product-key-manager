@@ -53,6 +53,7 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
 
     React.useEffect(() => {
         setRowsSelected([]);
+        setPage(0);
     }, [data])
 
     React.useImperativeHandle(ref, () => {

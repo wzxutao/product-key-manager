@@ -4,10 +4,20 @@ import { RecordDto } from "./dto/record-dto";
 
 const API_BASE = `${API_URL}/normal/listing/v2`;
 
-export async function getMyTodayRecords(errorLogger?: ErrorLogger): Promise<RecordDto[]> {
+export type StatusFilter = 'ALL' | 'NORMAL' | 'DELETED';
+
+
+export async function getMyTodayRecords(statusFilter ?: StatusFilter, errorLogger?: ErrorLogger): Promise<RecordDto[]> {
+    let statusQuery = '';
+    if(statusFilter === 'NORMAL'){
+        statusQuery = '?onlyNormal=true';
+    }else if(statusFilter === 'DELETED'){
+        statusQuery = '?onlyDeleted=true';
+    }
+
     try {
         const { data } = await axios.get(
-            `${API_BASE}/my-today-records`,
+            `${API_BASE}/my-today-records${statusQuery}`,
             { withCredentials: true })
         return data;
     } catch (err) {
