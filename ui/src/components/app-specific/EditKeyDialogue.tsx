@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Backdrop, Card, CardContent, Chip, CircularProgress, Divider, FormControl, Grid, Input, MenuItem, Paper, Select, Stack, Typography } from '@mui/material';
+import { Backdrop, Card, CardContent, Chip, CircularProgress, Divider, FormControl, Grid, Input, MenuItem, Paper, Select, Stack, TextareaAutosize, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import { RecordDto } from '../../http/dto/record-dto';
@@ -87,7 +87,7 @@ export default function EditKeyDialog(props: {
 
     const mandatoryFieldRows = React.useMemo(() => {
         return mandatoryFields.map((kv, idx) => {
-            if(kv === undefined) return undefined;
+            if (kv === undefined) return undefined;
 
             const { k, v } = kv;
 
@@ -114,7 +114,7 @@ export default function EditKeyDialog(props: {
         const rv: JSX.Element[] = []
 
         optionalFields.map((f, idx) => {
-            if(f === undefined) return undefined;
+            if (f === undefined) return undefined;
 
             const { k, v } = f;
 
@@ -257,6 +257,19 @@ export default function EditKeyDialog(props: {
                                         onClick={handleAddAdditionalField}
                                         xs={12} />
                                     {optionalFieldRows}
+                                    <Grid item className="form-divider" component={Divider} xs={12}>
+                                        <Chip label="备注" size="small" />
+                                    </Grid>
+                                    <div className="key-gen-form-row">
+                                        <TextareaAutosize minRows={2} style={{
+                                            marginTop: '4px',
+                                            width: '100%',
+                                            resize: 'none',
+                                        }}
+                                            value={record.comment ?? ''}
+                                            onChange={(ev => { setRecord({...record, comment: ev.target.value}) })}
+                                        />
+                                    </div>
                                 </Grid>
                             </Paper>
                         </Stack>

@@ -5,4 +5,5 @@ export type RecordDto = {
     productKey: string,
     status: string,
     expandedAllFields: Record<string, string>
+    comment?: string
 }

@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_COMMENT;
 import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
 
 @Data
@@ -35,6 +36,8 @@ public class JsonRecordDto {
     @NotNull
     private transient Map<String, String> expandedAllFields = new HashMap<>();
 
+    private String comment;
+
     public static JsonRecordDto fromEntity(JsonRecord entity) {
         var dto = new JsonRecordDto();
         dto.setId(entity.getId());
@@ -48,7 +51,9 @@ public class JsonRecordDto {
             var v = ((JSONArray) json.get(k)).get(0).toString();
             if(k.equals(RECORD_KEY_USERNAME)) {
                 dto.setUsername(v);
-            }else{
+            }else if(k.equals(RECORD_KEY_COMMENT)){
+                dto.setComment(v);
+            } else{
                 dto.expandedAllFields.put(k, v);
             }
         }

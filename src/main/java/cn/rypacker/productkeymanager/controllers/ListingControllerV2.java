@@ -13,12 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cn.rypacker.productkeymanager.common.Constants.RECORD_KEY_USERNAME;
-import static cn.rypacker.productkeymanager.common.Constants.USERNAME_RECORD_VALUE_ADMIN;
+import static cn.rypacker.productkeymanager.common.Constants.*;
 
 @RestController
 @RequestMapping("/normal/listing/v2")
@@ -101,6 +101,7 @@ public class ListingControllerV2 {
 
         entity.setStatus(RecordStatus.parse(dto.getStatus()));
         dto.getExpandedAllFields().put(RECORD_KEY_USERNAME, username != null ? username : USERNAME_RECORD_VALUE_ADMIN);
+        dto.getExpandedAllFields().put(RECORD_KEY_COMMENT, dto.getComment());
 
         entity.setJsonString(JSONUtil.toStringFrom(dto.getExpandedAllFields()));
         jsonRecordRepository.save(entity);

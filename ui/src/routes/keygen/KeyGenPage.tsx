@@ -2,13 +2,13 @@ import React from 'react';
 
 import './KeyGenPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
-import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField } from '@mui/material';
+import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
 import { genKeys, getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { EasyCopyChip } from '../../components/EasyCopyChip';
-import { INPUT_DATE_KEY } from '../../common/constants';
+import { INPUT_DATE_KEY, RECORD_KEY_COMMENT } from '../../common/constants';
 
 
 const BATCH_COUNT_MAX = 10;
@@ -23,6 +23,7 @@ export default function KeyGenPage() {
 
     const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
     const [additionalFields, setAdditionalFields] = React.useState<string[]>([]);
+    const [comment, setComment] = React.useState<string>('');
     const [batchGenCount, setBatchGenCount] = React.useState<number>(1);
 
     const [generatedKeys, setGeneratedKeys] = React.useState<string[]>([]);
@@ -63,7 +64,7 @@ export default function KeyGenPage() {
 
     const handleSubmit = React.useCallback(async () => {
         if (formRef === null) return;
-        if(batchGenCount > BATCH_COUNT_MAX) {
+        if (batchGenCount > BATCH_COUNT_MAX) {
             handleAlert(`批量生成上限为${BATCH_COUNT_MAX}个`);
             return;
         }
@@ -84,6 +85,8 @@ export default function KeyGenPage() {
         for (const el of valueInputs) {
             kvPairs[el.getAttribute("name")!] = el.value;
         }
+
+        kvPairs[RECORD_KEY_COMMENT] =  comment;
 
         try {
             const keys = await genKeys({
@@ -121,7 +124,7 @@ export default function KeyGenPage() {
                     {/* date */}
                     <div className="key-gen-form-row">
                         <Grid item component={TextField} className='field-key' variant="filled" disabled
-                            xs={3} defaultValue='日期'/>
+                            xs={3} defaultValue='日期' />
                         <Grid item component={FormControlLabel} control={
                             <Checkbox value={todayChecked}
                                 onChange={handleTodayCheckboxChange} />}
@@ -191,6 +194,19 @@ export default function KeyGenPage() {
                                 xs={1} />
                         </div>
                     })}
+                    <Grid item className="form-divider" component={Divider} xs={12}>
+                        <Chip label="备注" size="small" />
+                    </Grid>
+                    <div className="key-gen-form-row">
+                        <TextareaAutosize minRows={2} style={{
+                            marginTop: '4px',
+                            width: '100%',
+                            resize: 'none',
+                        }}
+                            value={comment}
+                            onChange={(ev => { setComment(ev.target.value) })}
+                         />
+                    </div>
                 </Grid>
             </Paper>
 

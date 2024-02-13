@@ -85,6 +85,11 @@ export default function ListingResultTable(props: {
                 }
             },
             {
+                "id": "comment",
+                "label": "备注",
+                "format": dto => <p style={{overflowWrap: 'anywhere'}}>{dto.comment}</p>
+            },
+            {
                 "id": 'edit',
                 "label": '修改',
                 "format": dto => {
