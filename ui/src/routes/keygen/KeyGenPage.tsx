@@ -16,7 +16,7 @@ const BATCH_COUNT_MAX = 10;
 export default function KeyGenPage() {
     const [alertMsg, handleAlert] = useAlert();
 
-    const [todayChecked, setTodayChecked] = React.useState<boolean>(true);
+    const [todayChecked, setTodayChecked] = React.useState<boolean>(false);
     const [dateValid, setDateValid] = React.useState<boolean>(true);
 
     const [formRef, attachFormRef] = useCallbackRef<HTMLFormElement>();
@@ -28,15 +28,12 @@ export default function KeyGenPage() {
 
     const [generatedKeys, setGeneratedKeys] = React.useState<string[]>([]);
     const [multiKeysSeparator, setMultiKeysSeparator] = React.useState<string>(' ');
+    const [submitting, setSubmitting] = React.useState<boolean>(false);
 
-    React.useEffect(() => {
-        getMandatoryFields(handleAlert)
-            .then((fields) => {
-                setMandatoryFields(fields);
-            })
-            .catch((_err) => {
-            });
-    }, []);
+    const validateDate = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
+        const regex = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
+        setDateValid(regex.test(ev.target.value));
+    }, [])
 
     const handleTodayCheckboxChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
         if (formRef === null) return;
@@ -51,12 +48,23 @@ export default function KeyGenPage() {
                 ('0' + (today.getMonth() + 1)).slice(-2) +
                 ('0' + today.getDate()).slice(-2)
                 : '';
+        setDateValid(checked);
     }, [formRef]);
 
-    const validateDate = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
-        const regex = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
-        setDateValid(regex.test(ev.target.value));
-    }, [])
+    React.useEffect(() => {
+        if (mandatoryFields === null) {
+            getMandatoryFields(handleAlert)
+                .then((fields) => {
+                    setMandatoryFields(fields);
+                })
+                .catch((_err) => {
+                });
+        }
+
+        if (formRef !== null) {
+            handleTodayCheckboxChange({ target: { checked: true } } as any);
+        }
+    }, [formRef]);
 
     const handleAddAdditionalField = React.useCallback(() => {
         setAdditionalFields((prev) => [...prev, '']);
@@ -68,6 +76,12 @@ export default function KeyGenPage() {
             handleAlert(`批量生成上限为${BATCH_COUNT_MAX}个`);
             return;
         }
+        if (!dateValid) {
+            handleAlert('日期格式错误');
+            return;
+        }
+
+        setSubmitting(true);
 
         const valueInputs: HTMLInputElement[] = [];
         for (let i = 0; i < formRef.elements.length; i++) {
@@ -86,7 +100,7 @@ export default function KeyGenPage() {
             kvPairs[el.getAttribute("name")!] = el.value;
         }
 
-        kvPairs[RECORD_KEY_COMMENT] =  comment;
+        kvPairs[RECORD_KEY_COMMENT] = comment;
 
         try {
             const keys = await genKeys({
@@ -95,12 +109,15 @@ export default function KeyGenPage() {
             }, handleAlert);
 
             setGeneratedKeys(keys);
+            handleAlert(`生成了${keys.length}个序列号`, 'success');
         } catch (err) {
 
+        } finally {
+            setSubmitting(false);
         }
 
 
-    }, [formRef, batchGenCount, handleAlert])
+    }, [formRef, batchGenCount, handleAlert, dateValid])
 
     const handleCopyAll = React.useCallback(() => {
         const str = generatedKeys.join(multiKeysSeparator);
@@ -126,7 +143,8 @@ export default function KeyGenPage() {
                         <Grid item component={TextField} className='field-key' variant="filled" disabled
                             xs={3} defaultValue='日期' />
                         <Grid item component={FormControlLabel} control={
-                            <Checkbox value={todayChecked}
+                            <Checkbox
+                                checked={todayChecked}
                                 onChange={handleTodayCheckboxChange} />}
                             xs={1}
                             label="今天" />
@@ -205,7 +223,7 @@ export default function KeyGenPage() {
                         }}
                             value={comment}
                             onChange={(ev => { setComment(ev.target.value) })}
-                         />
+                        />
                     </div>
                 </Grid>
             </Paper>
@@ -215,6 +233,7 @@ export default function KeyGenPage() {
                     <Grid item component={Button} variant='contained' xs={2}
                         className="gen-btn"
                         onClick={handleSubmit}
+                        disabled={submitting}
                     >生成</Grid>
                     <Grid item component={FormControl} xs={1} variant="outlined">
                         <OutlinedInput
