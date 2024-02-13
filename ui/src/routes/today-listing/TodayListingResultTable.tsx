@@ -13,6 +13,7 @@ import { Button, Checkbox, CircularProgress, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditKeyDialogue from '../../components/app-specific/EditKeyDialogue';
 import { updateRecord } from '../../http/today-listing-api';
+import FixedTablePagination from '../../components/FixedTablePagination';
 
 
 interface Column {
@@ -35,15 +36,28 @@ export interface TodayListingResultTableHandle {
 const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, TodayListingResultTableProps>((props, ref) => {
     const { data, onChange } = props;
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [rowsSelected, setRowsSelected] = React.useState<number[]>([])
 
     const [selectedRecord, setSelectedRecord] = React.useState<RecordDto | null>(null);
 
-    const handleChangePage = React.useCallback((_event: unknown, newPage: number) => {
-        setPage(newPage);
-        setRowsSelected([]);
-    }, []);
+    const handleChangePage = React.useCallback((newPage: number): boolean => {
+
+        const maxPage = Math.ceil((data?.length ?? 0) / rowsPerPage) - 1;
+        const newPageClipped: number = Math.max(
+            Math.min(
+                newPage, maxPage),
+            0);
+
+        if(isNaN(newPageClipped)) {
+            setPage(0);
+            return false;
+        }
+
+        if (newPageClipped === page) return false;
+        setPage(newPageClipped);
+        return true;
+    }, [page, data, rowsPerPage]);
 
     const handleChangeRowsPerPage = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
@@ -169,7 +183,9 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                 onClose={() => setSelectedRecord(null)}
                 onSubmit={handleUpdateRecord}
             />
-            <Paper className="list-page-table">
+            <Paper className="list-page-table" sx={{
+                paddingBottom: '50px'
+            }}>
                 <TableContainer>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
@@ -202,14 +218,17 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                     </Table>
                 </TableContainer>
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 100]}
+                    rowsPerPageOptions={[10, 25, 50, 100]}
                     component="div"
                     count={data?.length ?? 0}
                     rowsPerPage={rowsPerPage}
                     page={page}
-                    onPageChange={handleChangePage}
+                    onPageChange={(_, newPage) => handleChangePage(newPage)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={undefined}
                 />
+                <FixedTablePagination page={page} onChangePage={handleChangePage} />
+        
             </Paper>
         </>);
 });
