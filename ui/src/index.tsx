@@ -14,6 +14,7 @@ import RootErrorPage from './routes/root/RootErrorPage';
 import ListingPage from './routes/listing/ListingPage';
 import KeyGenPage from './routes/keygen/KeyGenPage';
 import { TodayListingPage } from './routes/today-listing/TodayListingPage';
+import ManualUploadPage from './routes/manualupload/ManualUploadPage';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/today-listing",
         element: <TodayListingPage />,
+      },
+      {
+        path: "/manual-upload",
+        element: <ManualUploadPage />,
       }
     ]
   }
