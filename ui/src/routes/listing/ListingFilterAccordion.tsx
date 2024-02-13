@@ -101,7 +101,7 @@ const operators: OperatorDefinition = {
             },
         }
     ],
-    "内容": [
+    "内容|备注": [
         {
             operator: "包含",
             code: "PAYLOAD_CONTAINS",

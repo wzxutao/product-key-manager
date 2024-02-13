@@ -8,6 +8,7 @@ import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import ListingToolBar from './ListingToolBar';
 import "./ListingPage.less"
 import { getByProductKey } from '../../http/listing-api';
+import { quickSearchRecords } from '../../http/listing-api';
 
 
 export default function ListingPage() {
@@ -30,6 +31,12 @@ export default function ListingPage() {
         .then(rv => setData(rv !== null ? [rv] : [])).catch()
     }, [handleAlert])
 
+    const handleQuickSearch = React.useCallback((searchInput: string) => {
+        setData(null);
+        quickSearchRecords(searchInput)
+        .then(rv => setData(rv)).catch()
+    }, [handleAlert])
+
     React.useEffect(() => {
         onQueryRecords()
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -37,7 +44,7 @@ export default function ListingPage() {
     return (<>
         <SnackbarAlert msg={alertMsg} />
         <Stack id="ListingPage">
-            <ListingToolBar onQuery={handleQueryByProductKey} />
+            <ListingToolBar onQueryByProductKey={handleQueryByProductKey} onQuickSearch={handleQuickSearch}/>
             <ListingFilterAccordion rootCr={rootCr} setRootCr={setRootCr} onQuery={onQueryRecords} />
             <ListingResultTable data={data} onChange={onQueryRecords} />
         </Stack>

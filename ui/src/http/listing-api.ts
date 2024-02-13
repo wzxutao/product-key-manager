@@ -94,3 +94,19 @@ export const getByProductKey = async (productKey: string, errorLogger?: ErrorLog
         return Promise.reject(err);
     }
 }
+
+export const quickSearchRecords = async (input: string, errorLogger?: ErrorLogger): Promise<RecordDto[]> => {
+    const url = new URL(`${API_BASE}/quick-search`)
+    url.searchParams.append('input', input);
+    try {
+        const { data } = await axios.get<RecordDto[]>(
+            url.toString(),
+            { withCredentials: true }
+        )
+        return data;
+    } catch (err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger);
+        return Promise.reject(err);
+    }
+}

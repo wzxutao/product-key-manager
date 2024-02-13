@@ -4,11 +4,14 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.common.RecordStatus;
 import cn.rypacker.productkeymanager.dto.JsonRecordDto;
 import cn.rypacker.productkeymanager.dto.adminlisting.QueryRecordsRequest;
+import cn.rypacker.productkeymanager.entity.JsonRecord;
 import cn.rypacker.productkeymanager.exception.IdentifiedWebException;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
+import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +57,20 @@ public class AdminListingControllerV2 {
         }
 
         return JsonRecordDto.fromEntity(entity);
+    }
+
+    @GetMapping("/quick-search")
+    public List<JsonRecordDto> quickSearch(@RequestParam(value = "input", required = false) String keyword) {
+
+        Specification<JsonRecord> specs = Specification.where(null);
+        if(keyword != null && !keyword.isBlank()){
+            specs = JsonRecordSpecs.payloadContains(keyword).or(JsonRecordSpecs.productKeyContains(keyword));
+        }
+
+        return jsonRecordRepository.findAll(specs)
+                .stream()
+                .map(JsonRecordDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
 }

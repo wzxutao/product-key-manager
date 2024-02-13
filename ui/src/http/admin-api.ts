@@ -212,4 +212,3 @@ export const verifyNormalAccount = async (
         return Promise.reject(err);
     }
 }
-

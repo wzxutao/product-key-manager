@@ -78,7 +78,7 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
             },
             {
                 "id": "username",
-                "label": "创建者",
+                "label": "创建用户",
                 "format": dto => dto.username
             },
             {

@@ -13,7 +13,6 @@
 
 
 todo:
-    1. quick search for contents & comment
     2. fix date time issues
     3. order by column in listing table
     4. listing table go to page

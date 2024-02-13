@@ -60,7 +60,7 @@ export default function ListingResultTable(props: {
             },
             {
                 "id": "username",
-                "label": "创建者",
+                "label": "创建用户",
                 "format": dto => dto.username
             },
             {

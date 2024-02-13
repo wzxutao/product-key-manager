@@ -15,6 +15,10 @@ public class JsonRecordSpecs {
         return (root, query, builder) -> root.get("productKey").in(productKeys);
     }
 
+    public static Specification<JsonRecord> productKeyContains(String string) {
+        return (root, query, builder) -> builder.like(root.get("productKey"), "%" + string + "%");
+    }
+
     public static Specification<JsonRecord> createdMilliBetween(Long from, Long to) {
         return (root, query, builder) -> builder.between(root.get("createdMilli"), from, to);
     }
