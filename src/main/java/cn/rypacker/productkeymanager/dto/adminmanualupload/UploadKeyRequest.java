@@ -17,8 +17,6 @@ public class UploadKeyRequest {
     @NotEmpty
     private String productKey;
 
-    private String username;
-
     @NotNull
     private Map<String, String> data;
 }

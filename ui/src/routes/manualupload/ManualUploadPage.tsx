@@ -4,31 +4,24 @@ import './ManualUploadPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
-import { genKeys, getMandatoryFields } from '../../http/keygen-api';
+import { getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { INPUT_DATE_KEY, RECORD_KEY_COMMENT } from '../../common/constants';
+import { CONFLICT_RECORD_ERROR, uploadRecord } from '../../http/manual-upload-api';
 
-
-const BATCH_COUNT_MAX = 10;
 
 export default function ManualUploadPage() {
     const [alertMsg, handleAlert] = useAlert();
-
-    const [dateValid, setDateValid] = React.useState<boolean>(true);
 
     const [formRef, attachFormRef] = useCallbackRef<HTMLFormElement>();
 
     const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
     const [additionalFields, setAdditionalFields] = React.useState<string[]>([]);
     const [comment, setComment] = React.useState<string>('');
+    const [productKey, setProductKey] = React.useState<string>('');
 
     const [submitting, setSubmitting] = React.useState<boolean>(false);
-
-    const validateDate = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
-        const regex = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
-        setDateValid(regex.test(ev.target.value));
-    }, [])
 
 
     React.useEffect(() => {
@@ -49,6 +42,11 @@ export default function ManualUploadPage() {
 
     const handleSubmit = React.useCallback(async () => {
         if (formRef === null) return;
+        
+        if(!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\w+/.test(productKey)) {
+            handleAlert("序列号格式错误");
+            return;
+        }
 
         setSubmitting(true);
 
@@ -70,16 +68,24 @@ export default function ManualUploadPage() {
         }
 
         kvPairs[RECORD_KEY_COMMENT] = comment;
+        kvPairs[INPUT_DATE_KEY] = productKey.substring(0, 6);
 
         try {
+            await uploadRecord({
+                productKey: productKey,
+                data: kvPairs,
+            }, handleAlert);
+            handleAlert("提交成功", 'success');
         } catch (err) {
-
+            if(err === CONFLICT_RECORD_ERROR) {
+                handleAlert("记录已存在", 'error');
+            }
         } finally {
             setSubmitting(false);
         }
 
 
-    }, [formRef, handleAlert, dateValid])
+    }, [formRef, handleAlert, productKey])
 
 
     return (<>
@@ -178,6 +184,8 @@ export default function ManualUploadPage() {
                         fullWidth
                             label="序列号"
                             variant="standard"
+                            value={productKey}
+                            onChange={(ev) => { setProductKey(ev.target.value) }}
                         />
                     </Grid>
                     <Grid item component={Button} variant='contained' xs={4}

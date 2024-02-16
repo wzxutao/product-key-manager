@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.controllers;
 
+import cn.rypacker.productkeymanager.common.CommonUtil;
 import cn.rypacker.productkeymanager.common.RecordStatus;
 import cn.rypacker.productkeymanager.dto.adminmanualupload.UploadKeyRequest;
 import cn.rypacker.productkeymanager.entity.JsonRecord;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.sqlite.SQLiteException;
 
 import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,28 +34,26 @@ public class AdminManualUploadControllerV2 {
     private KeyGenerator keyGenerator;
 
     @PostMapping("/upload")
-    @Transactional
     public ResponseEntity<?> upload(@RequestBody UploadKeyRequest reqBody) {
-        var entity = jsonRecordRepository.findByProductKey(reqBody.getProductKey());
-        if(entity != null) {
-            return ResponseEntity.status(409).build();
-        }
-        entity = new JsonRecord();
-
-        String username = reqBody.getUsername();
-        if(username == null || username.isEmpty()) {
-            username = USERNAME_RECORD_VALUE_ADMIN;
-        }
+        var entity = new JsonRecord();
 
         Map<String, String> kvPairs = new HashMap<>(reqBody.getData());
-        kvPairs.put(RECORD_KEY_USERNAME, username);
+        kvPairs.put(RECORD_KEY_USERNAME, USERNAME_RECORD_VALUE_ADMIN);
 
         entity.setProductKey(reqBody.getProductKey());
-        entity.setStatus(RecordStatus.NORMAL);
-        entity.setCreatedMilli(System.currentTimeMillis());
         entity.setJsonString(JSONUtil.toStringFrom(kvPairs));
 
-        jsonRecordRepository.save(entity);
+        try{
+            jsonRecordRepository.save(entity);
+        }catch (Exception e) {
+            var rootCause = CommonUtil.findRootCause(e);
+            if (rootCause instanceof SQLiteException) {
+                if(((SQLiteException) rootCause).getErrorCode() == 19) {
+                    return ResponseEntity.status(409).build();
+                }
+            }
+            throw e;
+        }
         keyGenerator.refreshCandidates();
 
         return ResponseEntity.ok().build();
