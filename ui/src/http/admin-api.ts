@@ -212,3 +212,36 @@ export const verifyNormalAccount = async (
         return Promise.reject(err);
     }
 }
+
+export type AutoBackupConfigDto = {
+    hour: number,
+    minute: number
+}
+
+export const getAutoBackupTime = async (errorLogger?: ErrorLogger): Promise<AutoBackupConfigDto> => {
+    try {
+        const {data} = await axios.get(
+            `${API_BASE}/auto-backup/time/get`,
+            {withCredentials: true}
+        );
+        return data;
+    }catch(err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+        return Promise.reject(err);
+    }
+}
+
+export const updateAutoBackupTime = async (config: AutoBackupConfigDto, errorLogger?: ErrorLogger) => {
+    try {
+        await axios.put(
+            `${API_BASE}/auto-backup/time/update`,
+            config,
+            {withCredentials: true}
+        );
+    }catch(err: any) {
+        handleAndThrowAuthError(err, errorLogger);
+        logAndRethrowOtherError(err, errorLogger)
+        return Promise.reject(err);
+    }
+}

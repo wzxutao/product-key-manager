@@ -55,8 +55,17 @@ public class UserConfig {
         private String hash;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Backup {
+        private int hour = 15;
+        private int minute;
+    }
+
     private Auth auth = new Auth();
     private Key key = new Key();
     private Record record = new Record();
     private List<Account> accounts = new ArrayList<>();
+    private Backup backup = new Backup();
 }

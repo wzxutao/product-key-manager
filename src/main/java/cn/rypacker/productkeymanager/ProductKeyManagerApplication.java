@@ -10,6 +10,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.awt.*;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @SpringBootApplication
 @Slf4j
+@EnableScheduling
 public class ProductKeyManagerApplication {
     private static ConfigurableApplicationContext context;
     private static String[] args;

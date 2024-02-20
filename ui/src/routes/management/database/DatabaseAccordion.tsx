@@ -11,10 +11,12 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import BackupDialog from './BackupDialogue';
 import RestoreDialog from './RestoreDialogue';
+import AutoBackupConfigDialogue from './AutoBackupConfigDialogue';
 
 export default function DatabaseAccordion() {
   const [backupDialogOpen, setBackupDialogOpen] = React.useState(false);
   const [restoreDialogOpen, setRestoreDialogOpen] = React.useState(false);
+  const [autoBackupConfigDialogueOpen, setAutoBackupConfigDialogueOpen] = React.useState(false);
 
   return (
     <Accordion defaultExpanded className='man-page-section'>
@@ -33,7 +35,8 @@ export default function DatabaseAccordion() {
         </Stack>
         <Divider variant="middle">自动本地备份</Divider>
         <Stack direction='row' sx={{ justifyContent: 'space-around' }}>
-          <Button startIcon={<AutoModeIcon />}>自动备份设置</Button>
+          <Button startIcon={<AutoModeIcon />} onClick={() => setAutoBackupConfigDialogueOpen(true)}>自动备份设置</Button>
+          <AutoBackupConfigDialogue open={autoBackupConfigDialogueOpen} handleClose={() => setAutoBackupConfigDialogueOpen(false)} />
         </Stack>
 
       </AccordionDetails>

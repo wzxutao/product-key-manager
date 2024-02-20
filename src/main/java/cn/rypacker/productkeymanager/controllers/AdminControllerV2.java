@@ -3,6 +3,7 @@ package cn.rypacker.productkeymanager.controllers;
 import cn.rypacker.productkeymanager.ProductKeyManagerApplication;
 import cn.rypacker.productkeymanager.common.Sqlite3DBVersionUtil;
 import cn.rypacker.productkeymanager.config.StaticInformation;
+import cn.rypacker.productkeymanager.dto.AutoBackupConfigDto;
 import cn.rypacker.productkeymanager.dto.KeyGenStats;
 import cn.rypacker.productkeymanager.dto.UserCredentials;
 import cn.rypacker.productkeymanager.entity.UserConfig;
@@ -157,6 +158,19 @@ public class AdminControllerV2 {
         return ResponseEntity.ok(normalAccountRepository.matches(credentials.username, credentials.getPassword()));
     }
 
+    @GetMapping("/auto-backup/time/get")
+    public AutoBackupConfigDto getAutoBackupTime(){
+        var backupConfig = userConfigStore.getData().getBackup();
+        return new AutoBackupConfigDto(backupConfig.getHour(), backupConfig.getMinute());
+    }
 
+    @PutMapping("/auto-backup/time/update")
+    public ResponseEntity<?> updateAutoBackupTime(@RequestBody AutoBackupConfigDto config){
+        userConfigStore.update(c -> {
+            c.getBackup().setHour(config.getHour());
+            c.getBackup().setMinute(config.getMinute());
+        });
+        return ResponseEntity.ok().build();
+    }
 
 }
