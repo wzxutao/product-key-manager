@@ -9,6 +9,7 @@ import cn.rypacker.productkeymanager.entity.UserConfig;
 import cn.rypacker.productkeymanager.repositories.NormalAccountRepository;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import cn.rypacker.productkeymanager.services.KeyGenerator;
+import cn.rypacker.productkeymanager.services.SqliteService;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +41,23 @@ public class AdminControllerV2 {
     @Autowired
     private NormalAccountRepository normalAccountRepository;
 
+    @Autowired
+    private SqliteService sqliteService;
+
 
     @PostMapping(path = "/backup")
     public ResponseEntity<?> requestBackup(@RequestParam(value = "fileName") String fileName)
             throws IOException {
 
-        var basePath = StaticInformation.USER_DB_BACKUP_DIR + File.separator;
-        if (!FileSystemUtil.isValidFilePath(basePath + fileName)) {
+        var backupFile = new File(StaticInformation.USER_DB_BACKUP_DIR
+                + File.separator
+                + fileName);
+        if (!FileSystemUtil.isValidFilePath(backupFile.getAbsolutePath())) {
             return new ResponseEntity<>("Invalid filename.", HttpStatus.BAD_REQUEST);
         }
 
         FileSystemUtil.mkdirsIfNotExist(StaticInformation.USER_DB_BACKUP_DIR);
-        Files.copy(Path.of(Sqlite3DBVersionUtil.getCurrentDbPath()),
-                Path.of(StaticInformation.USER_DB_BACKUP_DIR, fileName),
-                StandardCopyOption.REPLACE_EXISTING);
+        sqliteService.backup(backupFile);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
