@@ -5,16 +5,16 @@ server:
 spring:
   profiles:
     active: prod
-  mvc:
-    static-path-pattern: /static/**
+#  mvc:
+#    static-path-pattern: /static/**
   resources:
-    static-locations: classpath:/static/
+    static-locations: classpath:/public/
 
 logging:
   level:
     org:
       springframework:
-        security: TRACE
+        security: WARN
 
 
 # production
