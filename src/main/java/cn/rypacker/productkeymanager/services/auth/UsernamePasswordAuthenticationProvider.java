@@ -10,10 +10,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
     private final AdminAuth adminAuth;
+    private final NormalAccountAuth normalAccountAuth;
 
-    public UsernamePasswordAuthenticationProvider(AdminAuth adminAuth) {
+    public UsernamePasswordAuthenticationProvider(AdminAuth adminAuth, NormalAccountAuth normalAccountAuth) {
         this.adminAuth = adminAuth;
+        this.normalAccountAuth = normalAccountAuth;
     }
+
 
 
     @Override
@@ -23,15 +26,15 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         String username = (String) usernamePasswordAuth.getPrincipal();
         String password = (String) usernamePasswordAuth.getCredentials();
 
-        if(!adminAuth.isAdmin(username)) {
-            throw new UsernameNotFoundException(String.format("User %s not found", username));
+        if(adminAuth.isAdmin(username, password)) {
+            return new UsernamePasswordAuthenticationToken(username, password, AdminAuth.getAuthorities());
         }
 
-        if(!adminAuth.isAdmin(username, password)) {
-            throw new BadCredentialsException("invalid password");
+        if(normalAccountAuth.isNormalAccount(username, password)) {
+            return new UsernamePasswordAuthenticationToken(username, password, NormalAccountAuth.getAuthorities());
         }
 
-        return new UsernamePasswordAuthenticationToken(username, password, AdminAuth.getAuthorities());
+        throw new BadCredentialsException("invalid password");
     }
 
     @Override

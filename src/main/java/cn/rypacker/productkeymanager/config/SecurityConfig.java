@@ -1,9 +1,6 @@
 package cn.rypacker.productkeymanager.config;
 
-import cn.rypacker.productkeymanager.services.auth.AdminAuth;
-import cn.rypacker.productkeymanager.services.auth.CustomProviderManager;
-import cn.rypacker.productkeymanager.services.auth.LoginAuthenticationSuccessHandler;
-import cn.rypacker.productkeymanager.services.auth.TokenAuthenticationFilter;
+import cn.rypacker.productkeymanager.services.auth.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,10 +26,12 @@ public class SecurityConfig {
     @Autowired
     private LoginAuthenticationSuccessHandler loginAuthenticationSuccessHandler;
 
+    @Autowired
+    private NormalAccountAuth normalAccountAuth;
 
     @Bean
     public CustomProviderManager customProviderManager() {
-        return new CustomProviderManager(adminAuth);
+        return new CustomProviderManager(adminAuth, normalAccountAuth);
     }
 
     @Bean

@@ -4,16 +4,12 @@ import cn.rypacker.productkeymanager.bootstrap.DatabaseUpdater;
 import cn.rypacker.productkeymanager.bootstrap.DbRestorer;
 import cn.rypacker.productkeymanager.bootstrap.FirstTimeInitializer;
 import cn.rypacker.productkeymanager.bootstrap.MetadataMigrator;
-import cn.rypacker.productkeymanager.desktopui.LoadingLogo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.awt.*;
-import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;

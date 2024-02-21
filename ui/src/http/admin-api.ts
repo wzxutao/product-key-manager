@@ -1,6 +1,5 @@
 import axios from "axios"
 import { API_URL, ErrorLogger, handleAndThrowAuthError, logAndRethrowOtherError } from "./base-api"
-import { RecordDto } from "./dto/record-dto";
 
 const API_BASE = `${API_URL}/admin/man/v2`;
 

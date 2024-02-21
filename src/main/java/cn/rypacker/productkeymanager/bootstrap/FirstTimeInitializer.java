@@ -1,7 +1,6 @@
 package cn.rypacker.productkeymanager.bootstrap;
 
 import cn.rypacker.productkeymanager.config.StaticInformation;
-import cn.rypacker.productkeymanager.desktopui.AdminAccountCreationFrame;
 import cn.rypacker.productkeymanager.services.AdminAccountManager;
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import org.slf4j.Logger;
@@ -32,8 +31,7 @@ public class FirstTimeInitializer {
 
     private static void initAdminAccount() {
         if(AdminAccountManager.adminAccountExists()) return;
-        var frame = new AdminAccountCreationFrame();
-        while(frame.isRunning()){};
+        throw new RuntimeException("admin account not found");
     }
 
 

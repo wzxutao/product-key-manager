@@ -1,5 +1,6 @@
 package cn.rypacker.productkeymanager.services.auth;
 
+import cn.rypacker.productkeymanager.repositories.NormalAccountRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.JSONUtil;
 import cn.rypacker.productkeymanager.services.ciphers.JokeCipher;
@@ -15,6 +16,9 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
     JokeCipher jokeCipher;
     @Autowired
     UserConfigStore userConfigStore;
+
+    @Autowired
+    private NormalAccountRepository normalAccountRepository;
 
     private static final String KEY_CREATED = "created";
     private static final String KEY_USERNAME = "username";
@@ -58,5 +62,10 @@ public class NormalAccountAuthImpl implements NormalAccountAuth {
 //            e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public boolean isNormalAccount(String username, String password) {
+        return normalAccountRepository.matches(username, password);
     }
 }
