@@ -2,7 +2,6 @@ import axios from "axios";
 import { API_URL, ErrorLogger } from './base-api'
 
 export const login = async (username: string, password: string, 
-    isAdmin: boolean, 
     errorLogger?: ErrorLogger): Promise<void> => {
     try {
         const fd = new FormData();
@@ -10,7 +9,7 @@ export const login = async (username: string, password: string,
         fd.append('password', password);
 
         await axios.post(
-            API_URL + (isAdmin ? '/auth/login' : '/new-key/login'),
+            API_URL +  '/auth/login',
             fd, {
                 headers:{
                     'Content-Type': 'application/x-www-form-urlencoded'

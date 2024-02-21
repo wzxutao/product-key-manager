@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static cn.rypacker.productkeymanager.common.Constants.COOKIE_KEY_ADMIN_AUTH;
+import static cn.rypacker.productkeymanager.common.Constants.COOKIE_KEY_NORMAL_AUTH;
 
 
 public class TokenAuthenticationFilter implements Filter {
@@ -22,24 +23,27 @@ public class TokenAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if(!HttpServletRequest.class.isAssignableFrom(request.getClass())) {
+        if (!HttpServletRequest.class.isAssignableFrom(request.getClass())) {
             chain.doFilter(request, response);
             return;
         }
 
         var cookies = ((HttpServletRequest) request).getCookies();
-        if(cookies == null) {
+        if (cookies == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        var optionalToken = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(COOKIE_KEY_ADMIN_AUTH)).findFirst();
+        Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals(COOKIE_KEY_ADMIN_AUTH)
+                        || cookie.getName().equals(COOKIE_KEY_NORMAL_AUTH))
+                .min((c1, c2) -> c2.getName().compareTo(c1.getName())) // admin first
+                .map(cookie -> {
+                    var token = authenticationManager.authenticate(new CustomAuthenticationToken(cookie.getValue()));
+                    SecurityContextHolder.getContext().setAuthentication(token);
+                    return null;
+                });
 
-        optionalToken.map(cookie -> {
-            var token = authenticationManager.authenticate(new CustomAuthenticationToken(cookie.getValue()));
-            SecurityContextHolder.getContext().setAuthentication(token);
-            return null;
-        });
         chain.doFilter(request, response);
     }
 }

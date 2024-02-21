@@ -14,22 +14,17 @@ const LoginSection = () => {
   const [, setCookie, removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME, COOKIE_KEY_ADMIN_AUTH])
   const [iusername, setIusername] = useState<string | null>(null)
   const [ipassword, setIpassword] = useState<string | null>(null)
-  const [adminChecked, setAdminChecked] = useState<boolean>(false)
   const [alertMsg, handleAlert] = useAlert();
 
   const handleLoginSubmit: React.FormEventHandler<HTMLFormElement> = useCallback(async (ev) => {
     ev.preventDefault()
 
     try {
-      await login(iusername!, ipassword!, adminChecked, handleAlert)
+      await login(iusername!, ipassword!, handleAlert)
       handleAlert("登陆成功", 'success')
     } catch (e) {
     }
-  }, [iusername, ipassword, setCookie, adminChecked, removeCookie])
-
-  const handleToggleAdminCheckbox = useCallback(() => {
-    setAdminChecked(prev => !prev)
-  }, [])
+  }, [iusername, ipassword, setCookie, removeCookie])
 
   return (
     <>
@@ -77,21 +72,11 @@ const LoginSection = () => {
             <Grid container>
               <Grid item component={Chip} xs={6}
                 sx={{
-                  visibility: adminChecked ? 'hidden' : 'visible',
                   backgroundColor: 'transparent',
                   justifyContent: 'flex-start'
                 }}
                 label={<Chip label="30天内免登录" />}
               />
-              <Tooltip title="以管理员身份登录">
-                <Grid item component={FormControlLabel} xs={6} sx={{ justifyContent: 'end' }}
-                  control={
-                    <Checkbox value="admin" color="primary"
-                      checked={adminChecked} onChange={handleToggleAdminCheckbox} />
-                  }
-                  label="管理员"
-                />
-              </Tooltip>
             </Grid>
             <Button
               type="submit"

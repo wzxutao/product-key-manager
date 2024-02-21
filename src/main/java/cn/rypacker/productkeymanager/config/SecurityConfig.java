@@ -54,14 +54,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .antMatchers(
-                        "/check-key/**",
-                        "/new-key/**",
-                        "/today-records/**",
-                        "/keygen/v2/**",
-                        "/normal/listing/**",
-                        "/util/**").hasAuthority(ROLE_NORMAL)
-//                todo remove this line
-                .antMatchers("/**").permitAll()
+                        "/normal/**").hasAuthority(ROLE_NORMAL)
                 .and()
                 .csrf().disable()
                 .cors()

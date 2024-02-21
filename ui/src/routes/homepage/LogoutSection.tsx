@@ -38,7 +38,7 @@ const LogoutSection = (props: {
           sx={{ mt: 3, mb: 2 }}
           onClick={handleLogOut}
         >
-          登出
+          注销登录
         </Button>
       </Box>
     </Grid>

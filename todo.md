@@ -14,8 +14,8 @@
 
 
 todo:
-2. fix date time issues
-3. change admin username in db to the read admin username
+1. login expiry notification
+3. fix date time issues
 
 
 
