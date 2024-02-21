@@ -5,16 +5,19 @@ import {
   Typography
 } from '@mui/material';
 import { useCookies } from 'react-cookie';
-import { COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME } from '../../common/constants';
+import { COOKIE_KEY_ADMIN_AUTH, COOKIE_KEY_AUTH_EXPIRATION, COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME } from '../../common/constants';
 
 const LogoutSection = (props: {
   username: string
 }) => {
-  const [, , removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME])
+  const [, , removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME
+    , COOKIE_KEY_ADMIN_AUTH, COOKIE_KEY_AUTH_EXPIRATION])
 
   const handleLogOut = React.useCallback(() => {
     removeCookie(COOKIE_KEY_NORMAL_AUTH)
     removeCookie(COOKIE_KEY_USERNAME)
+    removeCookie(COOKIE_KEY_ADMIN_AUTH)
+    removeCookie(COOKIE_KEY_AUTH_EXPIRATION)
   }, [])
 
   return (

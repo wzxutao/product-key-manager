@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static cn.rypacker.productkeymanager.common.Constants.COOKIE_KEY_ADMIN_AUTH;
-import static cn.rypacker.productkeymanager.common.Constants.COOKIE_KEY_NORMAL_AUTH;
+import static cn.rypacker.productkeymanager.common.Constants.*;
 import static cn.rypacker.productkeymanager.common.UserRole.ROLE_ADMIN;
 import static cn.rypacker.productkeymanager.common.UserRole.ROLE_NORMAL;
 
@@ -52,10 +51,17 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
                 cookie.setPath("/");
                 response.addCookie(cookie);
                 // cookie: username
-                cookie = new Cookie("username", authentication.getName());
+                cookie = new Cookie(COOKIE_KEY_USERNAME, authentication.getName());
                 cookie.setPath("/");
                 cookie.setMaxAge(cookieAge);
                 response.addCookie(cookie);
+                // cookie: expiration:
+                cookie = new Cookie(COOKIE_KEY_AUTH_EXPIRATION,
+                        System.currentTimeMillis() + cookieAge * 1000L + "");
+                cookie.setPath("/");
+                cookie.setMaxAge(cookieAge);
+                response.addCookie(cookie);
+
                 // clear normal auth cookie
                 cookie = new Cookie(COOKIE_KEY_NORMAL_AUTH, "");
                 cookie.setMaxAge(0);
@@ -75,7 +81,13 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
                 cookie.setPath("/");
                 response.addCookie(cookie);
                 // cookie: username
-                cookie = new Cookie("username", authentication.getName());
+                cookie = new Cookie(COOKIE_KEY_USERNAME, authentication.getName());
+                cookie.setPath("/");
+                cookie.setMaxAge(cookieAge);
+                response.addCookie(cookie);
+                // cookie: expiration:
+                cookie = new Cookie(COOKIE_KEY_AUTH_EXPIRATION,
+                        System.currentTimeMillis() + cookieAge * 1000L + "");
                 cookie.setPath("/");
                 cookie.setMaxAge(cookieAge);
                 response.addCookie(cookie);

@@ -14,7 +14,6 @@
 
 
 todo:
-1. login expiry notification
 3. fix date time issues
 
 
