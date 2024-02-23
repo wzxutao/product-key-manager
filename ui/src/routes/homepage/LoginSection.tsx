@@ -1,17 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
-  Box, FormControlLabel, Grid, Paper,
+  Box, Grid, Paper,
   Avatar, Typography,
-  TextField, Checkbox, Button, Tooltip, Chip
+  TextField, Button, Chip
 } from '@mui/material';
-import { useCookies } from 'react-cookie';
 import { login } from '../../http/auth-api';
-import { COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME, COOKIE_KEY_ADMIN_AUTH, API_URL } from '../../common/constants';
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
 
 const LoginSection = () => {
-  const [, setCookie, removeCookie] = useCookies([COOKIE_KEY_NORMAL_AUTH, COOKIE_KEY_USERNAME, COOKIE_KEY_ADMIN_AUTH])
   const [iusername, setIusername] = useState<string | null>(null)
   const [ipassword, setIpassword] = useState<string | null>(null)
   const [alertMsg, handleAlert] = useAlert();
@@ -24,7 +21,7 @@ const LoginSection = () => {
       handleAlert("登陆成功", 'success')
     } catch (e) {
     }
-  }, [iusername, ipassword, setCookie, removeCookie])
+  }, [iusername, ipassword, handleAlert])
 
   return (
     <>

@@ -21,13 +21,13 @@ export default function SnackbarAlert(props: {
 }) {
     const msg = props.msg;
     const msgQueue = React.useMemo((): SnackbarAlertMessage[] => [], [])
-    const [_, setUpdate] = React.useState<boolean>(false)
+    const [, setUpdate] = React.useState<boolean>(false)
     React.useEffect(() => {
         if (msg !== undefined) {
             msgQueue.push(msg)
             setUpdate(prev => !prev)
         }
-    }, [msg])
+    }, [msg, msgQueue])
 
     return (
         <Stack direction='column'

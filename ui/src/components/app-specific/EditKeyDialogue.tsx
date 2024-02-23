@@ -50,7 +50,7 @@ export default function EditKeyDialog(props: {
             .finally(() => {
                 setSubmitting(false);
             })
-    }, [record, handleAlert, formRef])
+    }, [record, handleAlert, formRef, onClose, onSubmit])
 
     return (
         <>

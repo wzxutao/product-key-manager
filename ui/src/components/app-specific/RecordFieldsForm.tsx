@@ -91,7 +91,7 @@ export default React.forwardRef<RecordFieldsFormHandle, RecordFieldsFormProps>((
             })
             .catch((_err) => {
             });
-    }, []);
+    }, [handleAlert]);
 
     const handleAddAdditionalField = React.useCallback(() => {
         setOptionalFields(prev => [...prev, { k: '', v: '' }])
@@ -125,7 +125,7 @@ export default React.forwardRef<RecordFieldsFormHandle, RecordFieldsFormProps>((
     const optionalFieldRows = React.useMemo(() => {
         const rv: JSX.Element[] = []
 
-        optionalFields.map((f, idx) => {
+        optionalFields.forEach((f, idx) => {
             if (f === undefined) return undefined;
 
             const { k, v } = f;

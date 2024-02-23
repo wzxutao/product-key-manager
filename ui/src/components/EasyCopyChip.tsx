@@ -16,7 +16,7 @@ export function EasyCopyChip(props: {
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTooltipShowCopied(true);
-    }, []);
+    }, [text]);
 
     return (<>
         <Tooltip title={tooltipShowCopied ? '已复制' : '单击复制'}>
