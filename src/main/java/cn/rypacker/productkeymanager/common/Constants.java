@@ -1,5 +1,8 @@
 package cn.rypacker.productkeymanager.common;
 
+
+import cn.rypacker.productkeymanager.services.AdminAccountManager;
+
 public class Constants {
 
     public static final String COOKIE_KEY_ADMIN_AUTH = "auth";
@@ -14,5 +17,9 @@ public class Constants {
     public static final String RECORD_KEY_COMMENT = "__comment";
     public static final String RECORD_KEY_DATE = "日期";
 
-    public static final String USERNAME_RECORD_VALUE_ADMIN = "admin";
+    public static final String USERNAME_RECORD_VALUE_ADMIN;
+
+    static {
+        USERNAME_RECORD_VALUE_ADMIN = AdminAccountManager.getAdminUsername();
+    }
 }

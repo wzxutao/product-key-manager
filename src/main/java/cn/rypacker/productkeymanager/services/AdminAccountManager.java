@@ -9,6 +9,14 @@ public class AdminAccountManager {
 
     private static final String ACCOUNT_INFO_FILE = "data/admin";
 
+    public static String getAdminUsername(){
+        try(var scanner = new Scanner(new FileInputStream(ACCOUNT_INFO_FILE))){
+            return scanner.nextLine();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static String hashPassword(String password){
         try{
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
