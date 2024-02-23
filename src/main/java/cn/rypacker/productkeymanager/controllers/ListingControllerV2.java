@@ -5,6 +5,7 @@ import cn.rypacker.productkeymanager.dto.JsonRecordDto;
 import cn.rypacker.productkeymanager.repositories.JsonRecordRepository;
 import cn.rypacker.productkeymanager.services.DatetimeUtil;
 import cn.rypacker.productkeymanager.services.JSONUtil;
+import cn.rypacker.productkeymanager.services.KeyGenerator;
 import cn.rypacker.productkeymanager.services.auth.AdminAuth;
 import cn.rypacker.productkeymanager.services.auth.NormalAccountAuth;
 import cn.rypacker.productkeymanager.specification.JsonRecordSpecs;
@@ -102,6 +103,7 @@ public class ListingControllerV2 {
         entity.setStatus(RecordStatus.parse(dto.getStatus()));
         dto.getExpandedAllFields().put(RECORD_KEY_USERNAME, username != null ? username : USERNAME_RECORD_VALUE_ADMIN);
         dto.getExpandedAllFields().put(RECORD_KEY_COMMENT, dto.getComment());
+        dto.getExpandedAllFields().put(RECORD_KEY_DATE, dto.getProductKey().substring(0, KeyGenerator.DATE_LENGTH));
 
         entity.setJsonString(JSONUtil.toStringFrom(dto.getExpandedAllFields()));
         jsonRecordRepository.save(entity);

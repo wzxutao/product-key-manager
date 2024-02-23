@@ -29,13 +29,13 @@ export default function ListingPage() {
         setData(null);
         getByProductKey(productKey)
         .then(rv => setData(rv !== null ? [rv] : [])).catch()
-    }, [handleAlert])
+    }, [])
 
     const handleQuickSearch = React.useCallback((searchInput: string) => {
         setData(null);
         quickSearchRecords(searchInput)
         .then(rv => setData(rv)).catch()
-    }, [handleAlert])
+    }, [])
 
     React.useEffect(() => {
         onQueryRecords()

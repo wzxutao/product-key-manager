@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { backup as doBackup, getAutoBackupTime, updateAutoBackupTime } from '../../../http/admin-api';
+import { getAutoBackupTime, updateAutoBackupTime } from '../../../http/admin-api';
 import { CircularProgress } from '@mui/material';
 import { green } from '@mui/material/colors';
 import SnackbarAlert, { useAlert } from '../../../components/SnackbarAlert';

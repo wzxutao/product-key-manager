@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import { RecordDto } from '../../http/dto/record-dto';
-import { Button, Checkbox, CircularProgress, Stack } from '@mui/material';
+import { Button, Checkbox, CircularProgress } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditKeyDialogue from '../../components/app-specific/EditKeyDialogue';
 import { updateRecord } from '../../http/today-listing-api';

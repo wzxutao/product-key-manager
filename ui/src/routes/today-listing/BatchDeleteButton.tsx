@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import React from 'react';
 import { TodayListingResultTableHandle } from './TodayListingResultTable';
 import { batchDeleteMyTodayRecords } from '../../http/today-listing-api';
@@ -27,7 +27,7 @@ export function BatchDeleteButton(props: {
         await batchDeleteMyTodayRecords(productKeys, handleAlert);
         handleClose();
         onDeleted();
-    }, [productKeys])
+    }, [productKeys, handleAlert, handleClose, onDeleted])
 
     return (
         <>

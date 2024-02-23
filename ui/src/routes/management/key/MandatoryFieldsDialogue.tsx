@@ -19,7 +19,7 @@ export default function MandatoryFieldsDialogue(props: {
     handleClose: () => void
 }) {
     const { open, handleClose } = props;
-    const [submitting, setSubmitting] = React.useState(false);
+    const [submitting, ] = React.useState(false);
     const [alertMsg, handleAlert] = useAlert();
 
     const [mandatoryFields, setMandatoryFields] = React.useState<string[] | null>(null);
@@ -56,7 +56,7 @@ export default function MandatoryFieldsDialogue(props: {
         }
 
         setNameHasError(false);
-    }, [mandatoryFields])
+    }, [mandatoryFields, handleAlert])
 
     const handleReload = React.useCallback(() => {
         getMandatoryFields(handleAlert)
@@ -66,13 +66,13 @@ export default function MandatoryFieldsDialogue(props: {
             })
             .catch((_err) => {
             });
-    }, []);
+    }, [handleAlert]);
 
     React.useEffect(() => {
         if (open) {
             handleReload();
         }
-    }, [open])
+    }, [open, handleReload])
 
     const mandatoryFieldList = React.useMemo(() => {
         return (
@@ -191,7 +191,7 @@ export default function MandatoryFieldsDialogue(props: {
             setSeletedFieldIdx(0);
         }
         setMandatoryFields(fields);
-    }, [mandatoryFields, selectedFieldIdx, newFieldName])
+    }, [mandatoryFields, selectedFieldIdx, newFieldName, handleAlert])
 
     const handleConfirm = React.useCallback(() => {
         updateMandatoryFields(mandatoryFields ?? [])
@@ -199,7 +199,7 @@ export default function MandatoryFieldsDialogue(props: {
                 handleAlert('更新成功', 'success');
                 handleReload();
             }).catch(_err => { });
-    }, [handleClose, handleAlert, mandatoryFields])
+    }, [handleAlert, mandatoryFields, handleReload])
 
 
     return (

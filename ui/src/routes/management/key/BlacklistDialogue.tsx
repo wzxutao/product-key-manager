@@ -24,7 +24,7 @@ export default function BlacklistDialogue(props: {
                     setText(rv.join(', '));
                 }).catch();
         }
-    }, [open])
+    }, [open, handleAlert])
 
     const handleSubmit = React.useCallback(() => {
         setSubmitting(true);
@@ -35,7 +35,7 @@ export default function BlacklistDialogue(props: {
         }).catch().finally(() => {
             setSubmitting(false);
         })
-    }, [text])
+    }, [text, onClose, handleAlert])
 
     return (
         <>

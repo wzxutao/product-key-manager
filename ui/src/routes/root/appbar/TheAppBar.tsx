@@ -68,7 +68,7 @@ function TheAppBar() {
     removeCookie(COOKIE_KEY_NORMAL_AUTH)
     removeCookie(COOKIE_KEY_USERNAME)
     navigate('/')
-  }, []);
+  }, [removeCookie, navigate]);
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);

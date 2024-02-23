@@ -19,11 +19,11 @@ export function TodayListingPage() {
 
     const handleLoadData = React.useCallback(() => {
         getMyTodayRecords(statusFilter, handleAlert).then(setData).catch()
-    }, [statusFilter]);
+    }, [statusFilter, handleAlert]);
 
     React.useEffect(() => {
         handleLoadData();
-    }, [])
+    }, [handleLoadData])
 
     const handleDataDeleted = React.useCallback(() => {
         handleAlert('删除成功', 'success');
@@ -32,7 +32,7 @@ export function TodayListingPage() {
 
     React.useEffect(() => {
         handleLoadData();
-    }, [statusFilter])
+    }, [statusFilter, handleLoadData])
 
     return (
         <>

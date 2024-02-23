@@ -2,7 +2,8 @@ import React from 'react';
 
 import './ManualUploadPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
-import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
+import { Backdrop, Button, Chip, CircularProgress, Container, Divider, Grid, Input
+    , Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
 import { getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -34,7 +35,7 @@ export default function ManualUploadPage() {
                 });
         }
 
-    }, []);
+    }, [handleAlert, mandatoryFields]);
 
     const handleAddAdditionalField = React.useCallback(() => {
         setAdditionalFields((prev) => [...prev, '']);
@@ -85,7 +86,7 @@ export default function ManualUploadPage() {
         }
 
 
-    }, [formRef, handleAlert, productKey])
+    }, [formRef, handleAlert, productKey, comment])
 
 
     return (<>

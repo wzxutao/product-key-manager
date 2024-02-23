@@ -18,7 +18,7 @@ export default function UserCredentialDialogue(props: {
 }) {
     const { title, username: pUsername, open, onClose, onSubmit } = props;
     const [submitting, setSubmitting] = React.useState(false);
-    const [alertMsg, _handleAlert] = useAlert();
+    const [alertMsg, ] = useAlert();
 
     const [username, setUsername] = React.useState<string>('');
     const [password, setPassword] = React.useState<string>('');
@@ -39,7 +39,7 @@ export default function UserCredentialDialogue(props: {
         onSubmit(username, password).finally(() => {
             setSubmitting(false);
         })
-    }, [username, password])
+    }, [username, password, onSubmit])
 
     return (
         <>

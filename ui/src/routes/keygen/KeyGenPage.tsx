@@ -2,7 +2,7 @@ import React from 'react';
 
 import './KeyGenPage.less'
 import SnackbarAlert, { useAlert } from '../../components/SnackbarAlert';
-import { Backdrop, Box, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, FormHelperText, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
+import { Backdrop, Button, Checkbox, Chip, CircularProgress, Container, Divider, FormControl, FormControlLabel, Grid, Input, InputAdornment, OutlinedInput, Paper, Stack, TextField, TextareaAutosize } from '@mui/material';
 import { useCallbackRef } from '../../common/hooks';
 import { genKeys, getMandatoryFields } from '../../http/keygen-api';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -64,7 +64,7 @@ export default function KeyGenPage() {
         if (formRef !== null) {
             handleTodayCheckboxChange({ target: { checked: true } } as any);
         }
-    }, [formRef]);
+    }, [formRef, handleAlert, handleTodayCheckboxChange, mandatoryFields]);
 
     const handleAddAdditionalField = React.useCallback(() => {
         setAdditionalFields((prev) => [...prev, '']);
@@ -117,13 +117,13 @@ export default function KeyGenPage() {
         }
 
 
-    }, [formRef, batchGenCount, handleAlert, dateValid])
+    }, [formRef, batchGenCount, handleAlert, dateValid, comment])
 
     const handleCopyAll = React.useCallback(() => {
         const str = generatedKeys.join(multiKeysSeparator);
         navigator.clipboard.writeText(str);
         handleAlert('已复制: ' + str, 'success');
-    }, [multiKeysSeparator, generatedKeys])
+    }, [multiKeysSeparator, generatedKeys, handleAlert])
 
     return (<>
         <SnackbarAlert msg={alertMsg} />
@@ -222,7 +222,7 @@ export default function KeyGenPage() {
                             resize: 'none',
                         }}
                             value={comment}
-                            onChange={(ev => { setComment(ev.target.value) })}
+                            onChange={ev => { setComment(ev.target.value) }}
                         />
                     </div>
                 </Grid>

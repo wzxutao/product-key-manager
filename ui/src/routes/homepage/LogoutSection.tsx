@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  } from 'react';
 import {
   Box, Grid, Paper,
   Button,
@@ -18,7 +18,7 @@ const LogoutSection = (props: {
     removeCookie(COOKIE_KEY_USERNAME)
     removeCookie(COOKIE_KEY_ADMIN_AUTH)
     removeCookie(COOKIE_KEY_AUTH_EXPIRATION)
-  }, [])
+  }, [removeCookie])
 
   return (
     <Grid id="LogoutSection" item xs={12} lg={5} component={Paper} elevation={6} square>

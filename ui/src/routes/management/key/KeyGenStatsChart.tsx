@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { KeyGenStats } from '../../../http/admin-api';
-import { stat } from 'fs';
 import { CircularProgress, Container } from '@mui/material';
 
 export default function KeyGenStatsChart(props: {

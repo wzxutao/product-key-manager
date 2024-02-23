@@ -33,7 +33,7 @@ export default function NormalAccountDialogue(props: {
 
     React.useEffect(() => {
         refreshAccounts();
-    }, []);
+    }, [refreshAccounts]);
 
     const handleCredentialsDialogueSubmit = React.useCallback(async (username: string, password: string) => {
         if (credentialsDialogMode === 'add' || credentialsDialogMode === 'edit') {
@@ -76,7 +76,7 @@ export default function NormalAccountDialogue(props: {
                     setCredentialsDialogMode('off');
                 })
         }
-    }, [credentialsDialogMode]);
+    }, [credentialsDialogMode, handleAlert, refreshAccounts]);
 
     const credentialsDialogueTitle = React.useMemo(() => {
         if (credentialsDialogMode === 'add') {
@@ -98,7 +98,7 @@ export default function NormalAccountDialogue(props: {
             <ListItem
                 key={username}
                 secondaryAction={[
-                    <Tooltip key={username + '_' + 'edit'} title="修改密码" placement="right-start">
+                    <Tooltip key={username + '_edit'} title="修改密码" placement="right-start">
                         <IconButton edge="end" onClick={() => {
                             setSelectedUsername(username);
                             setCredentialsDialogMode('edit');
@@ -106,7 +106,7 @@ export default function NormalAccountDialogue(props: {
                             <KeyIcon />
                         </IconButton>
                     </Tooltip>,
-                    <Tooltip key={username + '_' + 'delete'} title="删除账号" placement="right">
+                    <Tooltip key={username + '_delete'} title="删除账号" placement="right">
                         <IconButton edge="end" onClick={() => {
                             setSelectedUsername(username);
                             setCredentialsDialogMode('delete');
