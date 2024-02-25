@@ -1,14 +1,21 @@
 # all
 server:
-  port: 8081
+  port: 8084
 
 spring:
   profiles:
     active: prod
-  mvc:
-    static-path-pattern: /static/**
+#  mvc:
+#    static-path-pattern: /static/**
   resources:
-    static-locations: classpath:/static/
+    static-locations: classpath:/public/
+ 
+logging:
+  level:
+    org:
+      springframework:
+        security: WARN
+
 
 # production
 ---
@@ -20,7 +27,7 @@ spring:
         dialect: cn.rypacker.productkeymanager.databasehelpers.sqlite.SQLiteDialect
         hbm2ddl:
           auto: update
-        show_sql: false
+        show_sql: true
 
 
 # development

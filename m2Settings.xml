@@ -163,12 +163,13 @@ under the License.
       <url>http://0.0.0.0/</url>
       <blocked>true</blocked>
     </mirror> -->
-      <mirror>
-         <id>nexus-aliyun</id>
-         <mirrorOf>*</mirrorOf>
-         <name>Nexus aliyun</name>
-         <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-      </mirror> 
+    <mirror>
+      <id>aliyunmaven</id>
+      <mirrorOf>*</mirrorOf>
+      <name>阿里云公共仓库</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </mirror>
+
 
   </mirrors>
 

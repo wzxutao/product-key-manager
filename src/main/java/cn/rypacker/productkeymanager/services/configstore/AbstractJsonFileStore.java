@@ -2,6 +2,7 @@ package cn.rypacker.productkeymanager.services.configstore;
 
 import cn.rypacker.productkeymanager.services.FileSystemUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -17,6 +18,10 @@ public abstract class AbstractJsonFileStore<T> {
 
     private T data;
     private Class<T> dataClass;
+
+    static {
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
     protected abstract String getFilePath();
 

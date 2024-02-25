@@ -1,7 +1,21 @@
-## Prerequisites:
-1. [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+# UI 
+## Dev
 
-Their /bin directories should be added to system environment variable "Path"
+```shell
+  yarn start
+```
+localhost:3000
 
-## Run:
-$ mvnw spring-boot:run
+## Release
+
+```shell
+  cd ui
+  yarn build
+```
+copy /ui/build/** to classpath:/public/
+
+# Docker
+
+``` shell
+docker build .
+```

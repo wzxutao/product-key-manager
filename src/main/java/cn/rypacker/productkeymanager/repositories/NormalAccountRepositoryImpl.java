@@ -1,6 +1,6 @@
 package cn.rypacker.productkeymanager.repositories;
 
-import cn.rypacker.productkeymanager.services.configstore.UserConfig;
+import cn.rypacker.productkeymanager.entity.UserConfig;
 import cn.rypacker.productkeymanager.services.configstore.UserConfigStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +23,7 @@ public class NormalAccountRepositoryImpl
 
 
     @Override
-    public void add(String username, String password) {
-        update(username, password);
-    }
-
-    @Override
-    public void update(String username, String password) {
+    public void upsert(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 

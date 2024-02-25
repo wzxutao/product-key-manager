@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './index.less';
 import HomePage from './routes/homepage/HomePage';
 import reportWebVitals from './reportWebVitals';
 
@@ -8,12 +8,46 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import ManagementPage from './routes/management/ManagementPage';
+import Root from './routes/root/Root';
+import RootErrorPage from './routes/root/RootErrorPage';
+import ListingPage from './routes/listing/ListingPage';
+import KeyGenPage from './routes/keygen/KeyGenPage';
+import { TodayListingPage } from './routes/today-listing/TodayListingPage';
+import ManualUploadPage from './routes/manualupload/ManualUploadPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
-  },
+    element: <Root />,
+    errorElement: <RootErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "/keygen",
+        element: <KeyGenPage />,
+      },
+      {
+        path: "/management",
+        element: <ManagementPage />,
+      },
+      {
+        path: "/listing",
+        element: <ListingPage />,
+      },
+      {
+        path: "/today-listing",
+        element: <TodayListingPage />,
+      },
+      {
+        path: "/manual-upload",
+        element: <ManualUploadPage />,
+      }
+    ]
+  }
 ]);
 
 const root = ReactDOM.createRoot(

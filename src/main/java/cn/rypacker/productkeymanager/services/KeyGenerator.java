@@ -1,26 +1,21 @@
 package cn.rypacker.productkeymanager.services;
 
+import cn.rypacker.productkeymanager.dto.KeyGenStats;
+
+import java.util.List;
+
 public interface KeyGenerator {
 
-    int getKeyLength();
+
+    int MIN_LENGTH = 8;
+    int MAX_LENGTH = 11;
+    int DATE_LENGTH = 6;
+
 
     /**
      * @throws IllegalArgumentException if key length is too short
      */
     void setKeyLength(int length);
-
-    /**
-     * the datetime info will be the time this method is called
-     * @return
-     */
-    String generateKey();
-
-    /**
-     * returns a key containing readable datetime info
-     * @param epochMilli
-     * @return
-     */
-    String generateKey(long epochMilli);
 
     /**
      * keeps the dateString intact
@@ -30,23 +25,18 @@ public interface KeyGenerator {
      */
     String generateKey(String dateString);
 
-    /**
-     * get a key whose value is just greater than the key provided
-     * @param prev
-     * @return
-     */
-    String nextSibling(String prev);
+    int getKeyLength();
 
-    /**
-     * increase the key length by 1
-     */
     default void expand(){
         setKeyLength(getKeyLength() + 1);
     }
 
-    /**
-     * returns the max number of different keys possible provided current key length
-     * @return
-     */
-    long getCombinationCount();
+    KeyGenStats getStats();
+
+    List<String> getBlackList();
+    void setBlackList(List<String> blackList);
+
+    void returnCandidate(String key);
+
+    void refreshCandidates();
 }

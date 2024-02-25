@@ -42,7 +42,6 @@ public class AdminAuthImpl implements AdminAuth {
             if(expirationMilli == null) return false;
             return System.currentTimeMillis() < Long.parseLong(expirationMilli);
         }catch (Exception e){
-            e.printStackTrace();
             return false;
         }
 

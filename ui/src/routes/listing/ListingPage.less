@@ -1,0 +1,97 @@
+#ListingPage {
+    .list-page-filter {
+        width: 95%;
+        margin: 20px auto 0;
+
+        .rule-input {
+            justify-content: center;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .rule-input-add-button {
+                height: 56px;
+            }
+        }
+
+        .rule-graph {
+            overflow: auto;
+            .rule-graph-list,
+            .rule-graph-list-nested {
+                li{
+                    margin-bottom: 4px;
+
+                    & > * {
+                        flex: 0 0 auto;
+
+                    }
+
+                    &::after {
+                        content: "";
+                        flex: 1 1 auto;
+                    }
+
+                    
+                }
+
+            }
+
+            .rule-graph-list-nested {
+                position: relative;
+                margin-left: 16px;
+
+                @border-color: #777;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 20px;
+                    height: 100%;
+                    border-top: 2px solid @border-color;
+                    border-bottom: 2px solid @border-color;
+                    border-left: 2px solid @border-color;
+                }
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    left: -16px;
+                    width: 16px;
+                    border-top: 2px solid @border-color;
+                }
+
+            }
+        }
+    }
+
+    .list-page-toolbar{
+        width: 95%;
+        margin: 20px auto 0;
+    }
+
+    .list-page-table {
+        width: 95%;
+        overflow: hidden;
+        margin: 20px auto 0;
+
+        .table-head-cell {
+            font-weight: bold;
+            background-color: #dedede;
+        }
+
+        .table-row-cell {
+            .content-row {
+                margin: 0;
+
+                .content-key {
+                    font-weight: bold;
+                }
+            }
+
+        }
+    }
+
+}
