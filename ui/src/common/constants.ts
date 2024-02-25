@@ -1,4 +1,4 @@
-export const API_URL = `http://${window.location.hostname}:8081`;
+export const API_URL = `http://${window.location.hostname}:8084`;
 
 export const COOKIE_KEY_NORMAL_AUTH = "normalAuth";
 export const COOKIE_KEY_ADMIN_AUTH = "auth";

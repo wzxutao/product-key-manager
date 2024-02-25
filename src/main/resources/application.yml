@@ -1,6 +1,6 @@
 # all
 server:
-  port: 8081
+  port: 8084
 
 spring:
   profiles:

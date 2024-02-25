@@ -1,10 +1,10 @@
 version: "3.0"
 services:
-  productKeyManager2:
-    image: wzxutao/pkm:240223
-    container_name: product-key-namager2
+  productKeyManager5:
+    image: wzxutao/pkm:240225
+    container_name: product-key-namager5
     ports:
-    - 8081:8081
+    - 8084:8084
     volumes:
     - D:\dev\product-key-manager\data:/opt/pkm/data
     environment:
