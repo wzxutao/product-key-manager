@@ -1,8 +1,8 @@
 version: "3.0"
 services:
-  productKeyManager5:
-    image: wzxutao/pkm:240225
-    container_name: product-key-namager5
+  productKeyManager2:
+    image: wzxutao/pkm:240225_2
+    container_name: product-key-manager2
     ports:
     - 8084:8084
     volumes:
