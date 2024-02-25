@@ -1,9 +1,12 @@
 version: "3.0"
 services:
-  productKeyManager:
-    image: wzxutao/pkm:latest
-    container_name: product-key-namager
+  productKeyManager2:
+    image: wzxutao/pkm:240223
+    container_name: product-key-manager2
     ports:
-    - 8081:8081
+    - 8084:8081
     volumes:
-    - /share/system/xtpro/data:/opt/pkm/data
+    - /share/XTpro:/opt/pkm/data
+    environment:
+      - TZ=Asia/Shanghai
+
