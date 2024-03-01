@@ -86,21 +86,6 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                 "format": dto => dto.productKey
             },
             {
-                "id": "status",
-                "label": "状态",
-                "format": dto => dto.status
-            },
-            {
-                "id": "username",
-                "label": "创建用户",
-                "format": dto => dto.username
-            },
-            {
-                "id": "createdAt",
-                "label": "创建时间",
-                "format": dto => new Date(dto.createdMilli).toLocaleString()
-            },
-            {
                 "id": "contents",
                 "label": "内容",
                 "format": dto => {
@@ -120,6 +105,21 @@ const TodayListingResultTable = React.forwardRef<TodayListingResultTableHandle, 
                 "id": "comment",
                 "label": "备注",
                 "format": dto => <p style={{overflowWrap: 'anywhere'}}>{dto.comment}</p>
+            },
+            {
+                "id": "status",
+                "label": "状态",
+                "format": dto => dto.status
+            },
+            {
+                "id": "username",
+                "label": "创建用户",
+                "format": dto => dto.username
+            },
+            {
+                "id": "createdAt",
+                "label": "创建时间",
+                "format": dto => new Date(dto.createdMilli).toLocaleString()
             },
             {
                 "id": 'edit',

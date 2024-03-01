@@ -145,14 +145,15 @@ export default function KeyGenPage() {
                             <Checkbox
                                 checked={todayChecked}
                                 onChange={handleTodayCheckboxChange} />}
-                            xs={1}
+                            xs={3}
+                            md={1}
                             label="今天" />
                         <Grid item component={Input}
                             placeholder='YYMMDD'
                             name={INPUT_DATE_KEY}
                             onBlur={validateDate}
                             error={!dateValid}
-                            disabled={todayChecked} xs={8} />
+                            disabled={todayChecked} xs={6} md={8} />
                     </div>
                     {/* mandatory fields*/}
                     <Backdrop
@@ -216,7 +217,7 @@ export default function KeyGenPage() {
                     </Grid>
                     <div className="key-gen-form-row">
                         <TextareaAutosize minRows={2} style={{
-                            marginTop: '4px',
+                            marginTop: '8px',
                             width: '100%',
                             resize: 'none',
                         }}
@@ -234,7 +235,7 @@ export default function KeyGenPage() {
                         onClick={handleSubmit}
                         disabled={submitting}
                     >生成</Grid>
-                    <Grid item component={FormControl} xs={1} variant="outlined">
+                    <Grid item component={FormControl} xs={3} md={1} variant="outlined" >
                         <OutlinedInput
                             value={batchGenCount}
                             type='number'
@@ -247,7 +248,8 @@ export default function KeyGenPage() {
                             endAdornment={<InputAdornment position="end">个</InputAdornment>}
                         />
                     </Grid>
-                    <Grid item component={Container} className="key-container" xs={8}>
+                    <Grid item component={Container} className="key-container" 
+                    xs={6} md={8}>
                         {
                             generatedKeys.map((key, i) => {
                                 return <EasyCopyChip key={key} text={key} />

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Paper, Stack, TextField } from '@mui/material';
+import { Button, Paper, Stack, TextField, Typography } from '@mui/material';
 
 export default function ListingToolBar(
     props: {
@@ -36,7 +36,8 @@ export default function ListingToolBar(
                         }}
                         autoFocus />
                     <Button variant='contained' onClick={handleQuickSearch}
-                        sx={{ flexGrow: 1, width: '10%' }}>模糊查找(Enter)</Button>
+                        sx={{ flexGrow: 1, width: '10%' }}>
+                            快查</Button>
                 </Stack>
             </Paper>
             <Paper elevation={3} className='list-page-toolbar'>
@@ -52,7 +53,7 @@ export default function ListingToolBar(
                         }}
                         />
                     <Button variant='contained' onClick={handleSearchByProductKey}
-                        sx={{ flexGrow: 1, width: '10%' }}>序列号精确查找(Enter)</Button>
+                        sx={{ flexGrow: 1, width: '10%' }}>按号查</Button>
                 </Stack>
             </Paper>
         </>
