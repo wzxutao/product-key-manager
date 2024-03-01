@@ -31,8 +31,7 @@ export default function KeyGenPage() {
     const [submitting, setSubmitting] = React.useState<boolean>(false);
 
     const validateDate = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
-        const regex = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
-        setDateValid(regex.test(ev.target.value));
+        setDateValid(ev.target.value.length === 6);
     }, [])
 
     const handleTodayCheckboxChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +76,7 @@ export default function KeyGenPage() {
             return;
         }
         if (!dateValid) {
-            handleAlert('日期格式错误');
+            handleAlert('日期必须为6位');
             return;
         }
 
