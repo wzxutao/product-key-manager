@@ -44,7 +44,7 @@ export default function ManualUploadPage() {
     const handleSubmit = React.useCallback(async () => {
         if (formRef === null) return;
         
-        if(!/^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])\w+/.test(productKey)) {
+        if(!/^\w{6}\w+/.test(productKey)) {
             handleAlert("序列号格式错误");
             return;
         }

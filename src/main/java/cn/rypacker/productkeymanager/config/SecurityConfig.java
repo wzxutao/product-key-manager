@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .antMatchers(
                         "/normal/**").hasAuthority(ROLE_NORMAL)
+                .antMatchers("/static/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable()

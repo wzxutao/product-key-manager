@@ -96,4 +96,11 @@ public class JsonRecordSpecs {
                         builder.literal("$." + field + "[0]")),
                 "%" + substring + "%");
     }
+
+    public static Specification<JsonRecord> orderByCreatedMillisDesc() {
+        return (root, query, builder) -> {
+            query.orderBy(builder.desc(root.get("createdMilli")));
+            return null;
+        };
+    }
 }

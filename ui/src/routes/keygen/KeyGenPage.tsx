@@ -31,8 +31,7 @@ export default function KeyGenPage() {
     const [submitting, setSubmitting] = React.useState<boolean>(false);
 
     const validateDate = React.useCallback((ev: React.FocusEvent<HTMLInputElement>) => {
-        const regex = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
-        setDateValid(regex.test(ev.target.value));
+        setDateValid(ev.target.value.length === 6);
     }, [])
 
     const handleTodayCheckboxChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +76,7 @@ export default function KeyGenPage() {
             return;
         }
         if (!dateValid) {
-            handleAlert('日期格式错误');
+            handleAlert('日期必须为6位');
             return;
         }
 
@@ -146,14 +145,15 @@ export default function KeyGenPage() {
                             <Checkbox
                                 checked={todayChecked}
                                 onChange={handleTodayCheckboxChange} />}
-                            xs={1}
+                            xs={3}
+                            md={1}
                             label="今天" />
                         <Grid item component={Input}
                             placeholder='YYMMDD'
                             name={INPUT_DATE_KEY}
                             onBlur={validateDate}
                             error={!dateValid}
-                            disabled={todayChecked} xs={8} />
+                            disabled={todayChecked} xs={6} md={8} />
                     </div>
                     {/* mandatory fields*/}
                     <Backdrop
@@ -217,7 +217,7 @@ export default function KeyGenPage() {
                     </Grid>
                     <div className="key-gen-form-row">
                         <TextareaAutosize minRows={2} style={{
-                            marginTop: '4px',
+                            marginTop: '8px',
                             width: '100%',
                             resize: 'none',
                         }}
@@ -235,7 +235,7 @@ export default function KeyGenPage() {
                         onClick={handleSubmit}
                         disabled={submitting}
                     >生成</Grid>
-                    <Grid item component={FormControl} xs={1} variant="outlined">
+                    <Grid item component={FormControl} xs={3} md={1} variant="outlined" >
                         <OutlinedInput
                             value={batchGenCount}
                             type='number'
@@ -248,7 +248,8 @@ export default function KeyGenPage() {
                             endAdornment={<InputAdornment position="end">个</InputAdornment>}
                         />
                     </Grid>
-                    <Grid item component={Container} className="key-container" xs={8}>
+                    <Grid item component={Container} className="key-container" 
+                    xs={6} md={8}>
                         {
                             generatedKeys.map((key, i) => {
                                 return <EasyCopyChip key={key} text={key} />

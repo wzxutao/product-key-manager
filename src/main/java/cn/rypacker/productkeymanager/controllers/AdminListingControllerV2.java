@@ -39,12 +39,16 @@ public class AdminListingControllerV2 {
 
     @PostMapping("/query-records")
     public List<JsonRecordDto> queryRecords(@RequestBody QueryRecordsRequest reqBody) {
-        try{
-            return jsonRecordRepository.findAll(reqBody.getCriterion() == null ? null : reqBody.getCriterion().toSpecs())
+        try {
+            return jsonRecordRepository.findAll(reqBody.getCriterion() == null ? null : reqBody.getCriterion()
+                            .toSpecs()
+                            .and(
+                                    JsonRecordSpecs.orderByCreatedMillisDesc()
+                            ))
                     .stream()
                     .map(JsonRecordDto::fromEntity)
                     .collect(Collectors.toList());
-        }catch (UnsupportedOperationException | IllegalArgumentException e) {
+        } catch (UnsupportedOperationException | IllegalArgumentException e) {
             throw new IdentifiedWebException(e.getMessage(), 400);
         }
     }
@@ -52,7 +56,7 @@ public class AdminListingControllerV2 {
     @GetMapping("/get-by-product-key")
     public JsonRecordDto getByProductKey(@RequestParam("productKey") String productKey) {
         var entity = jsonRecordRepository.findByProductKey(productKey);
-        if(entity == null) {
+        if (entity == null) {
             return null;
         }
 
@@ -63,8 +67,11 @@ public class AdminListingControllerV2 {
     public List<JsonRecordDto> quickSearch(@RequestParam(value = "input", required = false) String keyword) {
 
         Specification<JsonRecord> specs = Specification.where(null);
-        if(keyword != null && !keyword.isBlank()){
-            specs = JsonRecordSpecs.payloadContains(keyword).or(JsonRecordSpecs.productKeyContains(keyword));
+        if (keyword != null && !keyword.isBlank()) {
+            specs = JsonRecordSpecs.payloadContains(keyword)
+                    .or(JsonRecordSpecs.productKeyContains(keyword))
+                    .and(JsonRecordSpecs.orderByCreatedMillisDesc())
+            ;
         }
 
         return jsonRecordRepository.findAll(specs)
