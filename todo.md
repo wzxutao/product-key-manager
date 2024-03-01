@@ -1,9 +1,5 @@
 功能：
 
-5. 自定义背景图片
-
-
-
 
 backlog:
 store account credentials in db

@@ -14,6 +14,8 @@ public class StaticInformation {
 
     public static final String LEGACY_FILE_DIR = USER_DB_DIR + "/legacy";
 
+    public static final String BACKGROUND_IMAGE_PATH = USER_DB_DIR + "/background.jpg";
+
     public static final String METADATA_FILE_PATH_V1 = USER_DB_DIR + "/metadata_v1.json";
 
     public static final String USER_DOC_DIR =
