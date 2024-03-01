@@ -50,6 +50,8 @@ public class ListingControllerV2 {
             if(username == null) return ResponseEntity.badRequest().body("Invalid token");
             specs = specs.and(JsonRecordSpecs.usernameEquals(username));
         }
+
+        specs = specs.and(JsonRecordSpecs.orderByCreatedMillisDesc());
         var records = jsonRecordRepository.findAll(specs);
         return ResponseEntity.ok(records.stream().map(JsonRecordDto::fromEntity).collect(Collectors.toList()));
     }
